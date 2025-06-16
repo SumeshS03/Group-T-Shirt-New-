@@ -1,0 +1,39 @@
+.footercopytext{
+    color: #000000;
+    font-size: 16px;
+    margin: 0px;
+}
+.footercopytexttwo{
+    font-weight: bold;
+    color: #000000;
+}
+
+@media screen and (max-width: 768px){
+
+    .footercopytext{
+   
+    font-size: 12px;
+  
+}
+
+}
+
+@media screen and (max-width: 425px){
+
+    .footercopytext{
+   
+    font-size: 9px;
+  
+}
+
+}
+
+@media screen and (max-width: 320px){
+
+    .footercopytext{
+   
+    font-size: 8px;
+  
+}
+
+}

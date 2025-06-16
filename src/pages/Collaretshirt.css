@@ -1,0 +1,93 @@
+.quantitybox{
+    background-color: #f1f1f1;
+    border-radius: 12px;
+    transform: translateY(-36px);
+}
+.quantityborber{
+    border: 1px solid;
+    border-radius: 12px;
+    position: relative;
+}
+
+.discountprice {
+  width: 10%;
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  text-align: center;
+  background-color: yellow;
+  color: black;
+  padding: 8px;
+  border-radius: 6px;
+  word-wrap: break-word;
+}
+
+.colorboxborber{
+    border: 1px;
+    background-color: #f1f1f1;
+    border-radius: 0px 0px 12px 12px;
+}
+
+.logtitlebox{
+    background-color: #0058c5;
+    border-radius: 12px 12px 0px 0px;
+}
+.logodetailebox{
+    border: 1px solid;
+    border-radius: 12px 12px 12px 12px;
+}
+
+.previewimage {
+    width: 25%;
+    height: 150px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 👈 Adds subtle shadow */
+    object-fit: cover; /* Optional: keeps image nicely fitted */
+}
+
+.fullsleevetext{
+    background-color: #f1f1f1;
+
+}
+
+.marquee-text {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 15s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.paymentboxdetail{
+    background-color: #f1f1f1;
+    border-radius: 12px;
+}
+
+.outer-colour-picker {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0; /* optional background */
+}
+
+.color-picker {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 0;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+}

@@ -1,0 +1,70 @@
+.upload-newdeisgn-box {
+    background-color: #fefefe;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    padding: 30px;
+    width: 220px;
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .upload-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    color: #333;
+    font-weight: 500;
+    gap: 8px;
+    font-size: 16px;
+  }
+  
+  .uplode-icon {
+    font-size: 48px; /* bigger icon */
+    color: #4a90e2;
+  }
+
+  .enter-quality-box{
+    border: 2px solid #4a90e2;
+    border-radius: 10px;
+    padding: 2%;
+    color: #4a90e2;
+  }
+  .Enter-Quantity-Required{
+    background-color: #dadada;
+    border-radius: 10px;
+    border: none;
+    padding: 1%;
+  }
+
+  .new-sent-btn{
+    width: 10%;
+    border-radius: 20px;
+  }
+
+  .preview-image {
+    margin-top: 15px;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+  }
+
+
+
+  @media (max-width: 426px){
+    .enter-quality-box {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.newdesigninputs{
+  width: 89%;
+}
+  }

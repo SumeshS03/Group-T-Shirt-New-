@@ -1,0 +1,8 @@
+.custom-form .ant-form-item-label label {
+    color: white; /* Change to your desired color */
+    font-weight: bold; /* Optional */
+  }
+  .custom-disabled-button:disabled {
+    color: white !important;
+    opacity: 0.5; /* Optional: keep disabled appearance */
+  }

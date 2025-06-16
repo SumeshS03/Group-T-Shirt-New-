@@ -1,0 +1,767 @@
+.custom-gap {
+    gap: 20rem;
+    margin-left: 12rem;
+  }
+  /* .browse-all{
+    background-color: #3a3e40 !important;
+    background-image: url("../images/about-us3.png");
+    
+    background-repeat: no-repeat;
+    background-repeat: no-repeat; 
+    background-size: cover; 
+    background-position: center;
+} */
+/* .browse-all {
+  background-color: #3a3e40 !important;
+  background-image: url("../images/about-us3.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  padding-bottom: 50px; 
+}  */
+
+.browse-all {
+  background-color: #3a3e40 !important;
+  background-image: url('../images/about-us3.png'); 
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  min-height: 300px;       
+  padding: 60px 15px;     
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;     
+  text-align: center;      
+}
+
+.verify-photo-servicee {
+    /* position: absolute; */
+    bottom: 0;
+    left: 50%;
+    /* transform: translateX(-50%); */
+    width: 73%;
+    height: auto;
+}
+
+.serviseprofile-slick {
+  padding-left: 0;
+  padding-right: 0;
+  width: 100%;
+  transform: translateY(131px);
+}
+
+.slide-box {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  /* width: 95%;  */
+  width: 155px;
+  margin: 0 auto; 
+  overflow: hidden;
+}
+
+
+
+.slide-image {
+  width: 100%;
+  height: 220px; 
+  object-fit: cover; 
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  display: block;
+}
+.slide-boxone {
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+}
+.slick-slide > div {
+  margin: 0 0px;
+}
+
+
+.slide-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.arrow-icon {
+  margin-left: 10px;
+  font-size: 20px;
+}
+
+
+
+.browse-btn{
+    color: blue !important;
+    background-color: white !important;
+}
+
+.accordion-item {
+    border: none !important;
+  }
+
+.accordion-button{
+    color: #5d5d5d !important;
+    background-color: #dadada !important;
+}
+
+.accordion-button:not(.collapsed)::after {
+    /* background-image: var(--bs-accordion-btn-active-icon);
+    transform: var(--bs-accordion-btn-icon-transform); */
+    /* background-color: aliceblue !important; */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.5 6.5L8 13l6.5-6.5-.707-.707L8 11.586 2.207 5.793 1.5 6.5z'/%3E%3C/svg%3E");
+    color: white;
+    width: 24px !important; 
+  height: 24px !important;
+  border-radius: 50%;
+}
+
+/* Default button styles */
+.custom-accordion-button {
+    background-color: #dadada; /* Default background */
+    color: black; /* Default text color */
+    border: none;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  /* When button is clicked (expanded) */
+  .custom-accordion-button:not(.collapsed) {
+    background-color: #015dc0 !important; /* Blue background */
+    color: white !important; /* White text */
+  }
+  .verify-photo-textone {
+    
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
+  
+  }
+
+
+.heading-textprint{
+    margin: 0;
+    color: #eeae0c;
+    font-size: 30px;
+    font-weight: 100;
+    font-family: 'Bevan';
+    margin-top: 10px;
+    text-align: left;
+    
+}
+.custom-artwork{
+    width: 80% !important;
+    height: 350px !important;
+    
+}
+.verifyimageboxone{
+  margin-top: 12% !important;
+}
+
+
+.custom-artworkone{
+    background-color: #eeae0c !important;
+    width: 100%;
+    height: 96%;
+    border-radius: 40px !important;
+    margin-top: 5% !important;
+}
+.video-box{
+    
+    margin-top: -200px;
+    height: 276px;
+    z-index: 10;
+    width: 118%;
+    border-radius: 33px ;
+    margin-bottom: 23px;
+   
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+   
+}
+.shipit-you{
+  margin-bottom: -283px;
+  
+}
+/* .profilecustomart{
+  gap: 100px !important;
+} */
+
+
+.profilecustomart {
+  position: absolute;
+  bottom: 35%;
+  width: 100%;
+}
+.keepmovingtext{
+  text-align: left;
+    margin-top: 25px;
+  color: white;
+
+}
+
+
+
+.enjoyup {
+  position: relative; /* Needed for absolute positioning of the overlay */
+  margin-top: 17%;
+  background-image: linear-gradient(to right, rgba(43, 47, 48, 2), rgba(255, 255, 0, 0)),url("../images/service-page5.jpg");
+  background-size: cover;
+  background-position: center;
+  color: white; /* Ensures text remains readable */
+}
+
+
+
+
+.enjoyup * {
+  position: relative;
+  z-index: 2;
+}
+.shopnow-btn{
+  background-color: white !important;
+  color: black !important;
+}
+.easycustomize{
+  /* width: 30%; */
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+
+/* .digitalscanpagenation{
+  margin-bottom: -111px;
+ 
+} */
+
+.digitalscanpagenation {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: -109px;
+}
+.verify-photo{
+  margin-top: 10% !important;
+}
+
+.pagination-button {
+  margin-bottom: -140px;
+  color: #eaa606;
+  border: 3px solid white;
+  
+}
+.outterimage-border{
+  width: 140px;
+  height: 140px;
+  border-radius: 50% !important;
+  /* border: 0.1px solid GRAY; */
+  box-shadow: 5px;
+  align-items: center;
+}
+.designerprofile{
+  width: 72%;
+  
+  /* border-radius:  !important; */
+}
+.pickproducttext{
+  color: #6b6b6b;
+  font-size: 15px;
+}
+.get-started-today{
+  background-color: #2d72c4;
+  color: white;
+}
+.profileimagesizing{
+  /* width: 200px; */
+}
+.videoimage{
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the image fills the container without distortion */
+  border-radius: inherit;
+}
+/* .container{
+  margin-bottom: 2% !important;
+} */
+
+.servicesbox-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 equal boxes */
+  gap: 30px; /* ✅ gap between boxes */
+  width: 100%;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px; /* ✅ adds space between boxes */
+  flex-wrap: nowrap;
+}
+/* .box {
+  flex: 1 1 calc(25% - 22.5px);
+  background-color: #eee;
+  padding: 20px;
+} */
+
+.easytext{
+  font-size: 14px;
+  margin-bottom: 0;
+  font-weight: bold;
+}
+.easytexttwo{
+  font-size: 14px;
+  margin-bottom: 16px;
+  font-weight: bold;
+}
+.toolsicons{
+  margin-bottom: 20px;
+  width: 45px;
+}
+
+/* .custom-row .col-lg-3 {
+  flex: 0 0 auto;
+  width: 24%; 
+} */
+.graphic-design{
+  margin-bottom: 10% !important;
+}
+.browse-btn{
+  font: bold;
+  border: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease-in-out !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+.browse-btn:hover{
+  transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+.contact-now-btn{
+  cursor: pointer !important;
+  transition: all 0.3s ease-in-out !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+.contact-now-btn:hover{
+  transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+.imagetopthree{
+  position: absolute;
+    left: 63%;
+    width: 303px;
+    margin-top: 0px;
+}
+.carousel-wrapper{
+  bottom: -50px;
+  transform: translate(-50%);
+}
+
+.profile-boxes{
+  position: relative;
+  top: 50%;
+  transform: translateY(0%);
+}
+.custom-grid-row .col-lg-2 {
+  flex: 0 0 auto;
+  width: 19.666667%;
+}
+
+.accordion{
+  width: 94%;
+}
+
+/* .profilesimagepad {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 250px; 
+  overflow: hidden;
+} */
+
+
+
+@media (max-width: 1026px) { /* Large screens */
+  .digitalscanpagenation {
+    margin-left: 0 !important;
+  }
+  .imagetopthree {
+    position: absolute;
+    left: 56%;
+    width: 303px;
+    margin-top: 0px;
+}
+  .imagetop {
+    left: 53%;
+    width: 313px;
+    margin-top: -52px;
+}
+.imagetoptwo {
+    position: absolute;
+    left: 67%;
+    width: 182px;
+    margin-top: 12px;
+}
+.custom-artwork{
+  margin-top: 8% !important;
+}
+.custom-artworkone {
+  
+  margin-top: 9% !important;
+}
+.profileimagesizing{
+  width: 190px;
+}
+
+
+
+
+.outterimage-border {
+  width: 95px;
+  height: 92px;
+}
+.pickproductheadtext{
+  font-size: 20px;
+}
+.pickproducttext{
+  font-size: 14px;
+}
+.custom-gap {
+  gap: 20rem;
+  margin-left: 3rem;
+}
+.enjoyup{
+  margin-top: 25% !important;
+}
+.custom-grid-row .col-lg-2 {
+  flex: 0 0 auto;
+  width: 24.666667%;
+}
+
+
+}
+
+@media (max-width: 992px) {
+  .custom-grid-row .col-lg-2 {
+    flex: 0 0 auto;
+    width: 98.666667%;
+}
+}
+
+
+ 
+
+
+
+
+@media(max-width: 768px){
+
+
+  /* .custom-row .col-lg-3 {
+    flex: 0 0 auto;
+    width: 25% !important; 
+  }  */
+
+  .box {
+    flex: 0 0 100%;
+  }
+  .video-box {
+    margin-top: -129px;
+    height: 202px;
+    width: 108%;
+}
+.toolsicons{
+  margin-bottom: 0px;
+  width: 84px;
+}
+.easytext{
+  text-align: center !important;
+}
+.getfreetext{
+  font-size: 18px;
+}
+.getfreetextpara {
+        font-size: 9px;
+    }
+.easycustomize{
+ 
+ flex-direction: column;
+ text-align: center;
+ padding: 20px;
+}
+
+.verifyimageboxone {
+  margin-top: 26% !important;
+}
+.profilecustomart {
+  position: absolute;
+  bottom: -81%;
+  width: 100%;
+}
+.enjoyup {
+  margin-top: 85% !important;
+}
+.pickproducttext {
+  font-size: 12px;
+}
+.verify-photo {
+  
+  margin-top: 22% !important;
+}
+.browse-all{
+  padding: 6% !important;
+}
+.profilesimagepad {
+  padding-left: 15% !important;
+  gap: 12%;
+}
+
+.custom-gap {
+  gap: 7rem;
+  margin-left: 3rem;
+}
+.imagetopthree {
+  display: none;
+}
+.tshirtprintingeveryone{
+  font-size: 12px;
+}
+
+}
+
+@media (max-width: 426px) {
+  .tshirtprintingeveryone{
+  font-size: 11px;
+}
+.tshirtprintingeverytwo{
+  font-size: 14px;
+}
+.heading-textprint {
+    
+    font-size: 17px;
+    
+}
+  .imagetop {
+    left: 16%;
+    width: 250px;
+    margin-top: -52px;
+}
+.digitalscanpagenation {
+  margin-bottom: -67px;
+  
+}
+.textwidthfixser{
+  width: 88%;
+}
+.profile-boxes {
+  position: relative;
+  top: 50%;
+  transform: translateY(37%);
+}
+    .get-started-today {
+        font-size: 12px !important;
+    }
+.serviseprofile-slick {
+    
+    transform: translateY(88px);
+}
+.serviceprofilemarginfix{
+  margin-top: 30px;
+}
+.worktextser{
+  font-size: 11px;
+}
+.accordion-button{
+  font-size: 18px !important;
+}
+
+.verifyimageboxone {
+  margin-top: 57% !important;
+}
+.photoboxheader {
+  font-size: 20px !important;
+}
+
+.custom-gap {
+  gap: 3rem;
+  margin-left: 0rem;
+}
+.browse-all {
+  padding: 1% !important;
+}
+.profilesimagepad {
+  padding-left: 7% !important;
+  
+}
+.serviseprofile-slick .slick-prev {
+  left: 22px !important; 
+  z-index: 1;
+}
+
+.serviseprofile-slick .slick-next {
+    right: 22px;
+}
+.video-box {
+        height: 128px;
+        width: 194px;
+        margin-top: -162px;
+    }
+.profilecustomart {
+        bottom: -62%;
+        width: 89%;
+    }
+.enjoyup {
+  margin-top: 101% !important;
+}
+.enjoyup {
+  margin-top: 108%;
+}
+.pickproducttext {
+  font-size: 11px;
+}
+.outterimage-border {
+  width: 82px;
+  height: 76px;
+}
+.keepmovingtext{
+  margin-top: 5px;
+}
+.custom-artworkone {
+    background-color: #eeae0c !important;
+    width: 100%;
+    height: 81%;
+    border-radius: 40px !important;
+    margin-top: 5% !important;
+}
+/* .enjoyup-text{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+} */
+
+  
+}
+@media (max-width: 371px) {
+  .video-box {
+    height: 105px;
+    width: 207px;
+    margin-top: -63px;
+}
+.heading-textprint {
+        font-size: 18px;
+    }
+.custom-artworkone {
+  height: 66%;
+}    
+.getfreetextpara {
+        font-size: 12px;
+    }
+.profilecustomart {
+  bottom: -114%;
+  
+}
+.custom-artworkone {
+    
+    height: 87%
+}
+
+  .custom-artwork {
+    width: 86% !important;
+    height: 286px !important;
+}
+.enjoyup {
+  margin-top: 146%;
+}
+.profileimagesizing {
+  min-width: 159px;
+}
+.photoboxheader {
+  font-size: 12px;
+}
+.digitalscanpagenation {
+  margin-bottom: -79px;
+}
+.verify-photo {
+  margin-top: 26% !important;
+}
+}
+@media (max-width: 371px){
+      .enjoyup {
+        margin-top: 116% !important;
+    }
+}
+@media (max-width: 377px){
+      .enjoyup {
+        margin-top: 116% !important;
+    }
+}
+@media (max-width: 379px){
+  .profilecustomart {
+        bottom: -80%;
+    }
+        .profilecustomart {
+        bottom: -59%;
+    }
+}
+@media (max-width: 325px){
+      .enjoyup {
+        margin-top: 129% !important;
+    }
+}
+@media (max-width: 320px) {
+
+  
+ .heading-textprint {
+        font-size: 15px;
+    }
+        .profilecustomart {
+        bottom: -90%;
+    }
+  
+  .enjoyup {
+    margin-top: 157% !important;
+}
+
+.verifyimageboxone {
+  margin-top: 70% !important;
+}
+
+.video-box {
+  
+  width: 175px;
+  
+}
+
+.profileimagesizing {
+  min-width: 136px;
+}
+.digitalscanpagenation {
+  margin-bottom: -94px;
+}
+.verify-photo {
+  margin-top: 37% !important;
+}
+}

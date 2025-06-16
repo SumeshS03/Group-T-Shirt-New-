@@ -1,0 +1,455 @@
+.first-background{
+ border-radius: 0 0 35px 35px;
+ height: 130px;
+ font-weight: 900;
+ width: 80% !important;
+ /* background-image: url("../images/About-us4.png"); */
+ background-size: cover;
+ 
+  overflow: hidden;
+ 
+  
+  background-image: 
+  url("../images/About-us5.png");
+ 
+}
+.imagetop{
+  /* style={{position:"absolute",marginTop: "-128px",marginLeft: "32%",width:"350px" 
+  }} */
+  position: absolute;
+  left: 63%;
+  width: 325px;
+  margin-top: -62px;
+
+}
+.about-box{
+    background-color: #f2b201;
+    
+    
+}
+
+
+.letstalkimage {
+    /* position: relative; */
+    bottom: 0 !important;
+    width: 85%;
+    right: 9%;
+}
+.heading-text {
+    margin: 0;
+    color: #eeae0c;
+    font-size: 45px;
+    font-weight: 100;
+    font-family:  'Bevan';
+    margin-top: 10px;
+}
+.heading-textenjoyup{
+  margin: 0;
+    color: #eeae0c;
+    font-size: 45px;
+    font-weight: 100;
+    font-family:  'Bevan';
+    margin-top: 10px;
+}
+.responsive-btn {
+  padding: 0.5rem 1.2rem;
+  font-size: 0.9rem;
+}
+
+
+.heading-text-two {
+    margin: 0;
+    color: #0066cb;
+    font-size: 45px;
+    font-weight: 100;
+   
+    
+    font-family: 'Bevan';
+}
+.circle-check{
+    width: 40px;
+    height: 30px;
+}
+.wegottexttwo{
+  margin-top: 7%;
+    margin-bottom: 0px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.toolsbox {
+    width: 85%;
+    background-color: white;
+    display: flex;
+    
+    /* height: 100px; */
+    margin-top: 20px;
+    /* margin-left: 18.5%; */
+    margin-bottom: 10px;
+}
+.getstarted-btn {
+    background-color: #034e9f !important; 
+    color: white !important; /* White Text */
+    border: none !important;
+    border-radius: 25px
+    
+  }
+  .bringyouridea-box{
+    background-color:#3a3e40 ;
+    width: 100%;
+    padding: 70px;
+    margin-top: 50px;
+    background-image: url('../images/about-us3.png'); /* Add your image URL */
+    background-size: cover; /* Ensures the image covers the entire div */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; 
+  }
+  .lettalk{
+    border-radius: 50px 0px 0px 50px;
+    background-color: #eeae0c !important;
+    /* padding: 2%;
+    padding-left: 6% !important; */
+    padding: 0 !important;
+  }
+  .letstalk-box{
+    margin-top: 10%;
+    padding-left: 15% !important;
+  }
+  .jionour-team{
+    padding: 10px;
+    background-color: #f7f7f7;
+  }
+  .enjoyup-text{
+    padding-left: 9% !important;
+    padding-bottom: 6% ;
+    padding-top: 6%;
+  }
+  .getstarted-btn{
+    font-weight: bold !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease-in-out !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  }
+  .getstarted-btn:hover{
+    transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+
+  }
+  .submit-btn{
+   border: none !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease-in-out !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  }
+  .submit-btn:hover{
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+  .join-our-team{
+    border: none !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease-in-out !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  }
+  .enjoyupmarginfix{
+    color: white;
+    text-align: start;
+    margin-top: 25px;
+  }
+  .join-our-team:hover{
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+  .shopnow-btn{
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease-in-out !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  }
+  .shopnow-btn:hover{
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+  .contactus-btn{
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease-in-out !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  }
+  .contactus-btn:hover{
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+
+
+  .profile-box {
+    width: 16%; 
+    height: 223px; 
+    background: #f7f7f7; 
+    border-radius: 10px; 
+    /* padding: 15px; */
+   
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Hover Effect */
+  .profile-box:hover {
+    transform: scale(1.05);
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .profile-img {
+  width: 55%;
+  height: 65%;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+  
+  display: block;
+  overflow: hidden;
+}
+  .join-our-team {
+    background-color: #04509e !important;
+    color: white !important;
+    
+    margin-bottom: -26px !important;
+    
+  }
+
+  
+   .enjoyupone{
+    background-color: #3a3e40 !important;
+     background-image: url("../images/about-us3.png"); 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    
+  }
+  .playbutton{
+    width: 75%;
+  }
+  .shopnow-btn{
+    background-color: #034e9f !important;
+    color: #ffffff !important;
+  }
+  .contactus-btn{
+    background-color: #f1bb3d !important;
+    color: #ffffff !important;
+  }
+  .image-bottomfix{
+   
+  }
+ 
+
+  @media (max-width: 1024px){
+    .home-contactustext{
+      margin-left: -20%;
+    }
+    .imagetop {
+      left: 58%;
+        width: 313px;
+        margin-top: -52px;
+  }
+  
+  /* .image-2 {
+    left: 4%;
+    bottom: 18%;
+    width: 228px;
+    height: 282px;
+} */
+.letstalkimage {
+   position: relative; 
+   width: 96%;
+   /* right: -51%; */
+}
+.letstalk-box {
+  margin-top: 100px;
+  padding-left: 15% !important;
+}
+.box {
+  height: 193px;
+}
+
+.profile-img {
+    width: 55%;
+    height: 42%;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    display: block;
+    overflow: hidden;
+}
+
+
+/* .shopnow-btn{
+ width: 10% !important;
+}
+.contactus-btn{
+  width: 10% !important;
+} */
+
+}
+
+
+@media screen and (max-width: 984px) {
+      .verify-photo-img {
+       display: none;
+    }
+}
+
+
+
+@media screen and (max-width: 988px){
+      .letstalkimage{
+        display: none;
+      }
+}
+
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+ .profile-box {
+        width: 60% !important;
+        height: 201px;
+    }
+
+    .enjoyup-text{
+      padding-left: 0% !important;
+      padding-top: 0% !important;
+
+    }
+  .lettalkimagecont{
+    display: none !important;
+  }
+
+  .profile-img {
+    width: 26%;
+    height: 71%;
+    
+}
+    .letstalkimage {
+      position: relative;
+      width: 54% !important;
+      margin-top: 35px;
+      bottom: 0px !important;
+  }
+  .playbuttonouterbox{
+    display: none !important;
+  }
+  .home-contactustext{
+    margin-left: -17% !important;
+  }
+  .imagetop {
+    /* left: 52% !important;
+    width: 280px !important;
+    margin-top: -27px !important; */
+    display: none;
+}
+.hide-on-768 {
+  display: none !important;
+  
+}
+.letstalk-box {
+  margin-top: 78px !important;
+  padding-left: 0% !important;
+}
+.lettalk {
+    border-radius: 0px 0px 0px 0px !important;
+    
+}
+
+.messagepadfix{
+  padding-left: 2% !important;
+  padding-right: 2% !important;
+}
+.lettalk{
+  padding-left: 1% !important;
+  padding-right: 1% !important;
+  padding-bottom: 1% !important;
+}
+
+  }
+
+
+
+
+
+
+
+  
+@media (max-width: 426px){
+  .heading-textenjoyup{
+    
+      font-size: 26px;
+     
+  }
+  .enjoyupmarginfix{
+    
+    color: white;
+    text-align: start;
+    margin-top: 5px;
+
+  }
+      .profile-img {
+        width: 36%;
+        height: 46%;
+    }
+    .t-shirtprinttextfix{
+      font-size: 14px;
+    }
+    .t-shirtprinttextwidthfix{
+      width: 86% !important;
+    }
+  .responsive-btn {
+    padding: 0.45rem 0.9rem;
+    font-size: 0.85rem;
+  }
+  .letstalkimage {
+    position: relative;
+    width: 74%;
+    margin-top: 35px;
+    
+}
+.form-control{
+  margin-top: 10px;
+}
+.first-background {
+  
+  height: 98px !important;
+}
+.aboutustext{
+  margin-top: -0.5rem !important;
+    margin-left: 75px !important;
+    font-size: 19px !important;
+}
+.home-contactustext {
+  margin-left: -17% !important;
+  font-size: 14px;
+}
+}
+
+
+@media (max-width: 375px){
+    .heading-textfontfix {
+        font-size: 17px;
+    }
+}
+@media (max-width: 320px){
+  .aboutustext {
+    
+    margin-left: 39px !important;
+    font-size: 14px !important;
+}
+    .profile-img {
+        width: 50%;
+        height: 46%;
+    }
+        .heading-textfontfix {
+        font-size: 15px;
+    }
+    .heading-text {
+        font-size: 18px !important;
+    }
+}

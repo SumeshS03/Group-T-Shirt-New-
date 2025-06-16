@@ -1,0 +1,133 @@
+.imagetopone{
+    position: absolute;
+    left: 68%;
+    width: 249px;
+    margin-top: 6px;
+}
+.login{
+    background-image: url("../images/banner.jpg");
+    padding-top: 7% !important;
+    
+    min-height: 100vh;
+    background-repeat: no-repeat;
+    background-size: cover;        /* Make it cover the whole area */
+    background-position: center;
+    overflow: hidden;
+}
+.shop-cenlogo{
+    width: 60%;
+    
+}
+.mobilnumber-box{
+    width: 50% !important;
+    display: block;
+    padding: 0.4rem;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    border-radius: 4px;
+    margin: 0 auto; 
+    text-align: center;
+    font: bold !important;
+    display: flex;
+    align-items: center;     /* vertical centering */
+    justify-content: center; /* horizontal centering */
+    text-align: center;  
+    
+}
+.mobilenumber-boxone{
+        width: 50% !important;
+       }
+.otp-input {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    font-size: 1.5rem;
+    border-radius: 50%; /* makes it round */
+    border: 1px solid #ccc;
+    outline: none;
+    transition: 0.2s;
+  }
+  .otp-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  }
+  .shopotp-text{
+    font-size: 20px;
+  }
+  .custom-alert {
+    /* background-color: #0060c7; */
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+    max-width: 300px;
+    margin: auto;
+  }
+
+  .border-right-dotted {
+    border-right: 2px dotted #999; /* Light grey dotted line */
+    height: 100%; /* Make sure the full height is visible */
+  }
+  .otp-box{
+    gap: 1% !important;
+  }
+
+
+@media (max-width: 1024px) {
+    .otp-box {
+        gap: 1% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .mobile-number-box{
+        margin-top: 2% !important;
+    }
+    .otp-box {
+        gap: 1% !important;
+    }
+    .otp-verify-box{
+        margin-top: 2% !important;
+    }
+    .imagetopone {
+        position: absolute;
+        left: 58%;
+        width: 249px;
+        margin-top: 7px;
+    }
+}
+
+@media (max-width: 426px) {
+    
+    .otp-box {
+        gap: 2% !important;
+    }
+    
+    .imagetopone {
+        display: none !important;
+      }
+
+      .shop-cenlogo {
+        width: 98%;
+    }
+
+    .shopotp-text {
+        font-size: 15px;
+    }
+
+    .mobilnumber-box {
+        width: 64% !important;
+        font-size: 12px;
+    }
+       .mobilenumber-boxone{
+        width: 39% !important;
+       }
+    .otp-input {
+        width: 34px;
+        height: 40px;
+        
+    }
+}
+  

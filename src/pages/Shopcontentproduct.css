@@ -1,0 +1,690 @@
+.choose-category{
+    padding: 0 9% 0 9%;
+    /* position: relative; */
+    background-color: #e9e9e9;
+    width: 100%;
+   
+}
+.products-type {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 3%;
+}
+.product-page,
+.new-design-page,
+.stock-page {
+  padding-top: 2%;
+  padding-bottom: 2%;
+  padding-left: 2%;
+  padding-right: 2%;
+  background-color: white;
+  border-radius: 0% 0% 35px 35px;
+  color: #015dc0;
+  cursor: pointer;
+  transition: 0.3s;
+  width: 32.3% !important;
+}
+.active-tab {
+    background-color: #015dc0;
+    color: white;
+  }
+  .t-shirtsrowbox{
+    border: 1px solid blue;
+    
+  
+  border-radius: 35px;
+  }
+
+  .t-shirt-image{
+    width: 80px;
+    margin-bottom: 5px;
+    transition: filter 0.3s ease;
+  }
+
+  .tshirtstext {
+    color: #a2a2a2;
+    font-size: 12px;
+    /* max-width: 90%; */
+    display: block;
+    transition: color 0.3s ease-in-out;
+    margin: 0px;
+}
+
+.box:hover .bortexthead{
+    color: #f2b201;
+}
+.tshirtstyles{
+    
+    border: 1px solid blue;
+    border-radius: 40px;
+    width: 80%;
+    
+}
+.t-shirtstyle-image {
+  width: 54%;
+  margin-bottom: 5px;
+  transition: filter 0.3s ease;
+}
+.tshirtstylebox{
+    height: 180px;
+    background-color: white;
+    border: none;
+    border-radius: 20px;
+    display: flex
+;
+    flex-direction: column;
+    align-items: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tshirtstylebox:hover{
+    background-color: #0066cb;
+    
+}
+.tshirtstylebox:hover .t-shirtstyle-image {
+  filter: brightness(0) saturate(100%) invert(84%) sepia(58%) saturate(2747%) hue-rotate(1deg) brightness(103%) contrast(99%);
+}
+.tshirtstylebox:hover .bortextheadone{
+    color: #f2b201;
+}
+.verityproduct-box{
+  width: 19%;
+  height: 219px;
+  background-color: #f5f3f4;
+  border: none;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+/* .verityproduct-box:hover .bortexthead{
+  color: #f2b201;
+}
+.verityproduct-box:hover .t-shirt-image {
+  filter: brightness(0) saturate(100%) invert(84%) sepia(58%) saturate(2747%) hue-rotate(1deg) brightness(103%) contrast(99%);
+} */
+
+.selected-box {
+  background-color: #0066cb;
+}
+.selected-box .bortexthead {
+  color: #f2b201;
+}
+.selected-box .t-shirt-image {
+  filter: brightness(0) saturate(100%) invert(84%) sepia(58%) saturate(2747%) hue-rotate(1deg) brightness(103%) contrast(99%);
+}
+.tshirtstylebox{
+  
+  background-color: #f5f3f4;
+  border: none;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.uplode-text{
+  font-size: 20px;
+}
+.logoaddedtshirt{
+  background-color: white;
+  border: none;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  display: flex;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  flex-direction: column;
+  align-items: center;
+  width: 48%;
+}
+
+.t-shirtstyle-logo {
+  width: 100%;
+ 
+  
+}
+.box-inner{
+  padding: 2px;
+}
+.quality-type{
+  width: 80%;
+  padding-right: 13%;
+    padding-left: 15%;
+    background-color: #e9e9e9;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    border-radius: 20px;
+    position: absolute;
+    top: 0; 
+    transform: translateY(-50%); /* This does the magic */
+  
+    
+}
+.quality-btn {
+  width: 30%;
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  transition: all 0.3s ease;
+}
+
+.quality-btn.active {
+  background-color: blue;
+  color: white;
+  border-color: blue;
+}
+.quality-types-box{
+  display: flex;
+  flex-direction: row;
+  gap: 10%;
+ /* Move halfway above the container */
+}
+.logoaddedtshirt-box-con{
+  margin-top: 2%;
+  margin-bottom: 3%;
+}
+.styling-box{
+  margin-top: 8%;
+  background-color: white;
+  border: 1px solid;
+  
+  position: relative;
+ 
+  
+
+}
+
+.circle-color-picker {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  
+ 
+  cursor: pointer;
+}
+/* .choose-colour-box{
+  border-right: 1px dotted black;
+} */
+.colour-choose-box{
+  width: 30%;
+  border: 1px solid black;
+  padding: 2%;
+  border-radius: 30px;
+  gap: 16%;
+}
+.color-circle {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  cursor: pointer;
+ 
+}
+.color-select-icon{
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 25px;
+  height: 25px; /* subtle soft shadow */
+  border-radius: 50%; /* if you want it round */
+  background-color: white; /* optional: to make shadow visible */
+  padding: 5px; /* optional spacing inside */
+  transition: box-shadow 0.3s ease; /* smooth hover effect */
+
+}
+.color-select-icon:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* slightly stronger on hover */
+}
+.pieces-box{
+  width: 26%;
+  border: 1px solid black;
+  border-radius: 30px;
+  gap: 30%;
+  padding: 2%;
+  padding-left: 10%;
+}
+.print-btn,
+.emposed-btn {
+  width: 34%;
+  padding: 2%;
+  border-radius: 30px;
+  border: 1px solid black;
+  background-color: white;
+  color: black;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.3s;
+}
+.print-btn.active,
+.emposed-btn.active {
+  background-color: blue;
+  color: white;
+  border-color: blue;
+}
+.quality-type-select{
+  gap: 8%;
+}
+.size-select-box{
+  width: 44%;
+  border: 1px solid black;
+  border-radius: 30px;
+  gap: 30%;
+  padding: 2%;
+  padding-left: 10%;
+}
+.tshirtchangetext{
+  font-size: 20px;
+  color:#a2a2a2;
+}
+.design-change-box{
+  width: 96%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd; /* light gray border */
+  border-radius: 8px;
+}
+.sent-text-btn{
+  padding-top: 1%;
+  padding-bottom: 1%;
+  padding-left: 5%;
+  padding-right: 5%;
+  border-radius: 20px;
+  background-color: #e9e9e9;
+  color: #2b2f30;
+  width: 20%;
+}
+.sent-text-btn.active {
+  background-color: blue;
+  color: white;
+}
+.price-calculate{
+  padding-top: 1%;
+  padding-bottom: 1%;
+  padding-left: 3%;
+  padding-right: 3%;
+  background-color: #e9e9e9;
+  margin-bottom: 25%;
+
+}
+.amount-box{
+  padding-top: 1%;
+  padding-bottom: 1%;
+  padding-left: 3%;
+  padding-right: 3%;
+  background-color: white;
+  min-height: 40px;
+  border-radius: 30px;
+}
+.gst-box{
+  padding-top: 1%;
+  padding-bottom: 1%;
+  padding-left: 3%;
+  padding-right: 3%;
+  background-color: white;
+  min-height: 40px;
+  border-radius: 30px;
+}
+.discount-box{
+  
+  background-color: white;
+  min-height: 40px;
+  border-radius: 30px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+}
+.total-amount-box{
+  background-color: #015dc0;
+  min-height: 40px;
+  border-radius: 30px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.enter-quatity-box{
+  display: flex;
+}
+.image-uplode-box{
+  width: 25%;
+}
+.logoaddedtshirt-box{
+  width: 30%;
+  display: flex;
+}
+.price-cal-box{
+  width: 75%;
+}
+
+.heading-text-product{
+  margin: 0;
+   
+    font-size: 24px;
+    font-weight: 100;
+    font-family: 'Bevan';
+    margin-top: 10px;
+}
+.leftarrw-btn{
+  font-size: 25px;
+}
+.rightarrw-btn{
+  font-size: 25px;
+}
+.rightarrw-rouded:hover{
+  background-color: #0060c7;
+}
+.leftarrw-rounded:hover{
+  background-color: #0060c7;
+}
+.bortextheadone{ 
+  margin: 10px 0;
+  color: blue;
+  font-size: 20px;
+  text-align: center;
+  transition: color 0.3s ease-in-out;
+}  
+
+
+.add-product-btn {
+  background-color: white;
+  color: #015dc0;
+  border: 1px solid #015dc0;
+  padding: 5%;
+ 
+ 
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* On active (when clicked) */
+.add-product-btn:active {
+  background-color: #015dc0;
+  color: white;
+}
+.dropdown-list{
+  top: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 26%;
+    border: 1px solid rgb(204, 204, 204);
+    border-radius: 5px;
+    background-color: rgb(255, 255, 255);
+    z-index: 100;
+}
+.sample-btn{
+  padding: 9px;
+  border-radius: 20px;
+  text-align: center;
+  transition: color 0.3s ease-in-out;
+  border: 1px solid #0060c7 ;
+  color: black;
+  background-color: #0060c7 ;
+  font-weight: bold;
+}
+.sample-btn:active{
+ background-color: #0060c7;
+ color: white;
+}
+.sampleimages{
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+}
+
+.newdesign-uplode{
+  background-color: white;
+    border: none;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    display: flex;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    align-items: center;
+    width: 48%;
+    height: 185px;
+}
+
+
+
+
+
+
+  
+
+  @media (min-width: 992px) {
+    
+    .tshirtstyles .col-lg-3{
+        width: 24% !important;
+      flex: 0 0 auto !important;
+    }
+  }
+
+  @media (max-width: 1024px){
+    .t-shirt-image {
+      width: 100px;
+      margin-bottom: 1px;
+      transition: filter 0.3s ease;
+  }
+    .heading-text-product {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 100;
+      font-family: 'Bevan';
+      margin-top: 10px;
+  }
+  }
+
+  @media (max-width: 768px){
+    .verityproduct-box{
+      width: 100%;
+      
+    }
+    .centerfixproductbutton{
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+    }
+    .price-cal-box {
+      width: 26%;
+  }
+    /* .quality-type {
+      
+      top: -25%;
+      
+  } */
+  .colour-choose-box {
+    width: 30%;
+    }
+    .pieces-box {
+      width: 30%;
+     
+  }
+  .size-select-box {
+    width: 30%;
+    
+}
+.choose-colour-box {
+  border-right: none;
+}
+.logoaddedtshirt-box-con {
+  margin-top: 2%;
+  margin-bottom: 19% !important;
+}
+.quality-types-box {
+  gap: 10%;
+  display: flex;
+  flex-direction: column;
+}
+    .logoaddedtshirt {
+     
+      width: 65%;
+  }
+    .logoaddedtshirt-box{
+      width: 30%;
+      display: flex;
+      flex-direction: column;
+    }
+    .image-uplode-box {
+      width: 44%;
+  }
+    .enter-quatity-box{
+      flex-direction: column !important;
+    }
+    .product-page,
+.new-design-page,
+.stock-page {
+  
+  width: 100% !important;
+  border-radius: 35px 35px 35px 35px;
+  
+}
+
+
+.product-page,
+.new-design-page,
+.stock-page {
+  margin-top: 3% !important;
+ 
+}
+.productshowbox{
+  width: 90%;
+}
+.product-page{
+   margin-top: 10% !important;
+}
+.t-shirtsrowbox {
+  width: 65%;
+}
+
+    .heading-text-product {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 100;
+        font-family: 'Bevan';
+        margin-top: 5px;
+    }
+
+.t-shirtstyle-image {
+  width: 48%;
+  
+}
+.tshirtstyles {
+  
+  width: 41%;
+}
+   
+  
+  }
+
+  
+  @media (max-width: 426px){
+    .logoaddedtshirt-box-con {
+      margin-top: 2%;
+      margin-bottom: 33% !important;
+  }
+  .product-slider-container .react-multiple-carousel__arrow--right{
+     min-width: 33px;
+    min-height: 31px;
+    right: 7px;
+  }
+  .product-slider-container .react-multiple-carousel__arrow--left{
+     min-width: 33px;
+    min-height: 31px;
+    left: 10px;
+  }
+  .quality-btn{
+    width: 61%;
+  }
+  .colour-choose-box {
+    width: 55%;
+}
+.price-cal-box {
+  width: 32%;
+}
+.pieces-box {
+  width: 41%;
+}
+.size-select-box {
+  width: 41%;
+}
+.logoaddedtshirt {
+  width: 100%;
+}
+.image-uplode-box {
+  width: 53%;
+}
+.tshirtchangetext {
+  font-size: 13px;
+  color: #a2a2a2;
+}
+.sent-text-btn {
+ 
+  width: 29%;
+}
+.t-shirtstyle-image {
+  width: 90%;
+}
+.tshirtstylebox {
+  height: 142px;
+}
+  }
+
+  @media (max-width: 403px){
+    .product-slider-container .react-multiple-carousel__arrow--right{
+     min-width: 33px;
+    min-height: 31px;
+    right: 1px;
+  }
+      .product-slider-container .react-multiple-carousel__arrow--left {
+        min-width: 33px;
+        min-height: 31px;
+        left: 3px;
+    }
+  }
+
+
+  @media (max-width: 375px){
+    
+.sent-text-btn {
+  width: 35%;
+}
+.tshirtstylebox {
+  height: 125px;
+}
+.price-cal-box {
+  width: 36%;
+}
+  }
+
+
+  @media (max-width: 320px){
+    .emposed-btn {
+      width: 39%;
+    }
+    .colour-choose-box {
+      width: 54%;
+  }
+  .t-shirtstyle-image {
+    width: 100%;
+}
+.tshirtstylebox {
+  height: 103px;
+}
+.image-uplode-box {
+  width: 68%;
+}
+.quality-btn {
+  width: 67%;
+}
+.price-cal-box {
+  width: 44%;
+}
+.heading-text-product {
+  
+  font-size: 15px;
+ 
+}
+    
+      }

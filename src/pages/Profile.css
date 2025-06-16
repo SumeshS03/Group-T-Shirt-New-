@@ -1,0 +1,159 @@
+.otp-input-wrapper {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
+}
+
+.otp-input {
+  border: none;
+  outline: none;
+ 
+  height: 100%;
+  text-align: center;
+  font-size: 24px;
+ 
+}
+
+/* Center placeholder text */
+/* .otp-input::placeholder {
+  text-align: center;
+  line-height: 50px; 
+} */
+
+.responsive-text {
+  font-size: 0.9rem;
+}
+
+/* .otp-box {
+  gap: 10px;
+  flex-wrap: wrap;
+}
+   */
+  .custom-alert {
+    color: red;
+    font-weight: bold;
+  }
+  .custom-disabled-btn {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center;
+}
+
+  .custom-disabled-btn:disabled {
+    color: #ffffff !important;       /* Force white text */
+    background-color: #1677ff !important;  /* Keep the blue background */
+    opacity: 0.6;                     /* Slight transparency to indicate it's disabled */
+    cursor: not-allowed;
+  }
+
+
+  .ant-form-item-label > label {
+    display: block;
+    text-align: center;
+    width: 100%;
+  }
+
+
+  .form-label-center {
+    width: 100%;
+    text-align: center;
+    font-weight: 500;
+  }
+
+
+
+  @media (max-width: 1024px){
+    .otp-input {
+        width: 37px;
+        height: 43px;
+        font-size: 23px;
+        text-align: center;
+        border-radius: 22px;
+        border: 1px solid #ccc;
+    }
+  }
+
+  @media (max-width :768px){
+        .otp-input {
+        width: 50px;
+        height: 48px;
+        font-size: 23px;
+        text-align: center;
+        border-radius: 22px;
+        border: 1px solid #ccc;
+    }
+    .responsive-text {
+    font-size: 1rem;
+  }
+  }
+
+@media (min-width: 992px) {
+  .responsive-text {
+    font-size: 1.1rem;
+  }
+}
+
+
+  
+@media (max-width: 576px) {
+  .otp-input {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  :where(.css-dev-only-do-not-override-1m63z2v).ant-form-item {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    color: rgba(0, 0, 0, 0.88);
+    font-size: 14px;
+    line-height: 1.5714285714285714;
+    list-style: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    margin-bottom: -17px;
+    vertical-align: top;
+}
+  /* .otp-box {
+  gap: 10px;
+  flex-wrap: wrap;
+} */
+}
+
+/* Submit Button */
+.custom-disabled-btn {
+  /* max-width: 300px; */
+  width: 100%;
+  margin: 0 auto;
+  display: block;
+}
+
+
+@media (max-width:375px){
+     .otp-input-wrapper {
+    width: 33px;
+    height: 34px;
+  }
+
+  .otp-input {
+    font-size: 16px;
+  }
+}
+
+@media (max-width:320px){
+   .otp-input-wrapper {
+    width: 29px;
+    height: 32px;
+  }
+
+  .otp-input {
+    width: 100%;
+    height: 100%;
+    font-size: 16px;
+  }
+  }
