@@ -19,6 +19,7 @@ import { flushSync } from "react-dom";
 const Collaretshirt = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [quantityError, setQuantityError] = useState("");
   const [showPolyesterModal, setShowPolyesterModal] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [showPolCottonModel, setShowPolyCottonModel] = useState(false);
@@ -406,9 +407,15 @@ useEffect(() => {
 
 
   const handleQuantityChange = (e) => {
+    const value = e.target.value;
     setIsDirty(true);
     const quantity = parseInt(e.target.value) || 0;
     calculateAndSetTotal({ ...formData, quantity: quantity.toString() });
+    if (value && value < 16) {
+      setQuantityError("⚠️ Minimum order is 16");
+    } else {
+      setQuantityError("");
+    }
   };
 
 
@@ -723,9 +730,12 @@ useEffect(() => {
                           required
                           placeholder="Minimum 16"
                           onChange={handleQuantityChange}
-                          className="form-control"
+                          className={`form-control ${quantityError ? "is-invalid" : ""}`} // bootstrap red border
                         />
                         <small className="text-muted">Minimum order quantity: 16</small>
+                        {quantityError && (
+        <div className="invalid-feedback">{quantityError}</div>
+      )}
                       </div>
 
                     </div>
