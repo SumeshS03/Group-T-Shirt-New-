@@ -4,3 +4,23 @@
 .shopping-cart-text{
     font-size: 40px;
 }
+
+.productcatoutbox {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 8px; /* optional */
+  background: #fff;   /* optional */
+}
+
+.product-row {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+
+/* Remove border for the last product */
+.product-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}

@@ -37,7 +37,7 @@ import Footer from '../Layout/Footer'
 const Shopcontentproduct = () => {
   const [activeTab, setActiveTab] = useState("product");
   const [stockData, setstockData] = useState(null);
-
+ const baseurl = process.env.REACT_APP_API_BASE_URL;
   const [loading, setLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
@@ -79,28 +79,33 @@ const products = [
 
 
 
-   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get('https://gts.tsitcloud.com/api/stocks/grouped-by-category'
-          , {
-          headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MTA1ZjNmOTc3Mzc1ODkzNzFkODI5YSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0NTk5MDM3OSwiZXhwIjoxNzQ2MDc2Nzc5fQ.A3EHXDY4ABwLQ4HEHuBAUeDfeWJEbvYTaojMbxS4PHA`
-          }
-        });
-        setstockData(response.data);
-        console.log("Fetched grouped data:", response.data);
-        
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }finally{
-        setLoading(false);
+  //fetproduct details
 
-      }
-    };
-  
-    fetchProducts();
-  }, []);
+
+  useEffect(() => {
+  const fetchProducts = async () => {
+    const token = localStorage.getItem("authToken");
+    
+    try {
+      const response = await axios.get(`${baseurl}/stocks/grouped-by-category`, {
+        headers: {
+          Authorization: `Bearer ${token}`,  // ✅ Also using token from localStorage
+          'Content-Type': 'application/json'
+        }
+      });
+
+      setstockData(response.data);
+      console.log("Fetched grouped data:", response.data);
+      
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, []);
 
  
   return (

@@ -67,6 +67,29 @@
   }
 
 
+  /* Target AntD OTP input boxes */
+/* Target each OTP input */
+/* Target the inner OTP inputs */
+.otp-box .ant-input-otp input {
+  border-radius: 50px !important;  /* fully rounded */
+  text-align: center;
+  font-size: 18px;
+  height: 50px;   /* make it taller */
+  width: 50px;    /* make it equal for circle */
+  margin: 0 8px;  /* space between boxes */
+}
+
+
+
+
+/* Ensure the whole OTP group matches button width */
+.otp-box {
+  display: flex;
+  justify-content: center; /* centers the OTP inputs */
+}
+
+
+
 
   @media (max-width: 1024px){
     .otp-input {

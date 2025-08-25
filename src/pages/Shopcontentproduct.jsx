@@ -44,6 +44,8 @@ const Shopcontentproduct = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [productsData, setProductsData] = useState([]);
+ const base_url = process.env.REACT_APP_API_BASE_URL;
+
 
     useEffect(() => {
       // Set activeTab based on current path
@@ -88,27 +90,25 @@ const products = [
  
   const targetCategoryName = 'Collared Tshirts';
 
+// api to get all category
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(
+        `${base_url}/products/single/products-by-category`
+      );
+      setProductsData(response.data);
+      console.log("products", response.data);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get('https://gts.tsitcloud.com/api/products/single/products-by-category'
-          , {
-          headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MTA1ZjNmOTc3Mzc1ODkzNzFkODI5YSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0NTk5MDM3OSwiZXhwIjoxNzQ2MDc2Nzc5fQ.A3EHXDY4ABwLQ4HEHuBAUeDfeWJEbvYTaojMbxS4PHA`
-          }
-        });
-        setProductsData(response.data);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }finally{
-        setLoading(false);
+  fetchProducts();
+}, [base_url]);
 
-      }
-    };
-  
-    fetchProducts();
-  }, []);
 
 
   return (

@@ -15,6 +15,7 @@ import { FaShoppingCart } from 'react-icons/fa';
 import Footer from '../Layout/Footer'
 
 const Stockdetail = () => {
+  const baseurl = process.env.REACT_APP_API_BASE_URL;
   const { id } = useParams();
   const [productdetail, setProductdetail] = useState(null);
   const [productsData, setProductsData] = useState([]);
@@ -29,6 +30,7 @@ const Stockdetail = () => {
   const [size, setSize] = useState("M");
   const navigate = useNavigate();
   const location = useLocation();
+  
 
   useEffect(() => {
   const fetchProduct = async () => {
@@ -37,7 +39,7 @@ const Stockdetail = () => {
 
     try {
       const response = await axios.get(
-        "https://gts.tsitcloud.com/api/stocks/grouped-by-category",
+        `${baseurl}/stocks/grouped-by-category`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -110,13 +112,24 @@ if (!foundProduct) return <h2>Product not found</h2>;
 
 
 const handleSubmit = async (e) => {
-  e.preventDefault(); // Prevents form refresh
+  e.preventDefault();
 
   const cusid = localStorage.getItem("customerId");
+  if (!cusid) {
+    alert("Login and continue");
+    navigate("/profile");
+    return;
+  }
+
+  if (!selectedSize || !enteredQty) {
+    alert("Please select a size and enter quantity");
+    return;
+  }
+
   const payload = {
     customerId: cusid,
     stockId: productdetail._id,
-    quantity: enteredQty,
+    quantity: Number(enteredQty),
     size: selectedSize,
     sleeveType: productdetail.sleeveType,
     price: productdetail.priceFromMaterial,
@@ -125,9 +138,7 @@ const handleSubmit = async (e) => {
   try {
     const response = await fetch("https://gts.tsitcloud.com/api/stockCart/add", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
 
@@ -136,6 +147,7 @@ const handleSubmit = async (e) => {
     if (response.ok) {
       console.log("Order submitted successfully:", result);
       alert("Added to Ready stock cart");
+      navigate('/stockcart')
     } else {
       console.error("Failed to submit order:", result);
     }
@@ -274,9 +286,9 @@ const handleSubmit = async (e) => {
 )}
 
             </div>
-            <div className="col-lg-5 col-12 mt-5">
+            <div className="col-lg-5 col-12 mt-lg-5 mt-0">
   {productdetail && (
-    <div className="row g-2">
+    <div className="row g-2 ">
       <div className="col-12 d-flex">
         <div className="fw-bold me-2" style={{ width: "140px" }}>Category:</div>
         <div>{productdetail.product.name}</div>
@@ -305,43 +317,72 @@ const handleSubmit = async (e) => {
         <div className="fw-bold me-2" style={{ width: "140px" }}>Weight:</div>
         <div>{productdetail.product.weight}</div>
       </div>
-      <div className="col-12 d-flex align-items-center">
-        <label htmlFor="sizeSelect" className="fw-bold me-2" style={{ width: "140px" }}>Size:</label>
-        <select
-          id="sizeSelect"
-          className="form-select w-auto"
-          value={selectedSize}
-          onChange={handleSizeChange}
-          required
-        >
-          <option value="">Select</option>
-          {productdetail.product?.size?.map((size, index) => (
-            <option key={index} value={size}>{size}</option>
-          ))}
-        </select>
-      </div>
-      <div className="col-12 d-flex align-items-center">
-        <label htmlFor="qtyAvailable" className="fw-bold me-2" style={{ width: "140px" }}>Quantity:</label>
-        <input
-          id="qtyAvailable"
-          className="form-control w-25"
-          type="number"
-          value={enteredQty}
-          onChange={handleQtyChange}
-          max={availableQty}
-          min={1}
-          placeholder={availableQty === 0 ? "Out of stock" : "1"}
-          disabled={!selectedSize || availableQty === 0}
-        />
-      </div>
+
+      
+
     </div>
   )}
 </div>
 
-<div className="col-lg-2 col-12 mt-5 d-flex flex-column gap-2 justify-content-center align-items-center">
-  {/* <button type="button" className="addtocartbuttonsize btn btn-success btn-lg px-4 py-2 w-100 d-flex justify-content-center align-items-center">
-    Buy Now
-  </button> */}
+
+
+
+
+            </div>
+            <div className="row mt-2">
+
+<div className="col-12">
+  <table className="table table-bordered text-center">
+    <thead className="table-light">
+      <tr>
+        <th colSpan="3">Choose Your Quantity</th>
+      </tr>
+      <tr>
+        <th>Select</th>
+        <th>Size</th>
+        <th>Quantity</th>
+      </tr>
+    </thead>
+    <tbody>
+  {productdetail &&
+    Object.entries(productdetail.quantityBySize).map(([size, quantity]) =>
+      quantity > 0 ? (
+        <tr key={size}>
+          <td>
+            <input
+              type="radio"
+              name="size"
+              value={size}
+              onChange={(e) => setSelectedSize(e.target.value)}
+            />
+          </td>
+          <td>{size}</td>
+          <td>
+            <input
+              type="number"
+              min="1"
+              max={quantity}
+              placeholder={`Quantity Available ${quantity}`}
+              className="form-control"
+              onChange={(e) => setEnteredQty(e.target.value)}
+              disabled={selectedSize !== size}
+              value={selectedSize === size ? enteredQty : ""}
+            />
+          </td>
+        </tr>
+      ) : null
+    )}
+</tbody>
+
+  </table>
+</div>
+
+            </div>
+
+
+            <div className="row d-flex align-items-center justify-content-center">
+              <div className="col-lg-2 col-12 mt-5 d-flex flex-column gap-2 justify-content-center align-items-center">
+ 
   
   <button
   type="submit"

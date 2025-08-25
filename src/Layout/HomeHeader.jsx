@@ -48,6 +48,7 @@ const HomeHeader = () => {
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeButton, setActiveButton] = useState("");
+  const authToken = localStorage.getItem("authToken");
 
   useEffect(() => {
     setActiveLink(location.pathname.replace("/", ""));
@@ -65,6 +66,7 @@ const content = (
    style={{ listStyle: 'none', padding: 0, margin: 0 }}>
     <li><Link to="/cart">Product Cart</Link></li>
     <li><Link to="/stockcart">Ready Stock Cart</Link></li>
+    <li><Link to="/orders">Orders</Link></li>
   </ul>
 );
 
@@ -91,6 +93,17 @@ const content = (
     // Extract pathname and set active link
     setActiveLink(location.pathname.replace("/", ""));
   }, [location]);
+
+
+
+  //logout the user
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("categoryId");
+    localStorage.removeItem("customer");
+    localStorage.removeItem("customerId");
+    navigate("/profile"); // redirect after logout
+  };
   
   return (
     <div >
@@ -198,9 +211,34 @@ const content = (
                <FaSearch className="search-icon" />
                </div>
                <div className='pofile-box'>
-                <MdPerson className='profileicons'
 
-                onClick={() => navigate("/profile")} />
+                {!authToken ?(
+                  <MdPerson className='profileicons'
+
+                onClick={() => navigate("/profile")} /> 
+                ):(
+                  <Popover
+          content={
+            <div className="text-center">
+              <button
+                className="btn btn-sm btn-outline-danger w-100"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </div>
+          }
+          trigger="hover"
+          placement="bottom"
+        >
+          <MdPerson
+            className='profileicons'
+          />
+        </Popover>
+                )}
+                {/* <MdPerson className='profileicons'
+
+                onClick={() => navigate("/profile")} /> */}
                  
                </div>
                

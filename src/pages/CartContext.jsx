@@ -21,43 +21,43 @@ import { MdDelete } from "react-icons/md";
 import './CartContext.css'
 import Button from '@mui/material/Button';
 import Footer from '../Layout/Footer'
+import CustomerDetails from './CustomerDetails';
+import { addproducttopayment,getproductdetail } from '../ApiFunctions/Continuepayment';
+import { useNavigate } from 'react-router-dom';
+import CustomerDetailEditModal from './CustomerDetailEditModal';
+
+
 
 const CartContext = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [productdetail, setProductdetail] = useState(null);
+  const [show, setShow] = useState(false);
+  const [hasGst, setHasGst] = useState(false);
+  const [gstNumber, setGstNumber] = useState("");
    const [productsData, setProductsData] = useState([]);
    const [cartItems, setCartItems] = useState([]);
    const [foundProduct,setfoundProduct] =useState([]);
    const { id } = useParams();
-
-
-
-
-
+   const navigate = useNavigate();
+   const customerdetail = JSON.parse(localStorage.getItem("customer"));
+  const BASE_URL_IMAGE = process.env.REACT_APP_IMAGE_URL;
+  
 
     
   
-
-  useEffect(() => {
+//get the product detail and store
+ useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const storedCustomerId = localStorage.getItem('customerId');
-        const token =localStorage.getItem('authToken')
-        const response = await axios.get(
-          `https://gts.tsitcloud.com/api/cartItems/list/${storedCustomerId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setCartItems(response.data);
-        console.log('Fetched product:', response.data);
+        const data = await getproductdetail(); // ✅ call function
+        if (data) {
+          setCartItems(data);  // ✅ set state
+        }
       } catch (error) {
-        console.error('Error fetching product:', error);
+        console.error("Error fetching product:", error);
       }
     };
-  
+
     fetchProduct();
   }, []);
 
@@ -89,6 +89,64 @@ const CartContext = () => {
 
   };
 
+
+  //continue payment function
+
+  const continuepayment = async () => {
+  try {
+    // example payload, replace with your real cart details
+    const customerId = localStorage.getItem("customerId");
+    const customer = JSON.parse(localStorage.getItem("customer"));
+
+    // Transform cartItems into the format backend needs
+    const transformedCartItems = cartItems.map(item => ({
+      productId: {
+        _id: item.productId._id,
+        name: item.productId.name,
+        description: item.productId.description
+      },
+      quantityCount: item.quantityCount,
+      logoCount: item.logoCount,
+      deliveryDate: item.deliveryDate,
+      color: item.color,
+      collarColor: item.collarColor,
+      cloth: item.cloth,
+      clothMaterial: item.clothMaterial,
+      logos: item.logos || [],
+      quantitySizeWise: item.quantitySizeWise,
+      quantitySleeveWise: item.quantitySleeveWise,
+      totalCount: item.totalCount,
+      remark: item.remark,
+      amount: item.amount,
+      totalAmount: item.grandTotal
+    }));
+
+
+    const cartdetail = {
+      customerId: customerId,
+      customerName: customer.name,
+      customerMobile: customer.mobile,
+      customerEmail: customer.email,
+      deliveryAddress: customer.address,
+      gstNumber: gstNumber,
+      cartItems: transformedCartItems,
+
+
+
+
+
+    };
+    // console.log("Payload sending to backend:", cartdetail);
+    const res = await addproducttopayment(cartdetail);
+    // console.log("Payment created:", res);
+    if(res.message === "Order created successfully"){
+         navigate("/orders")
+    }
+  } catch (err) {
+    console.error("Payment error:", err);
+  }
+};
+
   
 
   return (
@@ -106,85 +164,153 @@ const CartContext = () => {
     </div>
     </div>
 
-   <div className='container mt-5 d-flex align-items-center justify-content-center'>
-  <div className='row w-75'>
-    <div className='col-12'>
-      {cartItems.length > 0 ? (
-        cartItems.map((item, index) => (
-          <div key={item._id || index} className="card p-3 mb-3">
-            <div className='row'>
-              <div className='col-lg-5'>
-                {/* Product Image */}
-                {item.productId?.images?.length > 0 && (
-  <div className="position-relative" style={{ width: "100%", height: "auto" }}>
-    <img
-      src={`https://gts.tsitcloud.com/${item.productId.images[0]}`}
-      alt="Product"
-      className="img-fluid rounded"
-     
-    />
-    
-   
+ 
+
+
+
+<div className="container text-start mt-5 mb-5">
+      <div className="row">
+        <div className="col-7 p-1">
+          
+            <div
+              
+              className="productcatoutbox p-5 rounded  bg-white mb-2"
+            >
+              {cartItems && cartItems.length > 0 ? (
+  cartItems.map((product, index) => (
+    <div key={product.id} className="row align-items-center mb-3 product-row">
+      {/* Product Image */}
+      <div className="col-3">
+        <div className="ratio ratio-1x1 border rounded overflow-hidden">
+          <img
+            src={`${BASE_URL_IMAGE}${product.productId.images[0]}`}
+            alt={product.name}
+            className="img-fluid object-fit-cover"
+          />
+        </div>
+      </div>
+
+      {/* Product Details */}
+      <div className="col-7">
+        <h6 className="fw-bold mb-1 productnametext">
+          {product.productId.name}
+        </h6>
+        <p className="m-0">
+          Quantity: {product.quantityCount} &nbsp;&nbsp; Material:{" "}
+          {product.clothMaterial}
+        </p>
+        <p className="m-0">Price: {product.amount}</p>
+        <p className="m-0">Total: {product.grandTotal}</p>
+        <p className="m-0">Delivery: {product.deliveryDate}</p>
+      </div>
+
+      {/* Delete Button */}
+      <div className="col-2 text-end">
+        <MdDelete
+          className="rounded-circle text-danger top-0"
+          style={{ fontSize: "20px", cursor: "pointer" }}
+          onClick={() => handleDelete(product._id)}
+        />
+      </div>
+
+      {/* Logos */}
+      {Array.isArray(product.logos) && product.logos.length > 0 && (
+        <div className="mt-3">
+          <strong>Logos:</strong>
+          <div className="d-flex flex-wrap gap-3 mt-2">
+            {product.logos.map((logo, idx) => (
+              <div key={idx} className="text-center">
+                <img
+                  src={`https://gts.tsitcloud.com/${logo.photo?.replace(/\\/g, "/")}`}
+                  alt={logo.logotype}
+                  className="img-thumbnail"
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    objectFit: "contain",
+                  }}
+                />
+                <div className="small mt-1">{logo.position}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  ))
+) : (
+  <div className="text-center my-5">
+    <h5 className="text-muted">🛒 Add product to cart and continue</h5>
   </div>
 )}
 
-              </div>
-              <div className='col-lg-4 text-start'>
-                <h5>{item.productId?.name}</h5>
-                <p><strong>Cloth:</strong> {item.cloth}</p>
-                <p><strong>Quantity:</strong> {item.quantityCount}</p>
-                <p><strong>Delivery Date:</strong> {new Date(item.deliveryDate).toLocaleDateString()}</p>
-                <p><strong>Amount:</strong> ₹{item.amount}</p>
-                <p><strong>Total Amount:</strong> ₹{item.totalAmount}</p>
 
-                {/* Logo Images */}
-                {Array.isArray(item.logos) && item.logos.length > 0 && (
-                  <div className="mt-3">
-                    <strong>Logos:</strong>
-                    <div className="d-flex flex-wrap gap-3 mt-2">
-                      {item.logos.map((logo, idx) => (
-                        <div key={idx} className="text-center">
-                          <img
-                            src={`https://gts.tsitcloud.com/${logo.photo?.replace(/\\/g, '/')}`}
-                            alt={logo.logotype}
-                            className="img-thumbnail"
-                            style={{ width: '80px', height: '80px', objectFit: 'contain' }}
-                          />
-                          <div className="small mt-1">{logo.position}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className='col-lg-3 d-flex flex-column align-items-center justify-content-center gap-lg-5 gap-2  mt-lg-0 mt-3'>
-                
-              <MdDelete className='delete-icon   '
-              onClick={() => handleDelete(item._id)}
-               size={32} />
-              <Button
-  className="w-100 bg-success"
-  variant="contained"
-  
-  
->
-  Buy Now
-</Button>
 
-              </div>
             </div>
-          </div>
-        ))
-      ) : (
-        <p>Product not add</p>
-      )}
-    </div>
+          <div className="text-center mt-3">
+  <button className="btn btn-primary rounded">Continue Shopping</button>
+</div>
+        </div>
+
+        <div className="col-5 p-3">
+  <div className="d-flex justify-content-between align-items-center">
+    <h4 className="productnametext m-0">Customer Details</h4>
+    <button className="btn btn-sm btn-primary" onClick={() => setShow(true)}>Edit</button>
   </div>
+
+  <p><strong>Name:</strong> {customerdetail.name}</p>
+  <hr />
+  <p><strong>Email:</strong> {customerdetail.email}</p>
+  <hr />
+  <p><strong>Mobile No:</strong> {customerdetail.mobile}</p>
+  <hr />
+  <p><strong>Address:</strong> {customerdetail.address}</p>
+  <hr />
+
+  <h4 className="productnametext">GST Details</h4>
+  <div className="d-flex align-items-center">
+    <label className="me-2">Do you have GST No?</label>
+    <input
+      type="checkbox"
+      checked={hasGst}
+      onChange={(e) => setHasGst(e.target.checked)}
+    /> 
+    <span className="ms-1">Yes</span>
+  </div>
+
+  {hasGst && (
+    <div className="mt-2">
+      <input
+        type="text"
+        placeholder="Enter GST Number"
+        value={gstNumber}
+        onChange={(e) => setGstNumber(e.target.value)}
+        className="form-control"
+      />
+    </div>
+  )}
+  <hr />
+
+  <h4 className="productnametext">Price Details</h4>
+  <p>Total Amount (3 Products)</p>
+  <hr />
+  <p>Total Amount:</p>
+  <hr />
+
+  <div className="text-center mt-3">
+  <button className="btn btn-primary rounded" type='button' onClick={continuepayment}>Place Order</button>
+</div>
 </div>
 
+      </div>
+    </div>
 
 
 
+
+
+
+{/* <CustomerDetails customerdetail={customerdetail}></CustomerDetails> */}
 
 
    
@@ -226,6 +352,7 @@ const CartContext = () => {
         </div>
       </div>
       <Footer></Footer>
+      <CustomerDetailEditModal show={show} onClose={() => setShow(false)}></CustomerDetailEditModal>
     </>
   )
 }

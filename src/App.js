@@ -26,6 +26,8 @@ import Register from './pages/Register';
 import SampleOne from './pages/sample'
 import OrderHistory from './pages/OrderHistory';
 import { Stockcart } from './pages/Stockcart';
+import Orders from './pages/Orders';
+import Orderinfo from './pages/Orderinfo';
 
 
 function App() {
@@ -52,6 +54,8 @@ function App() {
         <Route path="/sample" element={<SampleOne />} />
         <Route path='/history' element={<OrderHistory ></OrderHistory>}></Route>
         <Route path='/stockcart' element={<Stockcart />} />
+        <Route path='/orders' element={<Orders></Orders>}></Route>
+        <Route path='/orders/:id' element={<Orderinfo></Orderinfo>}></Route>
         
       </Routes>
     {/* </Router> */}
