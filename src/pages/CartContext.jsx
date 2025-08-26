@@ -61,6 +61,11 @@ const CartContext = () => {
     fetchProduct();
   }, []);
 
+//scroll to the top 
+useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);  
+
   const handleDelete = async(itemId) => {
     const storedCustomerId = localStorage.getItem('customerId');
     const token = localStorage.getItem('authToken');
@@ -170,7 +175,7 @@ const CartContext = () => {
 
 <div className="container text-start mt-5 mb-5">
       <div className="row">
-        <div className="col-7 p-1">
+        <div className="col-lg-7 p-1">
           
             <div
               
@@ -252,7 +257,7 @@ const CartContext = () => {
 </div>
         </div>
 
-        <div className="col-5 p-3">
+        <div className="col-lg-5 p-3">
   <div className="d-flex justify-content-between align-items-center">
     <h4 className="productnametext m-0">Customer Details</h4>
     <button className="btn btn-sm btn-primary" onClick={() => setShow(true)}>Edit</button>
@@ -292,9 +297,12 @@ const CartContext = () => {
   <hr />
 
   <h4 className="productnametext">Price Details</h4>
-  <p>Total Amount (3 Products)</p>
+  <p>Total Amount ({cartItems.length} Products)</p>
   <hr />
-  <p>Total Amount:</p>
+  <p>
+    <strong>Total Amount: ₹</strong>
+    <strong>{cartItems.reduce((acc, item) => acc + (item.grandTotal || 0), 0)}</strong>
+  </p>
   <hr />
 
   <div className="text-center mt-3">

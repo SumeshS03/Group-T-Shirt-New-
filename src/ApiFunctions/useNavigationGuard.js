@@ -1,11 +1,10 @@
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import { useContext, useEffect } from "react";
 import { UNSAFE_NavigationContext as NavigationContext } from "react-router-dom";
 
-/**
- * useNavigationGuard hook
- * @param {boolean} when - whether to block navigation (example: form dirty)
- * @param {string} message - confirm message to show
- */
+const MySwal = withReactContent(Swal);
+
 export default function useNavigationGuard(
   when,
   message = "Your changes will be lost. Are you sure?"
@@ -13,42 +12,46 @@ export default function useNavigationGuard(
   const navigator = useContext(NavigationContext).navigator;
 
   useEffect(() => {
-    if (!when) return; // ✅ don’t patch if not dirty
+    if (!when) return;
 
     const push = navigator.push;
     const replace = navigator.replace;
 
-    const confirmBlock = () => window.confirm(message);
-
-    navigator.push = (...args) => {
-      if (confirmBlock()) {
-        push.apply(navigator, args);
-      }
+    const confirmBlock = async () => {
+      const result = await MySwal.fire({
+        title: "Are you sure?",
+        text: message,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, leave",
+        cancelButtonText: "Cancel",
+      });
+      return result.isConfirmed;
     };
 
-    navigator.replace = (...args) => {
-      if (confirmBlock()) {
-        replace.apply(navigator, args);
+    navigator.push = async (...args) => {
+      if (await confirmBlock()) push.apply(navigator, args);
+    };
+
+    navigator.replace = async (...args) => {
+      if (await confirmBlock()) replace.apply(navigator, args);
+    };
+
+    // 🟢 Handle browser refresh / closing tab
+    const handleBeforeUnload = (e) => {
+      if (when) {
+        e.preventDefault();
+        // Chrome requires returnValue to be set
+        e.returnValue = message;
+        return message;
       }
     };
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
-      // ✅ Restore originals when `when` changes to false
       navigator.push = push;
       navigator.replace = replace;
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [navigator, when, message]);
-
-  // Handle browser refresh/close
-  useEffect(() => {
-    if (!when) return;
-
-    const handleBeforeUnload = (e) => {
-      e.preventDefault();
-      e.returnValue = message;
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [when, message]);
 }

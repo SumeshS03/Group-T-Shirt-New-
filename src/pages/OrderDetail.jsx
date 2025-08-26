@@ -38,7 +38,7 @@ const OrderDetail = () => {
 
   return (
     <>
-    <div className="container-fluid">
+    <div className="container-fluid mb-5">
   <div
     className="container p-5 d-flex flex-column justify-content-center align-items-center"
     style={{ minHeight: "100vh" }}
@@ -53,14 +53,14 @@ const OrderDetail = () => {
           return (
             <div
               key={order._id}
-              className="row w-75 p-3 mb-3 rounded-3"
+              className="row  p-3 mb-3 rounded-3"
               style={{
                 boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                 backgroundColor: "#fff",
               }}
             >
               {/* Profile/Image Placeholder */}
-              <div className="col-3 p-3">
+              <div className="col-lg-3 p-3">
                 <img
                   src={`${process.env.REACT_APP_IMAGE_URL}/${order.items[0]?.productId?.images[0]}`}
                   alt="profile"
@@ -69,7 +69,7 @@ const OrderDetail = () => {
               </div>
 
               {/* Order Summary */}
-              <div className="col-4 text-start p-3">
+              <div className="col-lg-4 text-start p-3">
   <div className="d-flex flex-column justify-content-between h-100">
     <div>
       {/* ✅ Total quantity across all products */}
@@ -79,7 +79,7 @@ const OrderDetail = () => {
     </div>
     <div>
       <button
-        className="btn btn-primary p-2 rounded-5 advancebutton"
+        className="btn btn-primary px-4 py-2 rounded-pill"
         onClick={() => handleViewDetails(order._id)}
       >
         View Details
@@ -90,7 +90,7 @@ const OrderDetail = () => {
 
 
               {/* Order Actions */}
-             <div className="col-5 p-3">
+             <div className="col-lg-5 p-3">
   <div className="d-flex flex-column justify-content-between h-100">
     {/* Order Id */}
     <p className="text-end mb-3">
@@ -98,16 +98,16 @@ const OrderDetail = () => {
     </p>
 
     {/* Payment Buttons */}
-    <div className="d-flex justify-content-between">
+    <div className="d-flex flex-lg-row flex-column justify-content-between">
       <button 
-        className="btn btn-primary rounded-5 p-2 advancebutton"
-        // onClick={() => handlePayAdvance(order.orderId)}
+        className="btn btn-primary rounded-5 px-4 py-2 rounded-pill mb-lg-0 mb-3  "
+        
       >
         Pay Advance
       </button>
       <button 
-        className="btn btn-primary rounded-5 p-2 advancebutton"
-        // onClick={() => handlePayFull(order.orderId)}
+        className="btn btn-primary rounded-5  px-4 py-2 rounded-pill"
+        
       >
         Pay Full Amount
       </button>

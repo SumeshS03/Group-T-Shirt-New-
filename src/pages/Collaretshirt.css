@@ -21,6 +21,12 @@
   border-radius: 6px;
   word-wrap: break-word;
 }
+.sticky-col {
+  position: sticky;
+  top: 0;        /* distance from the top of the page */
+  height: 100vh; /* optional: full height */
+}
+
 
 .colorboxborber{
     border: 1px;
@@ -91,3 +97,5 @@
   outline: none;
   cursor: pointer;
 }
+
+

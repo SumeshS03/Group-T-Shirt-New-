@@ -15,11 +15,15 @@ import LoginModal from "./LoginModal";
 import { useFormContext } from "../ApiFunctions/FormContext";
 import useNavigationGuard from '../ApiFunctions/useNavigationGuard'
 import { flushSync } from "react-dom";
+import Swal from 'sweetalert2';
+import './Collaretshirt.css'
+
 
 const Collaretshirt = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [quantityError, setQuantityError] = useState("");
+  const [sleeveError, setSleeveError] = useState("");
   const [showPolyesterModal, setShowPolyesterModal] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [showPolCottonModel, setShowPolyCottonModel] = useState(false);
@@ -434,6 +438,15 @@ useEffect(() => {
     );
   };
 
+
+
+  // helper function outside handleChange
+const calculateTotalquantity = (totalQuantity) => {
+  return {
+    totalQuantity,  // ✅ store total
+  };
+};
+
   const handleChange = (type, sizeLabel, value) => {
     const updated = {
       ...formData[type],
@@ -449,15 +462,23 @@ useEffect(() => {
     ).reduce((acc, val) => acc + (parseInt(val) || 0), 0);
 
     const totalQuantity = halftotal + fulltotal;
-    const calculated = calculateTotal(totalQuantity);
+    const calculated = calculateTotalquantity(totalQuantity);
+
+   // ✅ check if totalQuantity matches quantity
+  
+  if (formData.quantity && totalQuantity !== parseInt(formData.quantity)) {
+    setSleeveError("Half & Full sleeve total must match required quantity above.");
+  } else {
+    setSleeveError("");
+  }
 
     setFormData(prev => ({
       ...prev,
       [type]: updated,
       halftotal,
       fulltotal,
-      quantity: totalQuantity.toString(),
-      ...calculated
+      // quantity: totalQuantity.toString(),
+      ...calculated,
     }));
   };
 
@@ -467,31 +488,31 @@ useEffect(() => {
 
     // Validation
     if (parseInt(formData.quantity) < 16) {
-      alert("Minimum quantity must be 16");
+      Swal.fire("Validation Error", "Minimum quantity must be 16", "warning");
       setIsSubmitting(false);
       return;
     }
 
     if (!selectedGSM.id) {
-      alert("Please select a material/GSM");
+      Swal.fire("Validation Error", "Please select a material/GSM", "warning");
       setIsSubmitting(false);
       return;
     }
 
-    if (!formData.halftotal) {
-      alert("Please Fill Size Wise Quantity in Men and women");
-      setIsSubmitting(false);
-      return;
-    }
+    // if (!formData.halftotal) {
+    //  Swal.fire("Validation Error", "Please Fill Size Wise Quantity in Men and Women", "warning");
+    //   setIsSubmitting(false);
+    //   return;
+    // }
 
-    if (parseInt(formData.quantity) !== parseInt(formData.halftotal)) {
-      alert("Men and Women Quantity and total must be equal. Please check.");
+    if (parseInt(formData.quantity) !== parseInt(formData.totalQuantity)) {
+      Swal.fire("Validation Error", "Men and Women Quantity and total must be equal. Please check.", "warning");
       setIsSubmitting(false);
       return;
     }
 
     if (!formData.color) {
-      alert("Please Select Your T-Shirt Color");
+      Swal.fire("Validation Error", "Please Select Your T-Shirt Color", "warning");
       setIsSubmitting(false);
       return;
     }
@@ -501,14 +522,14 @@ useEffect(() => {
         !logo.file || !logo.position || !logo.type
       );
       if (incompleteLogos) {
-        alert("Please complete all logo details");
+        Swal.fire("Validation Error", "Please complete all logo details", "warning");
         setIsSubmitting(false);
         return;
       }
     }
 
     if (!formData.remark) {
-      alert("Please Fill Remark");
+      Swal.fire("Validation Error", "Please Fill Remark", "warning");
       setIsSubmitting(false);
       return;
     }
@@ -519,7 +540,7 @@ useEffect(() => {
 
     const token = localStorage.getItem('authToken');
     if (!token) {
-      alert('Please login to continue');
+      Swal.fire("Authentication Required", "Please login to continue", "info");
       navigate('/profile');
       return;
     }
@@ -586,19 +607,22 @@ useEffect(() => {
       // ✅ Force update immediately
       flushSync(() => setIsDirty(false));
       console.log("Form submitted successfully:", response.data);
-      alert("Product added to cart successfully!");
+      // await Swal.fire("Success", "Product added to cart successfully!", "success");
       
       navigate('/cart');
-      window.scroll(0,0);
+      // wait a tick so the cart page loads first
+      setTimeout(() => {
+      window.scrollTo(0, 0);
+      }, 0); 
 
     } catch (error) {
       console.error("Error submitting form:", error);
       if (error.response?.status === 401) {
-        alert("Session expired. Please login to continue.");
+        await Swal.fire("Session Expired", "Please login to continue.", "error");
         localStorage.removeItem("authToken");
         navigate("/profile");
       } else {
-        alert(error.response?.data?.message || "Something went wrong. Please try again.");
+        Swal.fire("Error", error.response?.data?.message || "Something went wrong. Please try again.", "error");
       }
     } finally {
       setIsSubmitting(false);
@@ -710,8 +734,10 @@ useEffect(() => {
       ) : (
         <div className="container-fluid ">
           <form onSubmit={handleSubmit}>
-            <div className="row justify-content-center mt-4">
-              <div className="col-md-10">
+            <div className="container">
+            <div className="row d-flex justify-content-center mt-4">
+              {/* changes made */}
+              <div className="col-md-8"> 
                 <div className="card mb-4">
                   <div className="card-header bg-primary text-white">
                     <h4>{productdetail?.category?.name} Customization</h4>
@@ -906,7 +932,7 @@ useEffect(() => {
                         <div className="col-md-6">
                           <button
                             type="button"
-                            className="btn btn-link p-0"
+                            className="btn btn-primary p-1"
                             onClick={handlePolyCottonShow}
                           >
                             Choose Color
@@ -917,7 +943,7 @@ useEffect(() => {
                         <div className="col-md-6">
                           <button
                             type="button"
-                            className="btn btn-link p-0"
+                            className="btn btn-primary p-1"
                             onClick={handleCollareCottonShow}
                           >
                             Choose collar Color
@@ -928,7 +954,7 @@ useEffect(() => {
                         <div className="col-md-6">
                           <button
                             type="button"
-                            className="btn btn-link p-0"
+                            className="btn btn-primary p-1"
                             onClick={handleCollarePolysterShow}
                           >
                             Choose collar Color
@@ -939,7 +965,7 @@ useEffect(() => {
                         <div className="col-md-6">
                           <button
                             type="button"
-                            className="btn btn-link p-0"
+                            className="btn btn-primary p-1"
                             onClick={handleCollarePolyCottonShow}
                           >
                             Choose collar Color
@@ -947,6 +973,27 @@ useEffect(() => {
                         </div>
                       )}
                     </div>
+                    {formData.color && formData.color.trim() !== "" && (
+  <div className="text-center d-flex flex-column justify-content-center align-items-center mb-4">
+    <label className="form-label fw-bold" style={{ color: '#0d6efd' }}>
+      Selected Color:
+    </label>
+    <div
+      className="form-control"
+      style={{
+        backgroundColor: formData.color,
+        color: "#fff",
+        fontWeight: "bold",
+        textAlign: "center",
+        width: "150px",
+      }}
+    >
+      {formData.color}
+    </div>
+  </div>
+)}
+
+
 
                     {/* Logo Selection */}
                     <div className="row mb-4 justify-content-center align-items-center">
@@ -1131,10 +1178,20 @@ useEffect(() => {
                               <td>{formData.halftotal}</td>
                               <td>{formData.fulltotal}</td>
                             </tr>
+                            <tr className="table-secondary">
+                              <td colSpan="2">Overall Total</td>
+                              <td colSpan="2">{formData.totalQuantity}</td>
+                            </tr>
                           </tbody>
                         </table>
+                        {sleeveError && (
+    <div className="invalid-feedback d-block">{sleeveError}</div>
+  )}
                       </div>
                     </div>
+                    {quantityError && (
+    <div className="invalid-feedback">{quantityError}</div>
+  )}
 
                     {/* Remarks */}
                     <div className="mb-4">
@@ -1151,15 +1208,28 @@ useEffect(() => {
                       />
                     </div>
 
-                    {/* Price Summary */}
-                    <div className="card mb-4">
+
+                    
+
+                    
+                    
+
+
+
+
+
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 sticky-col">
+                      <div className="card mb-4">
                       <div className="card-header bg-success text-white">
                         <h6>Price Summary</h6>
                       </div>
 
                       <div className="card-body d-flex justify-content-center">
                         <div className="row w-100 g-3 mb-4">
-                          <div className="col-12 col-md-6 col-lg-4">
+                          <div className="col-12 ">
                             <div className="card h-100 border-0 shadow-sm">
                               <div className="card-body">
                                 <h6 className="card-title fw-bold text-primary">T-Shirt Cost</h6>
@@ -1185,7 +1255,7 @@ useEffect(() => {
                             </div>
                           </div>
 
-                          <div className="col-12 col-md-6 col-lg-4">
+                          <div className="col-12">
 
                             <div className="card h-100 border-0 shadow-sm">
                               <div className="card-body">
@@ -1210,7 +1280,7 @@ useEffect(() => {
                             </div>
                           </div>
 
-                          <div className="col-12 col-lg-4">
+                          <div className="col-12">
 
                             <div className="card h-100 border-0 shadow-sm">
                               <div className="card-body">
@@ -1236,26 +1306,7 @@ useEffect(() => {
 
                     </div>
 
-                    {/* Submit Button */}
-                    {/* <div className="d-grid gap-2">
-                      <button
-                        type="submit"
-                        className="btn btn-primary btn-lg"
-                        disabled={isSubmitting || !selectedGSM.id}
-                      >
-                        {isSubmitting ? (
-                          <>
-                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                            Adding to Cart...
-                          </>
-                        ) : (
-                          <>
-                            <FaShoppingCart className="me-2" />
-                            Add to Cart
-                          </>
-                        )}
-                      </button>
-                    </div> */}
+                    
 
 
                     <div className="d-grid gap-2">
@@ -1294,14 +1345,8 @@ useEffect(() => {
     </button>
   )}
 </div>
-
-
-
-
-
-                  </div>
-                </div>
-              </div>
+                    </div>
+            </div>
             </div>
           </form>
           
