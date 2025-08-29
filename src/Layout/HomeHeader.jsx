@@ -30,14 +30,19 @@ import { FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/mate
 
 
 
+
+
 import { FaBars } from 'react-icons/fa';
 import { Popover } from 'antd';
+// import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import { OverlayTrigger } from "react-bootstrap";
 
 const HomeHeader = () => {
   const location = useLocation(); // Get current URL
   const [activeLink, setActiveLink] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showCartTooltip, setShowCartTooltip] = useState(false);
+  
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
   const currentPath = location.pathname;
@@ -60,6 +65,20 @@ const HomeHeader = () => {
     navigate('/history')
     }
   }
+
+//content for product dropdown
+  const contentproduct = (
+    <ul className='no-dots'
+   style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+      <li><Link to="/product" className="mb-2">
+        Products
+      </Link></li>
+      <li><Link to="/stock" className="mb-2">
+        Stock
+      </Link></li>
+      <li><Link to="/newdesign">New Design</Link></li>
+    </ul>
+  );
 
 const content = (
   <ul className='no-dots'
@@ -180,20 +199,17 @@ const content = (
                     ABOUT US 
                </Link>
                
-               <div className="dropdown" onMouseEnter={() => setDropdownOpen(true)} onMouseLeave={() => setDropdownOpen(false)} >
-  <span
-    className="dropdown-toggle fw-bold"
-    style={{ color: isShopActive ? "#cf9601" : "#007fff", cursor: "pointer" }}
-    
-  >
-    SHOP
-  </span>
-  <ul className={`dropdown-menu ${dropdownOpen ? "show" : ""}`}>
-    <li><Link className="dropdown-item" to="/product">Products</Link></li>
-    <li><Link className="dropdown-item" to="/stock">Stock</Link></li>
-    <li><Link className="dropdown-item" to="/newdesign">New Design</Link></li>
-  </ul>
-</div>
+               <Popover content={contentproduct} placement="bottom" trigger="hover" >
+      <span
+        className="fw-bold"
+        style={{
+          color: isShopActive ? "#cf9601" : "#007fff",
+          cursor: "pointer",
+        }}
+      >
+        SHOP
+      </span>
+    </Popover>
                <Link to="/service" className="no-underline-2 fw-bold"  style={{ color: activeLink === "service" ? "#cf9601" : "#007fff" }}>
        
                  SERVICE 
@@ -315,20 +331,17 @@ const content = (
 )}
         <Link to="/" onClick={toggleSidebar} className="no-underline-1" style={{ color: activeLink === "home" ? "#cf9601" : "blue" }}>HOME</Link>
         <Link to="/aboutus" onClick={toggleSidebar} className="no-underline-2"  style={{ color: activeLink === "aboutus" ? "#cf9601" : "blue" }}>ABOUTUS</Link>
-        <div className="dropdown" onMouseEnter={() => setDropdownOpen(true)} onMouseLeave={() => setDropdownOpen(false)} >
-  <span
-    className="dropdown-toggle fw-bold"
-    style={{ color: isShopActive ? "#cf9601" : "blue", cursor: "pointer" }}
-    
-  >
-    SHOP
-  </span>
-  <ul className={`dropdown-menu ${dropdownOpen ? "show" : ""}`}>
-    <li><Link className="dropdown-item" to="/product">Products</Link></li>
-    <li><Link className="dropdown-item" to="/stock">Stock</Link></li>
-    <li><Link className="dropdown-item" to="/newdesign">New Design</Link></li>
-  </ul>
-</div>
+        <Popover content={contentproduct} placement="bottom" trigger="hover" >
+      <span
+        className="fw-bold"
+        style={{
+          color: isShopActive ? "#cf9601" : "#007fff",
+          cursor: "pointer",
+        }}
+      >
+        SHOP
+      </span>
+    </Popover>
         <Link to="/service" onClick={toggleSidebar} className="no-underline-2"  style={{ color: activeLink === "service" ? "#cf9601" : "blue" }}>SERVICE</Link>
         <Link to="/contactus" onClick={toggleSidebar} className="no-underline-2"  style={{ color: activeLink === "contactus" ? "#cf9601" : "blue" }}>CONTACT US</Link>
         <div className='icon-diver '>

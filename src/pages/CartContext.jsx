@@ -25,6 +25,7 @@ import CustomerDetails from './CustomerDetails';
 import { addproducttopayment,getproductdetail } from '../ApiFunctions/Continuepayment';
 import { useNavigate } from 'react-router-dom';
 import CustomerDetailEditModal from './CustomerDetailEditModal';
+import { IoCartOutline } from "react-icons/io5";
 
 
 
@@ -245,7 +246,12 @@ useEffect(() => {
   ))
 ) : (
   <div className="text-center my-5">
-    <h5 className="text-muted">🛒 Add product to cart and continue</h5>
+   <h5 className="text-muted">
+  <span className="me-2">
+    <IoCartOutline size={30} />
+  </span>
+  Add product to cart and continue
+</h5>
   </div>
 )}
 
@@ -253,7 +259,9 @@ useEffect(() => {
 
             </div>
           <div className="text-center mt-3">
-  <button className="btn btn-primary rounded">Continue Shopping</button>
+  <button className="btn btn-primary rounded" onClick={
+    () => navigate("/product")
+  }>Continue Shopping</button>
 </div>
         </div>
 
@@ -273,15 +281,19 @@ useEffect(() => {
   <hr />
 
   <h4 className="productnametext">GST Details</h4>
-  <div className="d-flex align-items-center">
-    <label className="me-2">Do you have GST No?</label>
-    <input
-      type="checkbox"
-      checked={hasGst}
-      onChange={(e) => setHasGst(e.target.checked)}
-    /> 
-    <span className="ms-1">Yes</span>
-  </div>
+  <div className="form-check d-flex align-items-center">
+  <input
+    className="form-check-input me-2"
+    type="checkbox"
+    id="gstCheck"
+    checked={hasGst}
+    onChange={(e) => setHasGst(e.target.checked)}
+  />
+  <label className="form-check-label" htmlFor="gstCheck">
+    Do you have GST No?
+  </label>
+</div>
+
 
   {hasGst && (
     <div className="mt-2">

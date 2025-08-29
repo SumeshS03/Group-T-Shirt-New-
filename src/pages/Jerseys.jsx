@@ -8,15 +8,23 @@ import PolyCottonColorModal from "./PolyCottonColorModal";
 import CollareCottonColorModal from "./CollareCottonColorModal";
 import CollarePolysterColorModal from "./CollarePolysterColorModal";
 import CollarePolyCottonColorModal from "./CollarePolyCottonColorModal";
+import { flushSync } from "react-dom";
+import Swal from 'sweetalert2';
+import useNavigationGuard from "../ApiFunctions/useNavigationGuard";
+import LoginModal from "./LoginModal";
 
 const Jerseys = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [showPolyesterModal, setShowPolyesterModal] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const [quantityError, setQuantityError] = useState("");
+  const [sleeveError, setSleeveError] = useState("");
   const [showPolCottonModel, setShowPolyCottonModel] = useState(false);
   const [showCollareCottonColorModal,setShowCollareCottonColorModal] =useState(false);
   const [showCollarePolysterColorModal,setShowCollarePolysterColorModal]=useState(false);
   const [showCollarePolyCottonColorModal,setShowCollarePolyCottonColorModal]=useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   // Discount structure based on quantity ranges
   const quantityDiscounts = [
@@ -208,11 +216,30 @@ const Jerseys = () => {
       printamount: '',
       emposedamount: '',
       freelogoFile:null,
+      finalAmount:0,
   
     });
 
 
 
+
+//helperfuction to upadate the totalamount
+useEffect(() => {
+  if (formData.grandtotal) {
+    const finalTotal = parseFloat(formData.grandtotal) * 1.05; // add 5%
+    console.log("Grandtotal changed with gst:",finalTotal)
+    setFormData((prev) => ({
+      ...prev,
+      finalAmount: finalTotal,
+    }));
+  }
+}, [formData.grandtotal]);    
+
+
+
+
+//check the page reloade or navigate to other page
+useNavigationGuard(isDirty, "⚠️ Your entered data will be lost. Do you want to leave?");   
 
   // Helper functions
   const getDiscountPerPiece = (quantity) => {
@@ -322,6 +349,8 @@ const getLogoPricePerPiece = (quantity, logos = []) => {
   const handleCollarePolysterClose = () => setShowCollarePolysterColorModal(false);
   const handleCollarePolyCottonShow = () => setShowCollarePolyCottonColorModal(true);
   const handleCollarePolyCottonClose = () => setShowCollarePolyCottonColorModal(false);
+  const handleLoginModalShow = () => setShowLogin(true);
+  const handleLoginModalClose = () => setShowLogin(false);
 
 const calculateAndSetTotal = (updatedFormData) => {
     const quantity = parseInt(updatedFormData.quantity) || 0;
@@ -371,8 +400,16 @@ const calculateAndSetTotal = (updatedFormData) => {
 
 
   const handleQuantityChange = (e) => {
+
+    const value = e.target.value;
+    setIsDirty(true);
     const quantity = parseInt(e.target.value) || 0;
     calculateAndSetTotal({ ...formData, quantity: quantity.toString() });
+    if ( value && value < 16) {
+      setQuantityError("⚠️ Minimum order is 16");
+    }else {
+      setQuantityError("");
+    }
   };
 
 console.log("formdata" , formData);
@@ -382,12 +419,20 @@ console.log("formdata" , formData);
 
 
   const handleGSMClick = (type, item) => {
+    setIsDirty(true);
     setSelectedGSM(prev =>
       prev.id === item._id
         ? { id: "", name: "", price: 0, type: "" }
         : { id: item._id, name: item.name, price: item.price, type: type }
     );
   };
+
+
+  const calculateTotalquantity = (totalQuantity) => {
+  return {
+    totalQuantity,  // ✅ store total
+  };
+};
 
   const handleChange = (type, sizeLabel, value) => {
     const updated = {
@@ -404,14 +449,21 @@ console.log("formdata" , formData);
     ).reduce((acc, val) => acc + (parseInt(val) || 0), 0);
 
     const totalQuantity = halftotal + fulltotal;
-    const calculated = calculateTotal(totalQuantity);
+    const calculated = calculateTotalquantity(totalQuantity);
+
+
+    if (formData.quantity && totalQuantity !== parseInt(formData.quantity)) {
+    setSleeveError("Half & Full sleeve total must match required quantity above.");
+  } else {
+    setSleeveError("");
+  }
 
     setFormData(prev => ({
       ...prev,
       [type]: updated,
       halftotal,
       fulltotal,
-      quantity: totalQuantity.toString(),
+      // quantity: totalQuantity.toString(),
       ...calculated
     }));
   };
@@ -422,32 +474,32 @@ console.log("formdata" , formData);
 
     // Validation
     if (parseInt(formData.quantity) < 16) {
-      alert("Minimum quantity must be 16");
+      Swal.fire("Validation Error", "Minimum quantity must be 16", "warning");
       setIsSubmitting(false);
       return;
     }
 
     if (!selectedGSM.id) {
-      alert("Please select a material/GSM");
+      Swal.fire("Validation Error", "Please select a material/GSM", "warning");
       setIsSubmitting(false);
       return;
     }
 
-    if (!formData.halftotal) {
-      alert("Please Fill Size Wise Quantity in HalfSleev");
-      setIsSubmitting(false);
-      return;
-    }
+    // if (!formData.halftotal) {
+    //   alert("Please Fill Size Wise Quantity in HalfSleev");
+    //   setIsSubmitting(false);
+    //   return;
+    // }
 
     if (parseInt(formData.quantity || 0) !== parseInt(formData.halftotal || 0)) {
-  alert("Half sleeve Quantity and total must be equal. Please check.");
+   Swal.fire("Validation Error", "Men and Women Quantity and total must be equal. Please check.", "warning");
   setIsSubmitting(false);
   return;
 }
 
 if (formData.cloth === "Plain + 1 logo") {
  if( !formData.freelogoFile){
-  alert("Please Add Your Free Logo.");
+  Swal.fire("Validation Error", "Please Add Your Free Logo.", "warning");
   setIsSubmitting(false);
   return;
  }
@@ -471,7 +523,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
   });
 
   if (isAnyMismatch) {
-    alert("Please enter all names and numbers matching the quantity for each size.");
+    Swal.fire("Validation Error", "Please enter all names and numbers matching the quantity for each size.", "warning");
     setIsSubmitting(false);
     return;
   }
@@ -480,7 +532,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
 
 
     if (!formData.color) {
-      alert("Please Select Your T-Shirt Color");
+      Swal.fire("Validation Error", "Please Select Your T-Shirt Color", "warning");
       setIsSubmitting(false);
       return;
     }
@@ -490,20 +542,20 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
         !logo.file || !logo.position || !logo.type
       );
       if (incompleteLogos) {
-        alert("Please complete all logo details");
+        Swal.fire("Validation Error", "Please complete all logo details", "warning");
         setIsSubmitting(false);
         return;
       }
     }
 
     if (!formData.remark) {
-      alert("Please Fill Remark");
+      Swal.fire("Validation Error", "Please Fill Remark", "warning");
       setIsSubmitting(false);
       return;
     }
 
     if (!formData.nameNumberPrint){
-      alert("Please Select Name Number Needed or Not");
+      Swal.fire("Validation Error", "Please Select Name Number Needed or Not", "warning");
       setIsSubmitting(false);
       return;
     }
@@ -511,7 +563,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
 
     const token = localStorage.getItem('authToken');
     if (!token) {
-      alert('Please login to continue');
+      Swal.fire("Authentication Required", "Please login to continue", "info");
       navigate('/profile');
       return;
     }
@@ -526,6 +578,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
       quantityCount: formData.quantity,
       logoCount: formData.logoCount,
       freelogoFile:formData.freelogoFile,
+      grandTotal: formData.finalAmount,
       nameNumberPrint:formData.nameNumberPrint,
       halfSleeveNames:formData.halfSleeveNames,
       halfSleeveNumbers:formData.halfSleeveNumbers,
@@ -578,9 +631,18 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
         },
       });
 
+
+      // ✅ Force update immediately
+      flushSync(() => setIsDirty(false));
       console.log("Form submitted successfully:", response.data);
-      alert("Product added to cart successfully!");
+      // alert("Product added to cart successfully!");
       navigate('/cart');
+
+      // wait a tick so the cart page loads first
+      setTimeout(() => {
+      window.scrollTo(0, 0);
+      }, 0);
+
     } catch (error) {
       console.error("Error submitting form:", error);
       if (error.response?.status === 401) {
@@ -693,8 +755,9 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
     productdetail.category._id ==="680f271c43a9574da31d61c1" &&(
       <div className="container-fluid">
       <form onSubmit={handleSubmit}>
-        <div className="row justify-content-center mt-4">
-          <div className="col-md-10">
+        <div className="container">
+        <div className="row d-flex justify-content-center mt-4">
+          <div className="col-md-8">
             <div className="card mb-4">
               <div className="card-header bg-primary text-white">
                 <h4>Jerseys Customization</h4>
@@ -713,9 +776,10 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                       required
                       placeholder="Minimum 16"
                       onChange={handleQuantityChange}
-                      className="form-control"
+                      className={`form-control ${quantityError ? "is-invalid" : ""}`} // bootstrap red border
                     />
                     <small className="text-muted">Minimum order quantity: 16</small>
+                    {quantityError && (<div className="invalid-feedback">{quantityError}</div>)}
                   </div>
                   
                 </div>
@@ -855,9 +919,10 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
             className="form-control"
             name="logo"
             accept="image/*"
-            onChange={(e) =>
+            onChange={(e) => {
+              setIsDirty(true);
               setFormData((prev) => ({ ...prev, freelogoFile: e.target.files[0] }))
-            }
+            }}
           />
           <div className="form-text text-muted text-center mt-2">
             Accepted formats: JPG, PNG 
@@ -890,7 +955,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                             <div className="col-md-6">
                         <button
                           type="button"
-                          className="btn btn-link p-0"
+                          className="btn btn-primary p-1"
                           onClick={handleShow}
                         >
                           Choose Color
@@ -902,7 +967,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
   <div className="col-md-6">
     <button
       type="button"
-      className="btn btn-link p-0"
+      className="btn btn-primary p-1"
       onClick={handlePolyesterShow}
     >
       Choose Color
@@ -913,7 +978,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
   <div className="col-md-6">
     <button
       type="button"
-      className="btn btn-link p-0"
+      className="btn btn-primary p-1"
       onClick={handlePolyCottonShow}
     >
       Choose Color
@@ -924,7 +989,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                        <div className="col-md-6">
                         <button
                           type="button"
-                          className="btn btn-link p-0"
+                          className="btn btn-primary p-1"
                           onClick={handleCollareCottonShow}
                         >
                           Choose collar Color
@@ -935,7 +1000,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                        <div className="col-md-6">
                         <button
                           type="button"
-                          className="btn btn-link p-0"
+                          className="btn btn-primary p-1"
                           onClick={handleCollarePolysterShow}
                         >
                           Choose collar Color
@@ -946,7 +1011,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                        <div className="col-md-6">
                         <button
                           type="button"
-                          className="btn btn-link p-0"
+                          className="btn btn-primary p-1"
                           onClick={handleCollarePolyCottonShow}
                         >
                           Choose collar Color
@@ -954,7 +1019,25 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                       </div>
                       )}
                     </div>
-
+                    {formData.color && formData.color.trim() !== "" && (
+  <div className="text-center d-flex flex-column justify-content-center align-items-center mb-4">
+    <label className="form-label fw-bold" style={{ color: '#0d6efd' }}>
+      Selected Color:
+    </label>
+    <div
+      className="form-control"
+      style={{
+        backgroundColor: formData.color,
+        color: "#fff",
+        fontWeight: "bold",
+        textAlign: "center",
+        width: "150px",
+      }}
+    >
+      {formData.color}
+    </div>
+  </div>
+)}
 
                 {/* Logo Selection */}
                 <div className="row mb-4 justify-content-center align-items-center">
@@ -1154,8 +1237,8 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                             <tr>
                               <th>Size</th>
                               <th>Chest (inches)</th>
-                              <th>Half Sleeve</th>
-                              {/* <th>Full Sleeve</th> */}
+                              <th>Men</th>
+                              {/* <th>Women</th> */}
                             </tr>
                           </thead>
                           <tbody>
@@ -1169,9 +1252,10 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                                     min="0"
                                     className="form-control form-control-sm"
                                     value={formData.halfSleeve[size.label]}
-                                    onChange={(e) =>
+                                    onChange={(e) =>{
+                                      setIsDirty(true);
                                       handleChange("halfSleeve", size.label, e.target.value)
-                                    }
+                                    }}
                                   />
                                 </td>
                                 {/* <td>
@@ -1194,7 +1278,11 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                             </tr>
                           </tbody>
                         </table>
+                        {sleeveError && (
+    <div className="invalid-feedback d-block">{sleeveError}</div>
+  )}
                       </div>
+
                     </div>
 
 
@@ -1219,6 +1307,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
               placeholder={`Name ${index + 1}`}
               value={formData.halfSleeveNames?.[size.label]?.[index] || ""}
               onChange={(e) => {
+                setIsDirty(true);
                 const updated = [...(formData.halfSleeveNames?.[size.label] || [])];
                 updated[index] = e.target.value;
 
@@ -1239,6 +1328,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
               placeholder={`Number ${index + 1}`}
               value={formData.halfSleeveNumbers?.[size.label]?.[index] || ""}
               onChange={(e) => {
+                setIsDirty(true);
                 const updated = [...(formData.halfSleeveNumbers?.[size.label] || [])];
                 updated[index] = e.target.value;
 
@@ -1268,12 +1358,19 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                     rows={3}
                     className="form-control"
                     value={formData.remark}
-                    onChange={(e) => setFormData({ ...formData, remark: e.target.value })}
+                    onChange={(e) =>{
+                       setIsDirty(true);
+                       setFormData({ ...formData, remark: e.target.value 
+
+                       })}}
                     placeholder="Enter any additional customization requirements"
                   />
                 </div>
-
-                {/* Price Summary */}
+</div>
+</div>
+    </div>            
+                <div className="col-md-4 sticky-col">
+                  {/* Price Summary */}
                 <div className="card mb-4">
                       <div className="card-header bg-success text-white">
                         <h6>Price Summary</h6>
@@ -1281,7 +1378,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
 
                       <div className="card-body d-flex justify-content-center">
                         <div className="row w-100 g-3 mb-4">
-                          <div className="col-12 col-md-6 col-lg-4">
+                          <div className="col-12">
                             <div className="card h-100 border-0 shadow-sm">
                               <div className="card-body">
                                 <h6 className="card-title fw-bold text-primary">T-Shirt Cost</h6>
@@ -1307,7 +1404,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                             </div>
                           </div>
 
-                          <div className="col-12 col-md-6 col-lg-4">
+                          <div className="col-12">
 
                             <div className="card h-100 border-0 shadow-sm">
                               <div className="card-body">
@@ -1332,7 +1429,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                             </div>
                           </div>
 
-                          <div className="col-12 col-lg-4">
+                          <div className="col-12">
 
                             <div className="card h-100 border-0 shadow-sm">
                               <div className="card-body">
@@ -1360,27 +1457,46 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
 
                 {/* Submit Button */}
                 <div className="d-grid gap-2">
-                  <button
-                    type="submit"
-                    className="btn btn-primary btn-lg"
-                    disabled={isSubmitting || !selectedGSM.id}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        Adding to Cart...
-                      </>
-                    ) : (
-                      <>
-                        <FaShoppingCart className="me-2" />
-                        Add to Cart
-                      </>
-                    )}
-                  </button>
+                  {localStorage.getItem("authToken") ? (
+                    // 👉 If token exists, show Add to Cart
+                    <button
+                      type="submit"
+                      className="btn btn-primary btn-lg"
+                      disabled={isSubmitting || !selectedGSM.id}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <span
+                            className="spinner-border spinner-border-sm me-2"
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
+                          Adding to Cart...
+                        </>
+                      ) : (
+                        <>
+                          <FaShoppingCart className="me-2" />
+                          Add to Cart
+                        </>
+                      )}
+                    </button>
+                  ) : (
+                    // 👉 If no token, show Login button
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-lg"
+                      disabled={!selectedGSM.id}
+                      onClick={handleLoginModalShow} // <-- open your login popup
+                    >
+                      Add to Cart
+                    </button>
+                  )}
                 </div>
-              </div>
-            </div>
-          </div>
+                </div>
+              
+            
+          
+        </div>
         </div>
       </form>
 
