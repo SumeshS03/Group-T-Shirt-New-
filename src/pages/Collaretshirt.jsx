@@ -212,7 +212,7 @@ const Collaretshirt = () => {
     fullSleeve: { ...emptySleeveState },
     remark: '',
     cloth: '',
-    clothMaterial: '',
+    clothMaterial: "Cotton",
     discountPerPiece: 0,
     discountedPrice: 0,
     basePrice: 0,
@@ -620,7 +620,8 @@ const calculateTotalquantity = (totalQuantity) => {
       if (error.response?.status === 401) {
         await Swal.fire("Session Expired", "Please login to continue.", "error");
         localStorage.removeItem("authToken");
-        navigate("/profile");
+        handleLoginModalShow();
+        // navigate("/profile");
       } else {
         Swal.fire("Error", error.response?.data?.message || "Something went wrong. Please try again.", "error");
       }
@@ -628,6 +629,17 @@ const calculateTotalquantity = (totalQuantity) => {
       setIsSubmitting(false);
     }
   };
+
+
+ //clear the color if user select different material
+ useEffect(() => {
+  // when material changes, reset selected color
+  setFormData((prev) => ({
+    ...prev,
+    color: "", // reset color
+  }));
+}, [formData.clothMaterial]);
+
 
   // Fetch product data
   useEffect(() => {
@@ -735,7 +747,7 @@ const calculateTotalquantity = (totalQuantity) => {
         <div className="container-fluid ">
           <form onSubmit={handleSubmit}>
             <div className="container">
-            <div className="row d-flex justify-content-center mt-4">
+            <div className="row d-flex justify-content-center mt-4 mb-lg-5 mb-2">
               {/* changes made */}
               <div className="col-md-8"> 
                 <div className="card mb-4">
@@ -758,7 +770,7 @@ const calculateTotalquantity = (totalQuantity) => {
                           onChange={handleQuantityChange}
                           className={`form-control ${quantityError ? "is-invalid" : ""}`} // bootstrap red border
                         />
-                        <small className="text-muted">Minimum order quantity: 16</small>
+                        {/* <small className="text-muted">Minimum order quantity: 16</small> */}
                         {quantityError && (
         <div className="invalid-feedback">{quantityError}</div>
       )}
@@ -904,46 +916,82 @@ const calculateTotalquantity = (totalQuantity) => {
                     </div>
 
                     {/* Color Selection */}
-                    <div className="row mb-4 d-flex align-items-center justify-content-center">
+                    <div className="row mb-4 d-flex align-items-center justify-content-start">
                       {formData.clothMaterial === "Cotton" && (
-                        <div className="col-md-6">
+                        <div className="col-md-6 d-flex justify-content-start">
                           <button
                             type="button"
-                            className="btn btn-primary p-1"
+                            className="btn fw-bold text-white"
+  style={{
+    backgroundColor: "#0d6efd",
+    borderRadius: "30px",
+    
+   
+    transition: "all 0.3s ease",
+  }}
+  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#084298"}
+  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#0d6efd"}
                             onClick={handleShow}
                           >
-                            Choose Color
+                            Choose T-Shirt Color
                           </button>
                         </div>
                       )}
 
                       {formData.clothMaterial === "Polyester" && (
-                        <div className="col-md-6">
+                        <div className="col-md-6 d-flex justify-content-start">
                           <button
                             type="button"
-                            className="btn btn-primary p-1"
+                            className="btn fw-bold text-white"
+  style={{
+    backgroundColor: "#0d6efd",
+    borderRadius: "30px",
+    
+    
+    transition: "all 0.3s ease",
+  }}
+  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#084298"}
+  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#0d6efd"}
                             onClick={handlePolyesterShow}
                           >
-                            Choose Color
+                            Choose T-Shirt Color
                           </button>
                         </div>
                       )}
                       {formData.clothMaterial === "Polycotton" && (
-                        <div className="col-md-6">
+                        <div className="col-md-6 d-flex justify-content-start">
                           <button
                             type="button"
-                            className="btn btn-primary p-1"
+                            className="btn fw-bold text-white"
+  style={{
+    backgroundColor: "#0d6efd",
+    borderRadius: "30px",
+    
+    
+    transition: "all 0.3s ease",
+  }}
+  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#084298"}
+  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#0d6efd"}
                             onClick={handlePolyCottonShow}
                           >
-                            Choose Color
+                            Choose T-Shirt Color
                           </button>
                         </div>
                       )}
                       {productdetail?.collarColor === true && formData.clothMaterial === "Cotton" && (
-                        <div className="col-md-6">
+                        <div className="col-md-6 d-flex justify-content-start">
                           <button
                             type="button"
-                            className="btn btn-primary p-1"
+                            className="btn fw-bold text-white"
+  style={{
+    backgroundColor: "#0d6efd",
+    borderRadius: "30px",
+    
+   
+    transition: "all 0.3s ease",
+  }}
+  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#084298"}
+  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#0d6efd"}
                             onClick={handleCollareCottonShow}
                           >
                             Choose collar Color
@@ -951,10 +999,19 @@ const calculateTotalquantity = (totalQuantity) => {
                         </div>
                       )}
                       {productdetail?.collarColor === true && formData.clothMaterial === "Polyester" && (
-                        <div className="col-md-6">
+                        <div className="col-md-6 d-flex justify-content-start">
                           <button
                             type="button"
-                            className="btn btn-primary p-1"
+                            className="btn fw-bold text-white"
+  style={{
+    backgroundColor: "#0d6efd",
+    borderRadius: "30px",
+    
+    
+    transition: "all 0.3s ease",
+  }}
+  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#084298"}
+  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#0d6efd"}
                             onClick={handleCollarePolysterShow}
                           >
                             Choose collar Color
@@ -962,10 +1019,19 @@ const calculateTotalquantity = (totalQuantity) => {
                         </div>
                       )}
                       {productdetail?.collarColor === true && formData.clothMaterial === "Polycotton" && (
-                        <div className="col-md-6">
+                        <div className="col-md-6 d-flex justify-content-start">
                           <button
                             type="button"
-                            className="btn btn-primary p-1"
+                            className="btn fw-bold text-white"
+  style={{
+    backgroundColor: "#0d6efd",
+    borderRadius: "30px",
+    
+   
+    transition: "all 0.3s ease",
+  }}
+  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#084298"}
+  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#0d6efd"}
                             onClick={handleCollarePolyCottonShow}
                           >
                             Choose collar Color
@@ -973,7 +1039,9 @@ const calculateTotalquantity = (totalQuantity) => {
                         </div>
                       )}
                     </div>
-                    {formData.color && formData.color.trim() !== "" && (
+                    <div className="row mb-4 d-flex align-items-center justify-content-start">
+                      <div className="col-md-6 d-flex justify-content-start">
+                        {formData.color && formData.color.trim() !== "" && (
   <div className="text-center d-flex flex-column justify-content-center align-items-center mb-4">
     <label className="form-label fw-bold" style={{ color: '#0d6efd' }}>
       Selected Color:
@@ -992,12 +1060,15 @@ const calculateTotalquantity = (totalQuantity) => {
     </div>
   </div>
 )}
+                      </div>
+                    </div>
+                    
 
 
 
                     {/* Logo Selection */}
-                    <div className="row mb-4 justify-content-center align-items-center">
-                      <div className="col-md-6">
+                    <div className="row mb-4 justify-content-start align-items-center">
+                      <div className="col-md-6 d-flex flex-column align-items-start">
                         <label className="form-label fw-bold" style={{ color: '#0d6efd' }}>How many logos?</label>
                         <input
                           type="number"
@@ -1013,7 +1084,7 @@ const calculateTotalquantity = (totalQuantity) => {
                             });
                             setFormData({ ...formData, logoCount: count, logos: newLogos });
                           }}
-                          className="form-control"
+                          className="form-control w-75"
                         />
                       </div>
                     </div>
@@ -1221,7 +1292,8 @@ const calculateTotalquantity = (totalQuantity) => {
                   </div>
                 </div>
               </div>
-              <div className="col-md-4 sticky-col">
+              <div className="col-md-4 ">
+                <div className="sticky-col">
                       <div className="card mb-4">
                       <div className="card-header bg-success text-white">
                         <h6>Price Summary</h6>
@@ -1345,6 +1417,7 @@ const calculateTotalquantity = (totalQuantity) => {
     </button>
   )}
 </div>
+                    </div>
                     </div>
             </div>
             </div>

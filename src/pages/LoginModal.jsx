@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { sentOtp, verifyotp } from "../ApiFunctions/userlogin";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const LoginModal = ({ show, handleClose }) => {
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
+  const navigate = useNavigate();
 
   // ✅ Clear inputs helper
   const resetForm = () => {
@@ -19,17 +22,37 @@ const LoginModal = ({ show, handleClose }) => {
     if (mobile.length === 10) {
       try {
         const res = await sentOtp({ mobile });
+        // alert(res.message || "OTP sent successfully");
         console.log("OTP sent response:", res);
+        // alert("OTP sent successfully");
+        Swal.fire({
+          title: "Success",
+          text: res.message || "OTP sent successfully",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
         setOtpSent(true);
       } catch (err) {
         console.error("Error sending OTP:", err);
-        alert("Failed to send OTP, please try again.");
+        Swal.fire({
+          title: "Error",
+          text: err.response.data.message || "Could not send OTP.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        // navigate("/profile");
         resetForm(); // clear on failure
       }
     } else {
-      alert("Please enter a valid 10-digit mobile number");
+      Swal.fire({
+        title: "Invalid Input",
+        text: "Please enter a valid 10-digit mobile number",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
       resetForm(); // clear invalid input
     }
+
   };
 
   // ✅ Verify OTP with backend
@@ -42,16 +65,31 @@ const LoginModal = ({ show, handleClose }) => {
         localStorage.setItem("authToken", res.token);
         localStorage.setItem("customer", JSON.stringify(res.customer));
         localStorage.setItem("customerId", res.customer._id);
-
+        Swal.fire({
+          title: "Success",
+          text: "Login successful!",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
         resetForm(); // clear inputs
         handleClose(); // close modal
       } else {
-        alert("Invalid OTP, please try again");
+        Swal.fire({
+          title: "Invalid OTP",
+          text: "Please try again",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
         resetForm(); // clear inputs
       }
     } catch (err) {
       console.error("Error verifying OTP:", err);
-      alert("OTP verification failed.");
+      Swal.fire({
+        title: "Error",
+        text: "OTP verification failed.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
       resetForm(); // clear inputs
     }
   };

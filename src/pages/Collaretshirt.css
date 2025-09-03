@@ -24,8 +24,12 @@
 .sticky-col {
   position: sticky;
   top: 0;        /* distance from the top of the page */
-  height: 100vh; /* optional: full height */
+  /* height: 100vh;  */
+  /* padding: 1rem; */
 }
+
+
+
 
 
 .colorboxborber{
@@ -98,4 +102,10 @@
   cursor: pointer;
 }
 
+
+/* @media (min-width: 992px) { 
+  .td-small-lg {
+    font-size: 0.85rem; 
+  }
+} */
 

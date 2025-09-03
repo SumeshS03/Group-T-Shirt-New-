@@ -70,10 +70,10 @@ const HomeHeader = () => {
   const contentproduct = (
     <ul className='no-dots'
    style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-      <li><Link to="/product" className="mb-2">
+      <li><Link to="/product">
         Products
       </Link></li>
-      <li><Link to="/stock" className="mb-2">
+      <li><Link to="/stock">
         Stock
       </Link></li>
       <li><Link to="/newdesign">New Design</Link></li>

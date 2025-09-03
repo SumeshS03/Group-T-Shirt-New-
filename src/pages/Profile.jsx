@@ -7,6 +7,7 @@ import 'antd/dist/reset.css';
 import './Profile.css';
 import axios from 'axios';
 import { Button, Form, Input, Typography } from 'antd';
+import Swal from 'sweetalert2';
 
 const { Title } = Typography;
 
@@ -29,11 +30,12 @@ const Shopcontent = () => {
   //sent otp api
 
   const sendOTP = async () => {
+    const BASE_URL = process.env.REACT_APP_API_BASE_URL;
    
     try {
       setLoading(true);
       const response = await axios.post(
-        'https://gts.tsitcloud.com/api/auth/send-customer-otp',
+        `${BASE_URL}/auth/send-customer-otp`,
         { mobile },
         {
           headers: { 'Content-Type': 'application/json' },
@@ -41,13 +43,28 @@ const Shopcontent = () => {
       );
 
       if (response.status === 200) {
-        alert('OTP sent successfully');
+        Swal.fire({
+          title: "Success",
+          text: "'OTP sent successfully",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
       } else {
-        alert(response.data.message || 'Failed to send OTP');
+        Swal.fire({
+          title: "Error",
+          text: response.data.message || 'Failed to send OTP',
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
     } catch (error) {
       console.error("Error sending OTP:", error);
-      alert(error.response?.data?.message || 'An error occurred while sending OTP');
+      Swal.fire({
+        title: "Error",
+        text: error.response?.data?.message || 'An error occurred while sending OTP',
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
     finally {
     setLoading(false); // re-enable button after request finishes
@@ -55,9 +72,10 @@ const Shopcontent = () => {
   };
 
   const handleSubmit = async () => {
+    const BASE_URL = process.env.REACT_APP_API_BASE_URL;
     try {
       const response = await axios.post(
-        'https://gts.tsitcloud.com/api/auth/verify-customer-otp',
+        `${BASE_URL}/auth/verify-customer-otp`,
         {
           mobile,
           otp,
@@ -76,18 +94,33 @@ const Shopcontent = () => {
         if (customerId) localStorage.setItem('customerId', customerId);
         if (customer) localStorage.setItem('customer', JSON.stringify(customer));
 
-        alert('OTP verified successfully');
+        Swal.fire({
+          title: "Success",
+          text: "OTP verified successfully",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
         navigate('/product');
       } else {
         localStorage.removeItem('authToken');
         localStorage.removeItem('customerId');
-        alert(response.data.message || 'OTP verification failed');
+        Swal.fire({
+          title: "Error",
+          text: response.data.message || 'OTP verification failed',
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
     } catch (error) {
       localStorage.removeItem('authToken');
       localStorage.removeItem('customerId');
       console.error("OTP verification error:", error);
-      alert(error.response?.data?.message || 'Network error while verifying OTP');
+      Swal.fire({
+        title: "Error",
+        text: error.response?.data?.message || 'Network error while verifying OTP',
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
 

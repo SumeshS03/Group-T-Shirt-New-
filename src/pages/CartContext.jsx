@@ -26,6 +26,7 @@ import { addproducttopayment,getproductdetail } from '../ApiFunctions/Continuepa
 import { useNavigate } from 'react-router-dom';
 import CustomerDetailEditModal from './CustomerDetailEditModal';
 import { IoCartOutline } from "react-icons/io5";
+import Swal from 'sweetalert2';
 
 
 
@@ -44,9 +45,7 @@ const CartContext = () => {
   const BASE_URL_IMAGE = process.env.REACT_APP_IMAGE_URL;
   
 
-    
-  
-//get the product detail and store
+  //get the product detail and store
  useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -67,33 +66,53 @@ useEffect(() => {
   window.scrollTo(0, 0);
 }, []);  
 
-  const handleDelete = async(itemId) => {
-    const storedCustomerId = localStorage.getItem('customerId');
-    const token = localStorage.getItem('authToken');
-    // console.log('itemid',itemId);
-    try{
-      const response = axios.post('https://gts.tsitcloud.com/api/cartItems/delete',
-        {
-           cartItemId:itemId,
-           customerId : storedCustomerId,
-        },
-        {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-      );
-      alert(response.data?.message || "Item deleted successfully!");
-      setCartItems((prev) => prev.filter(item => item._id !== itemId));
 
-    }catch (error) {
+
+//delete the added product in the cart
+
+const handleDelete = async (itemId) => {
+  const storedCustomerId = localStorage.getItem("customerId");
+  const token = localStorage.getItem("authToken");
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  try {
+    // ✅ Show confirmation dialog
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to delete this item?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      // ✅ Only delete if user clicks OK
+      const response = await axios.post(
+        `${BASE_URL}/cartItems/delete`,
+        {
+          cartItemId: itemId,
+          customerId: storedCustomerId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      Swal.fire("Deleted!", response.data?.message || "Item deleted successfully!", "success");
+
+      // ✅ Update state
+      setCartItems((prev) => prev.filter((item) => item._id !== itemId));
+    }
+  } catch (error) {
     const errorMsg = error.response?.data?.message || "Error deleting item.";
     console.error("Delete error:", errorMsg);
-    alert(errorMsg);
+    Swal.fire("Error", errorMsg, "error");
   }
+};
 
-
-  };
 
 
   //continue payment function
@@ -266,61 +285,89 @@ useEffect(() => {
         </div>
 
         <div className="col-lg-5 p-3">
-  <div className="d-flex justify-content-between align-items-center">
-    <h4 className="productnametext m-0">Customer Details</h4>
-    <button className="btn btn-sm btn-primary" onClick={() => setShow(true)}>Edit</button>
-  </div>
+  {customerdetail ? (
+    <>
+      <div className="d-flex justify-content-between align-items-center">
+        <h4 className="productnametext m-0">Customer Details</h4>
+        <button 
+          className="btn btn-sm btn-primary" 
+          onClick={() => setShow(true)}
+        >
+          Edit
+        </button>
+      </div>
 
-  <p><strong>Name:</strong> {customerdetail.name}</p>
-  <hr />
-  <p><strong>Email:</strong> {customerdetail.email}</p>
-  <hr />
-  <p><strong>Mobile No:</strong> {customerdetail.mobile}</p>
-  <hr />
-  <p><strong>Address:</strong> {customerdetail.address}</p>
-  <hr />
+      <p><strong>Name:</strong> {customerdetail.name}</p>
+      <hr />
+      <p><strong>Email:</strong> {customerdetail.email}</p>
+      <hr />
+      <p><strong>Mobile No:</strong> {customerdetail.mobile}</p>
+      <hr />
+      <p><strong>Address:</strong> {customerdetail.address}</p>
+      <hr />
 
-  <h4 className="productnametext">GST Details</h4>
-  <div className="form-check d-flex align-items-center">
-  <input
-    className="form-check-input me-2"
-    type="checkbox"
-    id="gstCheck"
-    checked={hasGst}
-    onChange={(e) => setHasGst(e.target.checked)}
-  />
-  <label className="form-check-label" htmlFor="gstCheck">
-    Do you have GST No?
-  </label>
-</div>
+      {/* GST Details */}
+      <h4 className="productnametext">GST Details</h4>
+      <div className="form-check d-flex align-items-center">
+        <input
+          className="form-check-input me-2"
+          type="checkbox"
+          id="gstCheck"
+          checked={hasGst}
+          onChange={(e) => setHasGst(e.target.checked)}
+        />
+        <label className="form-check-label" htmlFor="gstCheck">
+          Do you have GST No?
+        </label>
+      </div>
 
+      {hasGst && (
+        <div className="mt-2">
+          <input
+            type="text"
+            placeholder="Enter GST Number"
+            value={gstNumber}
+            onChange={(e) => setGstNumber(e.target.value)}
+            className="form-control"
+          />
+        </div>
+      )}
+      <hr />
 
-  {hasGst && (
-    <div className="mt-2">
-      <input
-        type="text"
-        placeholder="Enter GST Number"
-        value={gstNumber}
-        onChange={(e) => setGstNumber(e.target.value)}
-        className="form-control"
-      />
+      {/* Price Details */}
+      <h4 className="productnametext">Price Details</h4>
+      <p>Total Amount ({cartItems.length} Products)</p>
+      <hr />
+      <p>
+        <strong>Total Amount: ₹</strong>
+        <strong>{cartItems.reduce((acc, item) => acc + (item.grandTotal || 0), 0)}</strong>
+      </p>
+      <hr />
+
+      <div className="text-center mt-3">
+        <button 
+          className="btn btn-primary rounded" 
+          type="button" 
+          onClick={continuepayment}
+        >
+          Place Order
+        </button>
+      </div>
+    </>
+  ) : (
+    <div className="text-center p-4">
+      <h5>No Customer Details Found</h5>
+      <p className="text-muted">Please log in to continue with your order.</p>
+      <button 
+        className="btn btn-primary" 
+        onClick={() => navigate("/profile")} // ✅ redirect user
+      >
+        Login Now
+      </button>
     </div>
   )}
-  <hr />
-
-  <h4 className="productnametext">Price Details</h4>
-  <p>Total Amount ({cartItems.length} Products)</p>
-  <hr />
-  <p>
-    <strong>Total Amount: ₹</strong>
-    <strong>{cartItems.reduce((acc, item) => acc + (item.grandTotal || 0), 0)}</strong>
-  </p>
-  <hr />
-
-  <div className="text-center mt-3">
-  <button className="btn btn-primary rounded" type='button' onClick={continuepayment}>Place Order</button>
 </div>
-</div>
+
 
       </div>
     </div>

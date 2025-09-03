@@ -1124,7 +1124,7 @@
         
     }
     .verifyimagebox {
-        margin-top: 76% !important;
+        /* margin-top: 76% !important; */
     }
 
     .bortextone {
@@ -1303,7 +1303,7 @@
     .we-work-box {
  
     margin-top: -4px;
-    height: 1040px;
+    /* height: 1040px; */
 }
 .your-style{
     margin-top: -40px !important;

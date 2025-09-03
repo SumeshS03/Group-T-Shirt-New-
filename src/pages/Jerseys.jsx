@@ -26,6 +26,7 @@ const Jerseys = () => {
   const [showCollarePolyCottonColorModal,setShowCollarePolyCottonColorModal]=useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
+
   // Discount structure based on quantity ranges
   const quantityDiscounts = [
     { min: 1, max: 10, discount: 0 },
@@ -187,7 +188,7 @@ const Jerseys = () => {
   VNeck: []
 });
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  
   const [formData, setFormData] = useState({
       quantity: '',
       logoCount: '0',
@@ -207,7 +208,7 @@ const Jerseys = () => {
       halfSleeveNumbers: {},
       remark: '',
       cloth: '',
-      clothMaterial: '',
+      clothMaterial: 'Collar',
       discountPerPiece: 0,
       discountedPrice: 0,
       basePrice: 0,
@@ -217,8 +218,30 @@ const Jerseys = () => {
       emposedamount: '',
       freelogoFile:null,
       finalAmount:0,
-  
+      productId: null,
+      quantityCount: 0,
+      totalCount: 0
+
     });
+const { halfSleeveNames, halfSleeveNumbers, ...rest } = formData;
+
+// Merge names & numbers into jerseyDetail
+const jerseyDetail = Object.keys(halfSleeveNames).reduce((acc, size) => {
+  acc[size] = halfSleeveNames[size].map((name, index) => ({
+    name,
+    jerseyNumber: halfSleeveNumbers[size]?.[index] || "", // ✅ camelCase
+  }));
+  return acc;
+}, {});
+
+// 🔄 Convert to array format
+const jerseyDetailsArray = Object.entries(jerseyDetail).map(([size, players]) => ({
+  size,
+  players,
+}));
+
+// Example output
+console.log(JSON.stringify(jerseyDetailsArray, null, 2));
 
 
 
@@ -579,7 +602,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
       logoCount: formData.logoCount,
       freelogoFile:formData.freelogoFile,
       grandTotal: formData.finalAmount,
-      nameNumberPrint:formData.nameNumberPrint,
+      needJerseyDetails:formData.nameNumberPrint,
       halfSleeveNames:formData.halfSleeveNames,
       halfSleeveNumbers:formData.halfSleeveNumbers,
       color: formData.color,
@@ -590,6 +613,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
       clothMaterial: selectedGSM.type,
       totalCount: parseInt(formData.quantity),
       remark: formData.remark,
+
       basePrice: selectedGSM.price,
       deliveryDate:formData.estimatedDeliveryDate,
       discountPerPiece: formData.discountPerPiece,
@@ -597,6 +621,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
       amount: formData.grandtotal,
       totalAmount: formData.grandtotal,
       productId: productdetail?._id,
+      jerseyDetails: jerseyDetailsArray, 
       logos: logoMetadata,
       quantitySizeWise: {
         half: formData.halfSleeve,
@@ -607,6 +632,13 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
         fullTotal: formData.fulltotal
       }
     };
+
+
+//   const formDataObj = {
+//   customerId: localStorage.getItem("customerId"),
+//   ...rest,         
+//   jerseyDetail: jerseyDetailsArray,     
+// };
 
     const payload = new FormData();
     Object.entries(formDataObj).forEach(([key, value]) => {
@@ -623,7 +655,13 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
       }
     });
 
+ // ✅ Debugging
+for (let pair of payload.entries()) {
+  console.log(pair[0], pair[1]);
+}
+
     try {
+      console.log("Submitting form data:", payload);
       const response = await axios.post("https://gts.tsitcloud.com/api/cartItems/add", payload, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -646,11 +684,12 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
     } catch (error) {
       console.error("Error submitting form:", error);
       if (error.response?.status === 401) {
-        alert("Session expired. Please login to continue.");
+        await Swal.fire("Session expired. Please login to continue.");
         localStorage.removeItem("authToken");
-        navigate("/profile");
+        handleLoginModalShow();
+        // navigate("/profile");
       } else {
-        alert(error.response?.data?.message || "Something went wrong. Please try again.");
+        await Swal.fire(error.response?.data?.message || "Something went wrong. Please try again.");
       }
     } finally {
       setIsSubmitting(false);
@@ -733,6 +772,16 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
 }, []);
 
 
+ //clear the color if user select different material
+ useEffect(() => {
+  // when material changes, reset selected color
+  setFormData((prev) => ({
+    ...prev,
+    color: "", // reset color
+  }));
+}, [formData.clothMaterial]);
+
+
   // Update form data when GSM is selected
   useEffect(() => {
     if (selectedGSM.id) {
@@ -756,7 +805,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
       <div className="container-fluid">
       <form onSubmit={handleSubmit}>
         <div className="container">
-        <div className="row d-flex justify-content-center mt-4">
+        <div className="row d-flex justify-content-center mt-4 mb-lg-5 mb-2">
           <div className="col-md-8">
             <div className="card mb-4">
               <div className="card-header bg-primary text-white">
@@ -785,10 +834,11 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                 </div>
 
                 {/* Material Selection */}
+                <h5 className="mb-3 " style={{ color: '#0d6efd' }}>Select Material</h5>
                 <div className="row mb-4">
-                  <h5 className="mb-3 " style={{ color: '#0d6efd' }}>Select Material</h5>
                   
-                  <div className="col-lg-4">
+                  
+                  <div className="col-lg-12">
                     <div className="card">
                       <div className="card-header bg-success text-white">
                         <h6>Collar</h6>
@@ -814,15 +864,17 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                                   />
                                 </td>
                                 <td>{item.name}</td>
+
                                 <td>
-                                      {formData.discountPerPiece ? (
+                                      {/* {formData.discountPerPiece ? (
                                         <>
                                           <del className="text-muted me-2">₹{item.price}</del>
                                           ₹{item.price - formData.discountPerPiece}
                                         </>
                                       ) : (
                                         <>₹{item.price}</>
-                                      )}
+                                      )} */}
+                                      ₹{item.price - (formData.discountPerPiece || 0)}
                                     </td>
                               </tr>
                             ))}
@@ -832,7 +884,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                     </div>
                   </div>
 
-                  <div className="col-lg-4 mt-lg-0 mt-3">
+                  <div className="col-lg-12 mt-lg-3 mt-3">
                     <div className="card">
                       <div className="card-header bg-info text-white">
                         <h6>Round Neck</h6>
@@ -867,7 +919,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                     </div>
                   </div>
 
-                  <div className="col-lg-4 mt-lg-0 mt-3">
+                  <div className="col-lg-12 mt-lg-3 mt-3">
                     <div className="card">
                       <div className="card-header bg-warning text-dark">
                         <h6>V neck</h6>
@@ -950,46 +1002,82 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
 </div>
 
                 {/* Color Selection */}
-                <div className="row mb-4 d-flex align-items-center justify-content-center">
+                <div className="row mb-4 d-flex align-items-center justify-content-start">
                       {formData.clothMaterial === "Collar" &&(
-                            <div className="col-md-6">
+                            <div className="col-md-6 d-flex justify-content-start">
                         <button
                           type="button"
-                          className="btn btn-primary p-1"
+                          className="btn fw-bold text-white"
+  style={{
+    backgroundColor: "#0d6efd",
+    borderRadius: "30px",
+    
+   
+    transition: "all 0.3s ease",
+  }}
+  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#084298"}
+  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#0d6efd"}
                           onClick={handleShow}
                         >
-                          Choose Color
+                          Choose T-Shirt Color
                         </button>
                       </div>
                       )}
 
                       {formData.clothMaterial === "Round Neck" && (
-  <div className="col-md-6">
+  <div className="col-md-6 d-flex justify-content-start">
     <button
       type="button"
-      className="btn btn-primary p-1"
+      className="btn fw-bold text-white"
+  style={{
+    backgroundColor: "#0d6efd",
+    borderRadius: "30px",
+    
+   
+    transition: "all 0.3s ease",
+  }}
+  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#084298"}
+  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#0d6efd"}
       onClick={handlePolyesterShow}
     >
-      Choose Color
+      Choose T-Shirt Color
     </button>
   </div>
 )}
                       {formData.clothMaterial === "V Neck" && (
-  <div className="col-md-6">
+  <div className="col-md-6 d-flex justify-content-start">
     <button
       type="button"
-      className="btn btn-primary p-1"
+      className="btn fw-bold text-white"
+  style={{
+    backgroundColor: "#0d6efd",
+    borderRadius: "30px",
+    
+   
+    transition: "all 0.3s ease",
+  }}
+  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#084298"}
+  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#0d6efd"}
       onClick={handlePolyCottonShow}
     >
-      Choose Color
+      Choose T-Shirt Color
     </button>
   </div>
 )}
                       {productdetail?.collarColor === true && formData.clothMaterial === "Collar" &&  (
-                       <div className="col-md-6">
+                       <div className="col-md-6 d-flex justify-content-start">
                         <button
                           type="button"
-                          className="btn btn-primary p-1"
+                          className="btn fw-bold text-white"
+  style={{
+    backgroundColor: "#0d6efd",
+    borderRadius: "30px",
+    
+   
+    transition: "all 0.3s ease",
+  }}
+  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#084298"}
+  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#0d6efd"}
                           onClick={handleCollareCottonShow}
                         >
                           Choose collar Color
@@ -997,10 +1085,19 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                       </div>
                       )}
                       {productdetail?.collarColor === true && formData.clothMaterial === "Round Neck" &&  (
-                       <div className="col-md-6">
+                       <div className="col-md-6 d-flex justify-content-start">
                         <button
                           type="button"
-                          className="btn btn-primary p-1"
+                          className="btn fw-bold text-white"
+  style={{
+    backgroundColor: "#0d6efd",
+    borderRadius: "30px",
+    
+   
+    transition: "all 0.3s ease",
+  }}
+  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#084298"}
+  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#0d6efd"}
                           onClick={handleCollarePolysterShow}
                         >
                           Choose collar Color
@@ -1008,10 +1105,19 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                       </div>
                       )}
                       {productdetail?.collarColor === true && formData.clothMaterial === "V Neck" &&  (
-                       <div className="col-md-6">
+                       <div className="col-md-6 d-flex justify-content-start">
                         <button
                           type="button"
-                          className="btn btn-primary p-1"
+                          className="btn fw-bold text-white"
+  style={{
+    backgroundColor: "#0d6efd",
+    borderRadius: "30px",
+    
+   
+    transition: "all 0.3s ease",
+  }}
+  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#084298"}
+  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#0d6efd"}
                           onClick={handleCollarePolyCottonShow}
                         >
                           Choose collar Color
@@ -1019,7 +1125,9 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                       </div>
                       )}
                     </div>
-                    {formData.color && formData.color.trim() !== "" && (
+                    <div className="row mb-4 d-flex align-items-center justify-content-start">
+                      <div className="col-md-6 d-flex justify-content-start">
+{formData.color && formData.color.trim() !== "" && (
   <div className="text-center d-flex flex-column justify-content-center align-items-center mb-4">
     <label className="form-label fw-bold" style={{ color: '#0d6efd' }}>
       Selected Color:
@@ -1038,10 +1146,13 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
     </div>
   </div>
 )}
+                      </div>
+                    </div>
+                    
 
                 {/* Logo Selection */}
-                <div className="row mb-4 justify-content-center align-items-center">
-                      <div className="col-md-6">
+                <div className="row mb-4 justify-content-start align-items-center">
+                      <div className="col-md-6 d-flex flex-column align-items-start">
                         <label className="form-label fw-bold" style={{ color: '#0d6efd' }}>How many logos?</label>
                         <input
                           type="number"
@@ -1056,7 +1167,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                             });
                             setFormData({ ...formData, logoCount: count, logos: newLogos });
                           }}
-                          className="form-control"
+                          className="form-control w-75"
                         />
                       </div>
                     </div>
@@ -1202,9 +1313,9 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
           className="form-check-input"
           id="printYes"
           name="nameNumberPrint"
-          value="yes"
-          checked={formData.nameNumberPrint === "yes"}
-          onChange={(e) => setFormData({...formData, nameNumberPrint: e.target.value})}
+          value="true"
+          checked={formData.nameNumberPrint === true}
+          onChange={(e) => setFormData({...formData, nameNumberPrint: true})}
         />
         <label className="form-check-label" htmlFor="printYes">Yes</label>
       </div>
@@ -1215,9 +1326,9 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
           className="form-check-input"
           id="printNo"
           name="nameNumberPrint"
-          value="no"
-          checked={formData.nameNumberPrint === "no"}
-          onChange={(e) => setFormData({...formData, nameNumberPrint: e.target.value})}
+          value="false"
+          checked={formData.nameNumberPrint === false}
+          onChange={(e) => setFormData({...formData, nameNumberPrint: false})}
         />
         <label className="form-check-label" htmlFor="printNo">No</label>
       </div>
@@ -1287,7 +1398,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
 
 
                     {/* name and number */}
-{ formData.nameNumberPrint === 'yes' && (
+{ formData.nameNumberPrint === true && (
   sizes.map((size) => {
   const qty = parseInt(formData.halfSleeve[size.label]) || 0;
 
@@ -1369,7 +1480,8 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
 </div>
 </div>
     </div>            
-                <div className="col-md-4 sticky-col">
+                <div className="col-md-4 ">
+                  <div className="p-1 sticky-col">
                   {/* Price Summary */}
                 <div className="card mb-4">
                       <div className="card-header bg-success text-white">
@@ -1476,7 +1588,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                       ) : (
                         <>
                           <FaShoppingCart className="me-2" />
-                          Add to Cart
+                          Add to Cart test
                         </>
                       )}
                     </button>
@@ -1493,13 +1605,14 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
                   )}
                 </div>
                 </div>
+              </div>
               
             
           
         </div>
         </div>
       </form>
-
+      <LoginModal show={showLogin} handleClose={handleLoginModalClose} />
       <Ratemodal show={showModal} handleClose={handleClose} formData={formData} setFormData={setFormData}  />
       <PolysterColorModal
                   show={showPolyesterModal}

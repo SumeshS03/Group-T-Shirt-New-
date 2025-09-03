@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {getOrderProduct} from '../ApiFunctions/Continuepayment'
 import './Orders.css'
 import { useNavigate } from "react-router-dom";
+import { handlePayment } from "../ApiFunctions/PaymentGateway";
 
 const OrderDetail = () => {
 
@@ -101,16 +102,17 @@ const OrderDetail = () => {
     <div className="d-flex flex-lg-row flex-column justify-content-between">
       <button 
         className="btn btn-primary rounded-5 px-4 py-2 rounded-pill mb-lg-0 mb-3  "
-        
+        disabled={order.balancePayment === 0} // disable when no balance left
       >
-        Pay Advance
+        {order.balancePayment === 0 ? "Payment Done" : "Pay Advance"}
       </button>
-      <button 
-        className="btn btn-primary rounded-5  px-4 py-2 rounded-pill"
-        
-      >
-        Pay Full Amount
-      </button>
+      <button
+  className="btn btn-primary rounded-5 px-4 py-2 rounded-pill"
+  onClick={() => handlePayment(order.orderId)}
+  disabled={order.balancePayment === 0} // disable when no balance left
+>
+  {order.balancePayment === 0 ? "Payment Done" : "Pay Full Amount"}
+</button>
     </div>
   </div>
 </div>

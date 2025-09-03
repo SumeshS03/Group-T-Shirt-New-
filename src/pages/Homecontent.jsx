@@ -77,6 +77,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import logofinal from "../images/GT-FInal-Logo.png"
 import Footer from '../Layout/Footer'
 import Rating from '../Layout/Rating'
+import HowToOrder from "./HowToOrder";
 
 
 
@@ -269,11 +270,11 @@ const Homecontent = () => {
                 className="heading-text"
                 
               >
-                Creating Your{" "}
+                Easy To Order{" "}
               </span>
               <ReactTyped
                 className="heading-text"
-                strings={["Unique Style"]}
+                strings={["Door Step Delivery"]}
                 style={{
                   color: "#007fff",
                 }}
@@ -284,9 +285,9 @@ const Homecontent = () => {
             </h1>
 
             <p className="print-shirt">
-              Print shirts for yourself or your online business 
+              For all your Bulk Customized T-Shirt Requirments 
             </p>
-            <button className="start-btd fs-5 "  onClick={buycheck}  >Buy Now</button>
+            <button className="start-btd fs-5 "  onClick={buycheck}  >Order Now</button>
           </div>
           <div></div>
         </div>
@@ -335,13 +336,13 @@ const Homecontent = () => {
 
       <div className="design-box container ">
         <div className="row  ">
-          <div className="  col-lg-6  col-md-12 ps-2  design-text d-flex flex-column justify-content-between text-start">
-            <p
+          <div className="  col-lg-6  col-md-12 ps-2  design-text d-flex flex-column justify-content text-start">
+            {/* <p
               style={{ color: "#a2a2a2", marginLeft: "6px", fontSize: "20px" }}
             >
               Who are we
-            </p>
-            <h1 className="heading-text m-0">Create Stunning Print</h1>
+            </p> */}
+            <h1 className="heading-text m-0 mt-lg-5 mt-4">Create Stunning Print</h1>
 
             <h1 className="m-0 text-start">
               <span className="heading-text">for </span>
@@ -351,7 +352,7 @@ const Homecontent = () => {
               </span>
             </h1>
             <p
-              className=" mt-3 fs-lg-4  mb-0 mobile-text "
+              className=" mt-5 fs-lg-4  mb-0 mobile-text "
               style={{ color: "#a2a2a2"}}
             >
               T-Shirt Printing for Everyone.<span> Get a head start with</span>
@@ -364,7 +365,7 @@ const Homecontent = () => {
             </p>
             <div className="text-start ms-0">
             <p
-              className="text-secondary mt-2 mb-2 "
+              className="text-secondary mt-5 mb-2 "
               style={{ color: "#a2a2a2" }}
             >
               <LiaCheckCircle className="circle-check" /> Top quality prints
@@ -378,11 +379,11 @@ const Homecontent = () => {
               colors,sizes,and designs
             </p>
             </div>
-            <button className="start-btd-new mt-3  fs-5" onClick={buycheck}>GET STARTED</button>
+            {/* <button className="start-btd-new mt-3  fs-5" onClick={buycheck}>GET STARTED</button> */}
           </div>
 
           <div className=" col-lg-6 col-md-12   justify-content-end position-relative hide-on-768 ">
-            <img src={groupimage} alt="Image 1" className="image" width={"100%"}/>
+            <img src={groupimage} alt="Image 1" className="image" />
           </div>
         </div>
       </div>
@@ -422,7 +423,7 @@ const Homecontent = () => {
           </div>
 
 
-          <div className="col-lg-6 d-flex justify-content-end">
+          <div className="col-lg-6 d-flex justify-content-lg-end justify-content-center">
             <div className="explore row d-flex align-items-center justify-content-center position-relative">
               <div className="col-6 readyimages">
                 <img className="explore-image" src={newdesign} alt="logo" />
@@ -459,9 +460,9 @@ const Homecontent = () => {
 
       <div className="container d-flex align-items-center justify-content-center">
       <div className="w-75 allfeaturestext" >
-        <text  className="offerboxparatext " style={{ color: "#a2a2a2" }}>
+        {/* <text  className="offerboxparatext " style={{ color: "#a2a2a2" }}>
           All the features you need
-        </text>
+        </text> */}
         <h1
           className="heading-textfontfix"
           
@@ -469,10 +470,10 @@ const Homecontent = () => {
           What Makes <span style={{ color: "#007fff" }}>GroupTshirt</span>
         </h1>
         <h1 className="heading-textfontfix " style={{ margin: "0",marginBottom:"10px" }}>
-          <span style={{ color: "#eeae0c" }}>Custom T-Shirts Different</span>
+          <span style={{ color: "#eeae0c" }}>Different</span>
         </h1>
         <text className="offerboxparatext offertext-fix" style={{ color: "#a2a2a2"}}>
-          T-Shirt Printing for Everyone. Get a head start wiyh free design
+          Get a head start with free design
           templates you can customize in a few clicks.
         </text>
       </div>
@@ -698,7 +699,7 @@ const Homecontent = () => {
             </div>
           </div>
         </div>
-        <div className="we-work-box">
+        {/* <div className="we-work-box">
           <div className="we-workboswidthfix">
           <h1 className="heading-textone mt-lg-0 mt-5 mb-lg-0 mb-2">
             How we
@@ -799,8 +800,12 @@ const Homecontent = () => {
             </div>
           </div>
         </div>
+      </div> */}
+     
       </div>
-      </div>
+
+
+       <HowToOrder />
       <Rating></Rating>
 
       <div className="mailbox  mt-4">
