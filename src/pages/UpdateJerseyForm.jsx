@@ -13,7 +13,7 @@ import Swal from 'sweetalert2';
 import useNavigationGuard from "../ApiFunctions/useNavigationGuard";
 import LoginModal from "./LoginModal";
 
-const Jerseys = () => {
+const UpdateJerseyForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [showPolyesterModal, setShowPolyesterModal] = useState(false);
@@ -26,6 +26,8 @@ const Jerseys = () => {
   const [showCollarePolyCottonColorModal,setShowCollarePolyCottonColorModal]=useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
+  console.log("id123654789 " , id );
+  
 
   // Discount structure based on quantity ranges
   const quantityDiscounts = [
@@ -697,44 +699,58 @@ for (let pair of payload.entries()) {
   };
 
   // Fetch product data
-  useEffect(() => {
-    const fetchProduct = async () => {
-      const token = localStorage.getItem("authToken");
+    // Fetch product data
+ useEffect(() => {
+      const fetchProduct = async () => {
 
-      try {
-        const response = await axios.get(
-          "https://gts.tsitcloud.com/api/products/single/products-by-category",
-          {
+        const token = localStorage.getItem('authToken');
+        const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+        const customerId = localStorage.getItem('customerId');
+   
+        try {
+          const response = await axios.get(`${BASE_URL}/cartItems/list/${customerId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
-        );
+          });
+          console.log("Fetched cart items:", response.data);
 
-        const allProducts = response.data.flatMap((cat) => cat.products);
-        setProductsData(allProducts);
-        const foundProduct = allProducts.find((p) => p._id === id);
+           // Directly use the array of cart items
+      const allProducts = response.data; 
 
-        if (foundProduct) {
-          setProductdetail(foundProduct);
+      // Find the single product by `_id` from params
+      const foundProduct = allProducts.find((p) => p._id === id);
+
+      console.log("foundProduct" , foundProduct);
+      
+
+      if (foundProduct) {
+        setProductdetail(foundProduct);
+        console.log("Found product:", foundProduct);
+
+        // product images are inside productId.images
+        if (foundProduct.productId?.images?.length > 0) {
           setSelectedImage(
-              `https://gts.tsitcloud.com/${foundProduct.images[0]}`
+            `https://gts.tsitcloud.com/${foundProduct.productId.images[0]}`
           );
         }
-      } catch (error) {
-        console.error("Failed to fetch product:", error);
+          
       }
-    };
-
-    fetchProduct();
-  }, [id]);
+        } catch (error) {
+          console.error('Failed to fetch product:', error);
+        }
+      };
+  
+      fetchProduct();
+    }, [id]);
 
   // Fetch material options
   useEffect(() => {
+    if (!productdetail?.productId?.category) return;
   const token = localStorage.getItem('authToken');
-  const cat_id = localStorage.getItem('categoryId');
-
-  axios.get(`https://gts.tsitcloud.com/api/category/${cat_id}`, {
+  const cat_id = productdetail.productId.category;
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  axios.get(`${BASE_URL}/category/${cat_id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
@@ -769,7 +785,77 @@ for (let pair of payload.entries()) {
   .catch((error) => {
     console.error('Error fetching category:', error);
   });
-}, []);
+}, [productdetail]);
+
+  // When productdetail changes, pre-fill form and GSM selection
+  useEffect(() => {
+    if (!productdetail) return;
+
+    // Pre-select GSM if available
+    const matchedItem = materialOptions[productdetail.clothMaterial]?.find(
+      (item) => item.name === productdetail.cloth
+    );
+    if (matchedItem) {
+      setSelectedGSM({
+        id: matchedItem._id,
+        name: matchedItem.name,
+        price: matchedItem.price,
+        type: productdetail.clothMaterial,
+      });
+    }
+
+    // ✅ Map backend half/full sleeve sizes
+    const halfSleeveFromBackend = productdetail.quantitySizeWise?.half || {};
+    const fullSleeveFromBackend = productdetail.quantitySizeWise?.full || {};
+
+    // ✅ Calculate totals
+    const halftotal = Object.values(halfSleeveFromBackend).reduce(
+      (acc, val) => acc + (parseInt(val) || 0),
+      0
+    );
+    const fulltotal = Object.values(fullSleeveFromBackend).reduce(
+      (acc, val) => acc + (parseInt(val) || 0),
+      0
+    );
+    const totalQuantity = halftotal + fulltotal;
+
+    setFormData((prev) => ({
+      ...prev,
+      quantity: productdetail.quantityCount || "",
+      logoCount: productdetail.logoCount || "0",
+      logos: (productdetail.logos || []).map((logo) => ({
+        _id: logo._id,
+        file: null,
+        preview: logo.photo
+          ? `${process.env.REACT_APP_IMAGE_URL}/${logo.photo}`
+          : "",
+        position: logo.position || "",
+        type: logo.logotype || "", // map logotype → type
+      })),
+      color: productdetail.color || "",
+      collarColor: productdetail.collarColor ? "true" : "false",
+      hasCollarColor: productdetail.hasCollarColor ?? true,
+      halftotal,
+      fulltotal,
+      grandtotal: productdetail.grandtotal || 0,
+      halfSleeve: { ...emptySleeveState, ...halfSleeveFromBackend },
+      fullSleeve: { ...emptySleeveState, ...fullSleeveFromBackend },
+      remark: productdetail.remark || "",
+      cloth: productdetail.cloth || "",
+      clothMaterial: productdetail.clothMaterial || "Cotton",
+      discountPerPiece: productdetail.discountPerPiece || 0,
+      discountedPrice: productdetail.discountedPrice || 0,
+      basePrice: matchedItem ? matchedItem.price : productdetail.basePrice || 0,
+      deliveryDays: productdetail.deliveryDays || 0,
+      estimatedDeliveryDate: productdetail.estimatedDeliveryDate || "",
+      printamount: productdetail.printamount || "",
+      emposedamount: productdetail.emposedamount || "",
+      finalAmount: productdetail.finalAmount || 0,
+      totalQuantity,
+    }));
+  }, [productdetail, materialOptions]);
+
+
 
 
  //clear the color if user select different material
@@ -796,12 +882,15 @@ for (let pair of payload.entries()) {
     }
   }, [selectedGSM]);
 
-  if (!productdetail) return <p>Loading...</p>;
 
+  
+
+  if (!productdetail) return <p>Loading...</p>;
+  console.log("Category value from jersey:", productdetail?.productId?.category);
   return (
     <>
-    {productdetail && productdetail.category &&
-    productdetail.category._id ==="680f271c43a9574da31d61c1" &&(
+    {productdetail &&
+    productdetail.productId.category ==="680f271c43a9574da31d61c1" &&(
       <div className="container-fluid">
       <form onSubmit={handleSubmit}>
         <div className="container">
@@ -1651,4 +1740,4 @@ for (let pair of payload.entries()) {
   );
 };
 
-export default Jerseys;
+export default UpdateJerseyForm;
