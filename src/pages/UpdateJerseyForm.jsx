@@ -180,6 +180,7 @@ const UpdateJerseyForm = () => {
 
   // State management
   const [productdetail, setProductdetail] = useState(null);
+  const [originalData, setOriginalData] = useState(null);
   const [productsData, setProductsData] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -593,10 +594,28 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
       return;
     }
 
-    const logoMetadata = formData.logos.map((logo) => ({
-      position: logo.position,
-      logotype: logo.type,
-    }));
+     // ✅ Prepare logo metadata
+const logoMetadata = (formData.logos || []).map((logo) => {
+  let photo = logo.photo || null; // keep existing photo if no changes
+
+  if (logo.file) {
+    // new file chosen
+    photo = `/uploads/pending/${logo.file.name}`;
+  } else if (logo.preview) {
+    // if preview exists, extract the relative /uploads path
+    const match = logo.preview.match(/(\/uploads\/.*)$/);
+    if (match) {
+      photo = match[1];
+    }
+  }
+
+  return {
+    _id: logo._id || undefined,  // preserve old ID
+    position: logo.position || "",
+    logotype: logo.type || "",
+    photo,                       // always send a photo
+  };
+});
 
     const formDataObj = {
       customerId: localStorage.getItem('customerId'),
@@ -622,7 +641,7 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
       discountedPrice: formData.discountedPrice,
       amount: formData.grandtotal,
       totalAmount: formData.grandtotal,
-      productId: productdetail?._id,
+      productId: productdetail?.productId._id,
       jerseyDetails: jerseyDetailsArray, 
       logos: logoMetadata,
       quantitySizeWise: {
@@ -639,17 +658,33 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
 //   const formDataObj = {
 //   customerId: localStorage.getItem("customerId"),
 //   ...rest,         
-//   jerseyDetail: jerseyDetailsArray,     
+//   jerseyDetail: jerseyDetailsArray,  
+
+
+
 // };
 
+// ✅ Compare current vs original to get only changed fields
+const changedData = getChangedFields(originalData, formDataObj);
+
+// Always include logos (with metadata)
+changedData.logos = logoMetadata;
+console.log("Only changed data being sent:", changedData);
+  console.log("Final form data object:", formDataObj);
+
     const payload = new FormData();
-    Object.entries(formDataObj).forEach(([key, value]) => {
-      if (typeof value === 'object') {
-        payload.append(key, JSON.stringify(value));
-      } else {
-        payload.append(key, value);
-      }
-    });
+Object.entries(changedData).forEach(([key, value]) => {
+  if (key === "logos") return;
+
+  if (typeof value === "object" && value !== null) {
+    payload.append(key, JSON.stringify(value));
+  } else {
+    payload.append(key, value);
+  }
+});
+
+// ✅ Append logos separately
+payload.append("logos", JSON.stringify(logoMetadata));
 
     formData.logos.forEach((logo) => {
       if (logo.file) {
@@ -662,9 +697,12 @@ for (let pair of payload.entries()) {
   console.log(pair[0], pair[1]);
 }
 
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const cart_id = productdetail?._id;
+
     try {
       console.log("Submitting form data:", payload);
-      const response = await axios.post("https://gts.tsitcloud.com/api/cartItems/add", payload, {
+      const response = await axios.put(`${BASE_URL}/cartItems/update/${cart_id}`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
@@ -789,10 +827,9 @@ for (let pair of payload.entries()) {
 
   // When productdetail changes, pre-fill form and GSM selection
   useEffect(() => {
-    if (!productdetail) return;
-
-    // Pre-select GSM if available
-    const matchedItem = materialOptions[productdetail.clothMaterial]?.find(
+    if (productdetail){
+      setOriginalData(productdetail);
+        const matchedItem = materialOptions[productdetail.clothMaterial]?.find(
       (item) => item.name === productdetail.cloth
     );
     if (matchedItem) {
@@ -852,10 +889,33 @@ for (let pair of payload.entries()) {
       emposedamount: productdetail.emposedamount || "",
       finalAmount: productdetail.finalAmount || 0,
       totalQuantity,
+      nameNumberPrint: productdetail.needJerseyDetails || "false",
     }));
+
+  };
+
+    // Pre-select GSM if available
+  
   }, [productdetail, materialOptions]);
 
+function getChangedFields(original, updated) {
+  const changed = {};
 
+  for (const key in updated) {
+    if (typeof updated[key] === "object" && updated[key] !== null) {
+      // deep compare objects
+      if (JSON.stringify(original[key]) !== JSON.stringify(updated[key])) {
+        changed[key] = updated[key];
+      }
+    } else {
+      if (original[key] !== updated[key]) {
+        changed[key] = updated[key];
+      }
+    }
+  }
+
+  return changed;
+}
 
 
  //clear the color if user select different material

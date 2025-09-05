@@ -182,6 +182,7 @@ const UpdateProductDetailForm = () => {
 
   // State management
   const [productdetail, setProductdetail] = useState(null);
+  const [originalData, setOriginalData] = useState(null);
   const [productsData, setProductsData] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -454,178 +455,415 @@ const UpdateProductDetailForm = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setIsSubmitting(true);
 
-    // Validation
-    if (parseInt(formData.quantity) < 16) {
-      Swal.fire("Validation Error", "Minimum quantity must be 16", "warning");
-      setIsSubmitting(false);
-      return;
-    }
+  //   // Validation
+  //   if (parseInt(formData.quantity) < 16) {
+  //     Swal.fire("Validation Error", "Minimum quantity must be 16", "warning");
+  //     setIsSubmitting(false);
+  //     return;
+  //   }
 
-    if (!selectedGSM.id) {
-      Swal.fire("Validation Error", "Please select a material/GSM", "warning");
-      setIsSubmitting(false);
-      return;
-    }
+  //   if (!selectedGSM.id) {
+  //     Swal.fire("Validation Error", "Please select a material/GSM", "warning");
+  //     setIsSubmitting(false);
+  //     return;
+  //   }
 
-    // if (!formData.halftotal) {
-    //  Swal.fire("Validation Error", "Please Fill Size Wise Quantity in Men and Women", "warning");
-    //   setIsSubmitting(false);
-    //   return;
-    // }
+  //   if (parseInt(formData.quantity) !== parseInt(formData.totalQuantity)) {
+  //     Swal.fire(
+  //       "Validation Error",
+  //       "Men and Women Quantity and total must be equal. Please check.",
+  //       "warning"
+  //     );
+  //     setIsSubmitting(false);
+  //     return;
+  //   }
 
-    if (parseInt(formData.quantity) !== parseInt(formData.totalQuantity)) {
-      Swal.fire(
-        "Validation Error",
-        "Men and Women Quantity and total must be equal. Please check.",
-        "warning"
-      );
-      setIsSubmitting(false);
-      return;
-    }
+  //   if (!formData.color) {
+  //     Swal.fire(
+  //       "Validation Error",
+  //       "Please Select Your T-Shirt Color",
+  //       "warning"
+  //     );
+  //     setIsSubmitting(false);
+  //     return;
+  //   }
 
-    if (!formData.color) {
-      Swal.fire(
-        "Validation Error",
-        "Please Select Your T-Shirt Color",
-        "warning"
-      );
-      setIsSubmitting(false);
-      return;
-    }
+  //   if (parseInt(formData.logoCount) > 0) {
+  //     const incompleteLogos = formData.logos.some(
+  //       (logo) => !(logo.file || logo.preview) || !logo.position || !logo.type
+  //     );
+  //     if (incompleteLogos) {
+  //       Swal.fire(
+  //         "Validation Error",
+  //         "Please complete all logo details",
+  //         "warning"
+  //       );
+  //       setIsSubmitting(false);
+  //       return;
+  //     }
+  //   }
 
-    if (parseInt(formData.logoCount) > 0) {
-      const incompleteLogos = formData.logos.some(
-        (logo) => !logo.file || !logo.position || !logo.type
-      );
-      if (incompleteLogos) {
-        Swal.fire(
-          "Validation Error",
-          "Please complete all logo details",
-          "warning"
-        );
-        setIsSubmitting(false);
-        return;
-      }
-    }
+  //   if (!formData.remark) {
+  //     Swal.fire("Validation Error", "Please Fill Remark", "warning");
+  //     setIsSubmitting(false);
+  //     return;
+  //   }
 
-    if (!formData.remark) {
-      Swal.fire("Validation Error", "Please Fill Remark", "warning");
-      setIsSubmitting(false);
-      return;
-    }
+  //   const token = localStorage.getItem("authToken");
+  //   if (!token) {
+  //     Swal.fire("Authentication Required", "Please login to continue", "info");
+  //     navigate("/profile");
+  //     return;
+  //   }
 
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      Swal.fire("Authentication Required", "Please login to continue", "info");
-      navigate("/profile");
-      return;
-    }
+  //   // ✅ Prepare logo metadata
+  //   const logoMetadata = (formData.logos || []).map((logo) => {
+  //     let photo = null;
 
-    const logoMetadata = formData.logos.map((logo) => ({
-      position: logo.position,
-      logotype: logo.type,
-    }));
+  //     if (logo.file) {
+  //       // For new files, keep photo = filename (or some marker)
+  //       photo = `/uploads/pending/${logo.file.name}`;
+  //     } else if (logo.preview) {
+  //       // Extract only the /uploads/... part from preview
+  //       const match = logo.preview.match(/(\/uploads\/.*)$/);
+  //       if (match) {
+  //         photo = match[1];
+  //       }
+  //     }
 
-    const formDataObj = {
-      customerId: localStorage.getItem("customerId"),
-      quantityCount: formData.quantity,
-      collarColor: formData.collarColor,
-      hasCollarColor: formData.hasCollarColor,
-      colorid: formData.id,
-      grandTotal: formData.finalAmount,
-      logoCount: formData.logoCount,
-      color: formData.color,
-      cloth: selectedGSM.name,
-      clothMaterial: selectedGSM.type,
-      totalCount: parseInt(formData.quantity),
-      remark: formData.remark,
-      basePrice: selectedGSM.price,
-      discountPerPiece: formData.discountPerPiece,
-      discountedPrice: formData.discountedPrice,
-      amount: formData.grandtotal,
-      totalAmount: formData.grandtotal,
-      productId: productdetail?.productId._id,
-      deliveryDate: formData.estimatedDeliveryDate,
-      logos: logoMetadata,
-      quantitySizeWise: {
-        half: formData.halfSleeve,
-        full: formData.fullSleeve,
-      },
-      quantitySleeveWise: {
-        halfTotal: formData.halftotal,
-        fullTotal: formData.fulltotal,
-      },
-    };
+  //     return {
+  //       position: logo.position || "",
+  //       logotype: logo.type || "",
+  //       photo,
+  //     };
+  //   });
 
-    const payload = new FormData();
-    Object.entries(formDataObj).forEach(([key, value]) => {
-      if (typeof value === "object") {
-        payload.append(key, JSON.stringify(value));
-      } else {
-        payload.append(key, value);
-      }
-    });
+  //   console.log("Prepared logo metadata:", logoMetadata);
 
-    formData.logos.forEach((logo) => {
-      if (logo.file) {
-        payload.append("logoPhotos", logo.file);
-      }
-    });
+  //   const formDataObj = {
+  //     customerId: localStorage.getItem("customerId"),
+  //     quantityCount: formData.quantity,
+  //     collarColor: formData.collarColor,
+  //     hasCollarColor: formData.hasCollarColor,
+  //     colorid: formData.id,
+  //     grandTotal: formData.finalAmount,
+  //     logoCount: formData.logoCount,
+  //     color: formData.color,
+  //     cloth: selectedGSM.name,
+  //     clothMaterial: selectedGSM.type,
+  //     totalCount: parseInt(formData.quantity),
+  //     remark: formData.remark,
+  //     basePrice: selectedGSM.price,
+  //     discountPerPiece: formData.discountPerPiece,
+  //     discountedPrice: formData.discountedPrice,
+  //     amount: formData.grandtotal,
+  //     totalAmount: formData.grandtotal,
+  //     productId: productdetail?.productId._id,
+  //     deliveryDate: formData.estimatedDeliveryDate,
+  //     logos: logoMetadata, // ✅ array of objects
+  //     quantitySizeWise: {
+  //       half: formData.halfSleeve,
+  //       full: formData.fullSleeve,
+  //     },
+  //     quantitySleeveWise: {
+  //       halfTotal: formData.halftotal,
+  //       fullTotal: formData.fulltotal,
+  //     },
+  //   };
 
-    const BASE_URL = process.env.REACT_APP_API_BASE_URL;
-    const cart_id = productdetail?._id;
 
-    try {
-      const response = await axios.put(
-        `${BASE_URL}cartItems/update/${cart_id}`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+    
 
-      // ✅ Force update immediately
-      flushSync(() => setIsDirty(false));
-      console.log("Form submitted successfully:", response.data);
-      // await Swal.fire("Success", "Product added to cart successfully!", "success");
+  //   const payload = new FormData();
+  //   Object.entries(formDataObj).forEach(([key, value]) => {
+  //     if (key === "logos") {
+  //       console.log("success");
+        
+  //       // ✅ Handle logos separately
+  //       payload.append("logos", JSON.stringify(value)); // send whole array
+  //     } else if (typeof value === "object" && value !== null) {
+  //       console.log("success123");
+  //       payload.append(key, JSON.stringify(value));
+  //     } else {
+  //       console.log("success1234");
+  //       payload.append(key, value);
+  //     }
+  //   });
 
-      navigate("/cart");
-      // wait a tick so the cart page loads first
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-      }, 0);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      if (error.response?.status === 401) {
-        await Swal.fire(
-          "Session Expired",
-          "Please login to continue.",
-          "error"
-        );
-        localStorage.removeItem("authToken");
-        handleLoginModalShow();
-        // navigate("/profile");
-      } else {
-        Swal.fire(
-          "Error",
-          error.response?.data?.message ||
-            "Something went wrong. Please try again.",
-          "error"
-        );
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  //   formData.logos.forEach((logo) => {
+  //     if (logo.file) {
+  //       payload.append("logoPhotos", logo.file);
+  //     }
+  //   });
+
+  //   console.log("formData.logos" ,);
+    
+  //   // ✅ Debug: log FormData contents
+  //   for (let [key, value] of payload.entries()) {
+  //     console.log(`${key} payload :`, value);
+  //   }
+
+  //   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  //   const cart_id = productdetail?._id;
+  //   console.log("Final payload object:", payload);
+
+
+  //   setIsSubmitting(false);
+
+  //   try {
+  //     const response = await axios.put(
+  //       `${BASE_URL}cartItems/update/${cart_id}`,
+  //       payload,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+
+  //     // ✅ Force update immediately
+  //     flushSync(() => setIsDirty(false));
+  //     console.log("Form submitted successfully:", response.data);
+  //     // await Swal.fire("Success", "Product added to cart successfully!", "success");
+
+  //      navigate("/cart");
+  //     // wait a tick so the cart page loads first
+  //     setTimeout(() => {
+  //       window.scrollTo(0, 0);
+  //     }, 0);
+  //   } catch (error) {
+  //     console.error("Error submitting form:", error);
+  //     if (error.response?.status === 401) {
+  //       await Swal.fire(
+  //         "Session Expired",
+  //         "Please login to continue.",
+  //         "error"
+  //       );
+  //       localStorage.removeItem("authToken");
+  //       handleLoginModalShow();
+  //       // navigate("/profile");
+  //     } else {
+  //       Swal.fire(
+  //         "Error",
+  //         error.response?.data?.message ||
+  //           "Something went wrong. Please try again.",
+  //         "error"
+  //       );
+  //     }
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
 
   //clear the color if user select different material
+  
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+
+  // ✅ Validation checks
+  if (parseInt(formData.quantity) < 16) {
+    Swal.fire("Validation Error", "Minimum quantity must be 16", "warning");
+    setIsSubmitting(false);
+    return;
+  }
+
+  if (!selectedGSM.id) {
+    Swal.fire("Validation Error", "Please select a material/GSM", "warning");
+    setIsSubmitting(false);
+    return;
+  }
+
+  if (parseInt(formData.quantity) !== parseInt(formData.totalQuantity)) {
+    Swal.fire(
+      "Validation Error",
+      "Men and Women Quantity and total must be equal. Please check.",
+      "warning"
+    );
+    setIsSubmitting(false);
+    return;
+  }
+
+  if (!formData.color) {
+    Swal.fire("Validation Error", "Please Select Your T-Shirt Color", "warning");
+    setIsSubmitting(false);
+    return;
+  }
+
+  if (parseInt(formData.logoCount) > 0) {
+    const incompleteLogos = formData.logos.some(
+      (logo) => !(logo.file || logo.preview) || !logo.position || !logo.type
+    );
+    if (incompleteLogos) {
+      Swal.fire(
+        "Validation Error",
+        "Please complete all logo details",
+        "warning"
+      );
+      setIsSubmitting(false);
+      return;
+    }
+  }
+
+  if (!formData.remark) {
+    Swal.fire("Validation Error", "Please Fill Remark", "warning");
+    setIsSubmitting(false);
+    return;
+  }
+
+  const token = localStorage.getItem("authToken");
+  if (!token) {
+    Swal.fire("Authentication Required", "Please login to continue", "info");
+    navigate("/profile");
+    return;
+  }
+
+  // ✅ Prepare logo metadata
+const logoMetadata = (formData.logos || []).map((logo) => {
+  let photo = logo.photo || null; // keep existing photo if no changes
+
+  if (logo.file) {
+    // new file chosen
+    photo = `/uploads/pending/${logo.file.name}`;
+  } else if (logo.preview) {
+    // if preview exists, extract the relative /uploads path
+    const match = logo.preview.match(/(\/uploads\/.*)$/);
+    if (match) {
+      photo = match[1];
+    }
+  }
+
+  return {
+    _id: logo._id || undefined,  // preserve old ID
+    position: logo.position || "",
+    logotype: logo.type || "",
+    photo,                       // always send a photo
+  };
+});
+
+
+
+  const formDataObj = {
+    customerId: localStorage.getItem("customerId"),
+    quantityCount: formData.quantity,
+    collarColor: formData.collarColor,
+    hasCollarColor: formData.hasCollarColor,
+    colorid: formData.id,
+    grandTotal: formData.finalAmount,
+    logoCount: formData.logoCount,
+    color: formData.color,
+    cloth: selectedGSM.name,
+    clothMaterial: selectedGSM.type,
+    totalCount: parseInt(formData.quantity),
+    remark: formData.remark,
+    basePrice: selectedGSM.price,
+    discountPerPiece: formData.discountPerPiece,
+    discountedPrice: formData.discountedPrice,
+    amount: formData.grandtotal,
+    totalAmount: formData.grandtotal,
+    productId: productdetail?.productId._id,
+    deliveryDate: formData.estimatedDeliveryDate,
+    logos: logoMetadata, // ✅ array with _id for old + placeholder for new
+    quantitySizeWise: {
+      half: formData.halfSleeve,
+      full: formData.fullSleeve,
+    },
+    quantitySleeveWise: {
+      halfTotal: formData.halftotal,
+      fullTotal: formData.fulltotal,
+    },
+  };
+
+
+// ✅ Compare current vs original to get only changed fields
+const changedData = getChangedFields(originalData, formDataObj);
+
+// Always include logos (with metadata)
+changedData.logos = logoMetadata;
+
+console.log("Only changed data being sent:", changedData);
+
+
+
+
+
+  console.log("Final form data object:", formDataObj);
+
+
+  // ✅ Build FormData payload
+const payload = new FormData();  
+Object.entries(changedData).forEach(([key, value]) => {
+  if (key === "logos") return;
+
+  if (typeof value === "object" && value !== null) {
+    payload.append(key, JSON.stringify(value));
+  } else {
+    payload.append(key, value);
+  }
+});
+
+// ✅ Append logos separately
+payload.append("logos", JSON.stringify(logoMetadata));
+
+// ✅ Append new logo files
+formData.logos.forEach((logo) => {
+  if (logo.file) {
+    payload.append("logoPhotos", logo.file);
+  }
+});
+
+  // ✅ Debug: Log FormData contents
+  for (let [key, value] of payload.entries()) {
+    console.log(`${key} payload:`, value);
+  }
+
+  const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const cart_id = productdetail?._id;
+
+  try {
+    const response = await axios.put(
+      `${BASE_URL}cartItems/update/${cart_id}`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    flushSync(() => setIsDirty(false));
+    console.log("Form submitted successfully:", response.data);
+
+    navigate("/cart");
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 0);
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    if (error.response?.status === 401) {
+      await Swal.fire("Session Expired", "Please login to continue.", "error");
+      localStorage.removeItem("authToken");
+      handleLoginModalShow();
+    } else {
+      Swal.fire(
+        "Error",
+        error.response?.data?.message || "Something went wrong. Please try again.",
+        "error"
+      );
+    }
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+  
+  
   useEffect(() => {
     // when material changes, reset selected color
     setFormData((prev) => ({
@@ -725,10 +963,109 @@ const UpdateProductDetailForm = () => {
   }, [productdetail]);
 
   // When productdetail changes, pre-fill form and GSM selection
-  useEffect(() => {
-    if (!productdetail) return;
+  // useEffect(() => {
+  //   if (!productdetail) return;
 
-    // Pre-select GSM if available
+   
+  //   const matchedItem = materialOptions[productdetail.clothMaterial]?.find(
+  //     (item) => item.name === productdetail.cloth
+  //   );
+  //   if (matchedItem) {
+  //     setSelectedGSM({
+  //       id: matchedItem._id,
+  //       name: matchedItem.name,
+  //       price: matchedItem.price,
+  //       type: productdetail.clothMaterial,
+  //     });
+  //   }
+
+  //   // ✅ Map backend half/full sleeve sizes
+  //   const halfSleeveFromBackend = productdetail.quantitySizeWise?.half || {};
+  //   const fullSleeveFromBackend = productdetail.quantitySizeWise?.full || {};
+
+  //   // ✅ Calculate totals
+  //   const halftotal = Object.values(halfSleeveFromBackend).reduce(
+  //     (acc, val) => acc + (parseInt(val) || 0),
+  //     0
+  //   );
+  //   const fulltotal = Object.values(fullSleeveFromBackend).reduce(
+  //     (acc, val) => acc + (parseInt(val) || 0),
+  //     0
+  //   );
+  //   const totalQuantity = halftotal + fulltotal;
+
+  //   setFormData((prev) => {
+  //     const updatedForm = {
+  //       ...prev,
+  //       quantity: productdetail.quantityCount || "",
+  //       logoCount: productdetail.logoCount || "0",
+  //       logos: (productdetail.logos || []).map((logo) => ({
+  //         _id: logo._id,
+  //         file: null, // backend logos have only photo
+  //         preview: logo.photo
+  //           ? `${process.env.REACT_APP_IMAGE_URL}/${logo.photo}`
+  //           : "",
+  //         position: logo.position || "",
+  //         type: logo.logotype || "", // Printed / Embroidered
+  //       })),
+  //       color: productdetail.color || "",
+  //       collarColor: productdetail.collarColor ? "true" : "false",
+  //       hasCollarColor: productdetail.hasCollarColor ?? true,
+  //       halftotal,
+  //       fulltotal,
+  //       grandtotal: productdetail.grandtotal || 0,
+  //       halfSleeve: { ...emptySleeveState, ...halfSleeveFromBackend },
+  //       fullSleeve: { ...emptySleeveState, ...fullSleeveFromBackend },
+  //       remark: productdetail.remark || "",
+  //       cloth: productdetail.cloth || "",
+  //       clothMaterial: productdetail.clothMaterial || "Cotton",
+  //       discountPerPiece: productdetail.discountPerPiece || 0,
+  //       discountedPrice: productdetail.discountedPrice || 0,
+  //       basePrice: matchedItem
+  //         ? matchedItem.price
+  //         : productdetail.basePrice || 0,
+  //       deliveryDays: productdetail.deliveryDays || 0,
+  //       estimatedDeliveryDate: productdetail.estimatedDeliveryDate || "",
+  //       printamount: productdetail.printamount || "",
+  //       emposedamount: productdetail.emposedamount || "",
+  //       finalAmount: productdetail.finalAmount || 0,
+  //       totalQuantity,
+  //     };
+
+  //     // ✅ Ensure recalculation with initial logo types
+  //     calculateAndSetTotal(updatedForm);
+
+  //     return updatedForm;
+  //   });
+
+    
+  // }, [productdetail, materialOptions]);
+
+
+function getChangedFields(original, updated) {
+  const changed = {};
+
+  for (const key in updated) {
+    if (typeof updated[key] === "object" && updated[key] !== null) {
+      // deep compare objects
+      if (JSON.stringify(original[key]) !== JSON.stringify(updated[key])) {
+        changed[key] = updated[key];
+      }
+    } else {
+      if (original[key] !== updated[key]) {
+        changed[key] = updated[key];
+      }
+    }
+  }
+
+  return changed;
+}
+
+
+  useEffect(() => {
+  if (productdetail) {
+    setOriginalData(productdetail); // save original for comparison
+    // ... your existing setFormData code
     const matchedItem = materialOptions[productdetail.clothMaterial]?.find(
       (item) => item.name === productdetail.cloth
     );
@@ -756,41 +1093,51 @@ const UpdateProductDetailForm = () => {
     );
     const totalQuantity = halftotal + fulltotal;
 
-    setFormData((prev) => ({
-      ...prev,
-      quantity: productdetail.quantityCount || "",
-      logoCount: productdetail.logoCount || "0",
-      logos: (productdetail.logos || []).map((logo) => ({
-        _id: logo._id,
-        file: null,
-        preview: logo.photo
-          ? `${process.env.REACT_APP_IMAGE_URL}/${logo.photo}`
-          : "",
-        position: logo.position || "",
-        type: logo.logotype || "", // map logotype → type
-      })),
-      color: productdetail.color || "",
-      collarColor: productdetail.collarColor ? "true" : "false",
-      hasCollarColor: productdetail.hasCollarColor ?? true,
-      halftotal,
-      fulltotal,
-      grandtotal: productdetail.grandtotal || 0,
-      halfSleeve: { ...emptySleeveState, ...halfSleeveFromBackend },
-      fullSleeve: { ...emptySleeveState, ...fullSleeveFromBackend },
-      remark: productdetail.remark || "",
-      cloth: productdetail.cloth || "",
-      clothMaterial: productdetail.clothMaterial || "Cotton",
-      discountPerPiece: productdetail.discountPerPiece || 0,
-      discountedPrice: productdetail.discountedPrice || 0,
-      basePrice: matchedItem ? matchedItem.price : productdetail.basePrice || 0,
-      deliveryDays: productdetail.deliveryDays || 0,
-      estimatedDeliveryDate: productdetail.estimatedDeliveryDate || "",
-      printamount: productdetail.printamount || "",
-      emposedamount: productdetail.emposedamount || "",
-      finalAmount: productdetail.finalAmount || 0,
-      totalQuantity,
-    }));
-  }, [productdetail, materialOptions]);
+    setFormData((prev) => {
+      const updatedForm = {
+        ...prev,
+        quantity: productdetail.quantityCount || "",
+        logoCount: productdetail.logoCount || "0",
+        logos: (productdetail.logos || []).map((logo) => ({
+          _id: logo._id,
+          file: null, // backend logos have only photo
+          preview: logo.photo
+            ? `${process.env.REACT_APP_IMAGE_URL}/${logo.photo}`
+            : "",
+          position: logo.position || "",
+          type: logo.logotype || "", // Printed / Embroidered
+        })),
+        color: productdetail.color || "",
+        collarColor: productdetail.collarColor ? "true" : "false",
+        hasCollarColor: productdetail.hasCollarColor ?? true,
+        halftotal,
+        fulltotal,
+        grandtotal: productdetail.grandtotal || 0,
+        halfSleeve: { ...emptySleeveState, ...halfSleeveFromBackend },
+        fullSleeve: { ...emptySleeveState, ...fullSleeveFromBackend },
+        remark: productdetail.remark || "",
+        cloth: productdetail.cloth || "",
+        clothMaterial: productdetail.clothMaterial || "Cotton",
+        discountPerPiece: productdetail.discountPerPiece || 0,
+        discountedPrice: productdetail.discountedPrice || 0,
+        basePrice: matchedItem
+          ? matchedItem.price
+          : productdetail.basePrice || 0,
+        deliveryDays: productdetail.deliveryDays || 0,
+        estimatedDeliveryDate: productdetail.estimatedDeliveryDate || "",
+        printamount: productdetail.printamount || "",
+        emposedamount: productdetail.emposedamount || "",
+        finalAmount: productdetail.finalAmount || 0,
+        totalQuantity,
+      };
+
+      // ✅ Ensure recalculation with initial logo types
+      calculateAndSetTotal(updatedForm);
+
+      return updatedForm;
+    });
+  }
+}, [productdetail, materialOptions]);
 
   //check the page reloade or navigate to other page
   useNavigationGuard(
@@ -822,7 +1169,6 @@ const UpdateProductDetailForm = () => {
       ) : productdetail?.productId?.category === "680f271c43a9574da31d61c1" ? (
         <>
           <UpdateJerseyForm />
-          
         </>
       ) : (
         <div className="container-fluid ">
@@ -1285,14 +1631,15 @@ const UpdateProductDetailForm = () => {
                                   <input
                                     type="file"
                                     accept="image/*"
-                                    required
                                     onChange={(e) => {
                                       const file = e.target.files[0];
                                       const newLogos = [...formData.logos];
                                       newLogos[index] = {
                                         ...newLogos[index],
                                         file,
-                                        preview: URL.createObjectURL(file),
+                                        preview: file
+                                          ? URL.createObjectURL(file)
+                                          : newLogos[index].preview,
                                       };
                                       setFormData({
                                         ...formData,
