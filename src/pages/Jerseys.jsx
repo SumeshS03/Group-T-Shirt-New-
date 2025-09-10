@@ -460,7 +460,7 @@ console.log("formdata" , formData);
   const handleChange = (type, sizeLabel, value) => {
     const updated = {
       ...formData[type],
-      [sizeLabel]: value || "0",
+      [sizeLabel]: value || "",
     };
 
     const halftotal = Object.values(

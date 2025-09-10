@@ -1,37 +1,13 @@
 import React from "react";
 import "./Contactus.css";
 import HomeHeader from "../Layout/HomeHeader";
-import aboutus from "../images/about-us1.png";
 import SimpleMap from "./SimpleMap";
-import Headerfinal from '../Layout/Headerfinal';
-
 import glow from "../images/Service-page-8.png"
 import leaf from "../images/service-page9.png"
 import fastshipping from "../images/fastshipping.png"
 import customerhappy from "../images/customerhappy.png"
-import bluef from "../images/blue-f.png"
-import contactusimage from "../images/contactusimage.png"
 import contactusimageone from "../images/contactusimageone.png"
-import logofinal from "../images/GT-FInal-Logo.png"
 import Footer from '../Layout/Footer'
-
-import applepay from "../images/apple.jpg";
-import gpay from "../images/gpay1.jpg";
-import visa from "../images/Visa1.jpg";
-import mastercard1 from "../images/Master1.jpg";
-import phonepay from "../images/Phonepe.jpg";
-import amex from "../images/amex.png";
-
-import { FaArrowRight } from "react-icons/fa6";
-import { FaTwitter } from "react-icons/fa";
-import { FaFacebookF } from "react-icons/fa6";
-import { FaInstagram } from "react-icons/fa6";
-import { FiYoutube } from "react-icons/fi";
-
-import { FiPhoneCall } from "react-icons/fi";
-import { HiOutlineMailOpen } from "react-icons/hi";
-import { IoLocationOutline } from "react-icons/io5";
-
 import { BsFillTelephoneFill } from "react-icons/bs";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
@@ -60,7 +36,7 @@ const Contactus = () => {
         >
           Home - Contact Us
         </p>
-        <img src={contactusimageone} className="imagetoptwo"></img>
+        <img src={contactusimageone} alt="contactus" className="imagetoptwo"></img>
       </div>
       <h2
         className="heading-textcontact"

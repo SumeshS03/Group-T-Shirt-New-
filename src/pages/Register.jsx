@@ -1,16 +1,13 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import "./Shopcontent.css"
 import HomeHeader from '../Layout/HomeHeader'
-import aboutus from "../images/about-us1.png";
-import bluef from "../images/blue-f.png"
-import shopimage from "../images/shopimage.png"
 import { useNavigate } from 'react-router-dom';
-// import bluef from "../images/blue-f.png"
 import { Link } from 'react-router-dom';
 import 'antd/dist/reset.css'; 
-import { Button, Form, Input, Radio } from 'antd';
+import { Button, Form, Input} from 'antd';
 import "./Register.css"
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 
 
@@ -22,6 +19,7 @@ const Register = () => {
     const [form] = Form.useForm();
 const [formLayout, setFormLayout] = useState('horizontal');
 const [isFormValid, setIsFormValid] = useState(false);
+const navigate = useNavigate();
 
 const handleSubmit = async (values)=>{
     const formData = {
@@ -42,30 +40,29 @@ const handleSubmit = async (values)=>{
         const resData = response.data;
         if (response.status === 200) {
           if (resData.message === "Already Registered") {
-            alert("Already registered");
+            Swal.fire("You are already registered. Please log in.");
           } else {
-            alert("Register successful");
+            Swal.fire("Register successful");
+            form.resetFields();
+            setIsFormValid(false);
+            navigate('/profile');
           }
         } else {
-          alert(resData.message || "Register successful");
+          Swal.fire(resData.message || "Register successful");
         }
       } catch (error) {
         if (error.response && error.response.data && error.response.data.message) {
-          alert(error.response.data.message);
+          Swal.fire(error.response.data.message);
         } else {
-          alert("An error occurred while submitting data.");
+          Swal.fire("An error occurred. Please try again.");
         }
         console.error('Error submitting data:', error);
       }
 
 };
 
-// const handleSubmit = () => {
-//     const formData = form.getFieldsValue(); // Get form data
-//     console.log('Form Data:', formData); // Log form data to the console
-//   };
 
-  const handleFieldsChange = () => {
+const handleFieldsChange = () => {
     const hasErrors = form
       .getFieldsError()
       .some((field) => field.errors.length > 0);
@@ -74,6 +71,9 @@ const handleSubmit = async (values)=>{
 
     setIsFormValid(!hasErrors && !hasEmpty);
   };
+
+
+  
   return (
    <>
    <div>

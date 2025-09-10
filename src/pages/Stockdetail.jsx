@@ -1,14 +1,10 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import qualityshirt from "../images/Premium-Quality.png";
 import HomeHeader from "../Layout/HomeHeader";
 import shopimage from "../images/shopimage.png";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Productdetail.css";
-import { useCart } from "./CartContext";
-import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import Button from "react-bootstrap/Button";
 import "./Stockdetail.css";
 import axios from "axios";
 import { FaShoppingCart } from 'react-icons/fa';
@@ -23,13 +19,9 @@ const Stockdetail = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [hoveredImage, setHoveredImage] = useState(null);
    const [selectedSize, setSelectedSize] = useState("");
-  const [availableQty, setAvailableQty] = useState(0);
   const [enteredQty, setEnteredQty] = useState("");
   const [activeTab, setActiveTab] = useState("");
-  const [quantity, setQuantity] = useState(1);
-  const [size, setSize] = useState("M");
   const navigate = useNavigate();
-  const location = useLocation();
   
 
   useEffect(() => {
@@ -81,34 +73,6 @@ const Stockdetail = () => {
     return <div>Loading...</div>;
   }
 
- 
-
-  // Handle size change
-const handleSizeChange = (e) => {
-  const size = e.target.value;
-  setSelectedSize(size);
-
-  // Changed from productdetail.stocks[0].quantityBySize to productdetail.quantityBySize
-  const quantityMap = productdetail?.quantityBySize || {};
-  const qty = quantityMap[size] || 0;
-  setAvailableQty(qty);
-  setEnteredQty(qty > 0 ? 1 : "");
-};
-
-  const handleQtyChange = (e) => {
-    const value = e.target.value;
-    if (value === "" || (Number(value) >= 0 && Number(value) <= availableQty)) {
-      setEnteredQty(value);
-    }
-
-const foundProduct = productsData.find((p) => p._id === id);
-if (!foundProduct) return <h2>Product not found</h2>;
-
-  
-
-
- 
-}
 
 
 const handleSubmit = async (e) => {

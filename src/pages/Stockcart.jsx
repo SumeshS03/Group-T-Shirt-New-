@@ -3,6 +3,8 @@ import Header from "../Layout/HomeHeader"
 import axios from 'axios';
 import { MdDelete } from "react-icons/md";
 import Button from '@mui/material/Button';
+import Footer from '../Layout/Footer';
+import "./Shopcontentproduct.css";
 
 
 
@@ -52,7 +54,7 @@ export const Stockcart = () => {
       }
       );
 
-      if(response.status == 200){
+      if(response.status === 200){
         fetchProduct();
       }
       
@@ -159,6 +161,7 @@ export const Stockcart = () => {
     </div>
   </div>
 </div>
+<Footer></Footer>
    </>
     
     

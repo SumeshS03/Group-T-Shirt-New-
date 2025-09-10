@@ -1,23 +1,15 @@
 import React from 'react'
 import  './HomeHeader.css'
 import { FaLocationDot } from "react-icons/fa6";
-import { BsFillTelephoneFill } from "react-icons/bs";
-import { FaSquareInstagram } from "react-icons/fa6";
-import { FaFacebookSquare } from "react-icons/fa";
-import { FaTwitterSquare } from "react-icons/fa";
-import { FaWhatsappSquare } from "react-icons/fa";
-import { FaYoutubeSquare } from "react-icons/fa";
 import { FaSearch } from "react-icons/fa";
 import { MdPerson } from "react-icons/md";
 import { FaCartShopping } from "react-icons/fa6";
-import bluef from "../images/blue-f.png"
 import { FaPhoneVolume } from "react-icons/fa6";
 import { useEffect, useState } from "react";
-import { Link, Navigate, useLocation } from "react-router-dom";
+import { Link,useLocation } from "react-router-dom";
 import { FaFacebookF } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
-import { IoLogoWhatsapp } from "react-icons/io";
 import { FaWhatsapp } from "react-icons/fa";
 import { FaYoutube } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -25,28 +17,15 @@ import { useParams } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaFileSignature } from "react-icons/fa6";
 import logofinal from "../images/GT-FInal-Logo.png"
-import { FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
-
-
-
-
-
-
 import { FaBars } from 'react-icons/fa';
 import { Popover } from 'antd';
-// import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import { OverlayTrigger } from "react-bootstrap";
+
 
 const HomeHeader = () => {
   const location = useLocation(); // Get current URL
   const [activeLink, setActiveLink] = useState("");
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [showCartTooltip, setShowCartTooltip] = useState(false);
-  
-  const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
   const currentPath = location.pathname;
-  const { id } = useParams();
   const isShopActive =
   ["/shop", "/tshirts", "/product", "/newdesign", "/stock"].includes(currentPath) ||
   currentPath.startsWith("/productdetail/");
@@ -62,7 +41,7 @@ const HomeHeader = () => {
   const handlehistoryclick =() =>{
     const token =localStorage.getItem('authToken')
     if (token){
-    navigate('/history')
+    navigate('/orders')
     }
   }
 
@@ -85,7 +64,7 @@ const content = (
    style={{ listStyle: 'none', padding: 0, margin: 0 }}>
     <li><Link to="/cart">Product Cart</Link></li>
     <li><Link to="/stockcart">Ready Stock Cart</Link></li>
-    <li><Link to="/orders">Orders</Link></li>
+    {/* <li><Link to="/orders">Orders</Link></li> */}
   </ul>
 );
 
@@ -176,14 +155,7 @@ const content = (
               </div>
               
           <nav className='home-text navbar '>
-          
-            
-          {/* <div className="hamburger-menu" onClick={toggleSidebar}>
-          
-          
-              
-        <FaBars />
-      </div>  */}
+
           
             <div className='home-divider'>
               

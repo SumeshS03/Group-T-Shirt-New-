@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaShoppingCart } from 'react-icons/fa';
 import Ratemodal from './Ratemodal';
-import Jackets from "./Jackets";
 import Caps from "./Cups";
 import Jerseys from './Jerseys';
 import PolysterColorModal from './PolysterColorModal';
@@ -12,11 +11,11 @@ import CollareCottonColorModal from "./CollareCottonColorModal";
 import CollarePolysterColorModal from "./CollarePolysterColorModal";
 import CollarePolyCottonColorModal from "./CollarePolyCottonColorModal";
 import LoginModal from "./LoginModal";
-import { useFormContext } from "../ApiFunctions/FormContext";
 import useNavigationGuard from '../ApiFunctions/useNavigationGuard'
 import { flushSync } from "react-dom";
 import Swal from 'sweetalert2';
 import './Collaretshirt.css'
+import "./Shopcontentproduct.css";
 
 
 const Collaretshirt = () => {
@@ -450,7 +449,7 @@ const calculateTotalquantity = (totalQuantity) => {
   const handleChange = (type, sizeLabel, value) => {
     const updated = {
       ...formData[type],
-      [sizeLabel]: value || "0",
+      [sizeLabel]: value || "",
     };
 
     const halftotal = Object.values(
@@ -1223,9 +1222,10 @@ const calculateTotalquantity = (totalQuantity) => {
                                     type="number"
                                     // min="0"
                                     className="form-control form-control-sm"
-                                    value={formData.halfSleeve[size.label]}
+                                    value={formData.halfSleeve[size.label] ?? ""}
                                     onChange={(e) =>{
                                       setIsDirty(true);
+                                      const value = e.target.value === "" ? "" : parseInt(e.target.value, 10);
                                       handleChange("halfSleeve", size.label, e.target.value)
                                     }}
                                   />

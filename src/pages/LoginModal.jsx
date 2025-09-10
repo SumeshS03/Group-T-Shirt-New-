@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { sentOtp, verifyotp } from "../ApiFunctions/userlogin";
-import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const LoginModal = ({ show, handleClose }) => {
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
-  const navigate = useNavigate();
 
   // ✅ Clear inputs helper
   const resetForm = () => {

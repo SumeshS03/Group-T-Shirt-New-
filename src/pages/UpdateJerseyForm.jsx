@@ -181,7 +181,6 @@ const UpdateJerseyForm = () => {
   // State management
   const [productdetail, setProductdetail] = useState(null);
   const [originalData, setOriginalData] = useState(null);
-  const [productsData, setProductsData] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedGSM, setSelectedGSM] = useState({ id: "", name: "", price: 0, type: "" });
@@ -463,7 +462,7 @@ console.log("formdata" , formData);
   const handleChange = (type, sizeLabel, value) => {
     const updated = {
       ...formData[type],
-      [sizeLabel]: value || "0",
+      [sizeLabel]: value || "",
     };
 
     const halftotal = Object.values(

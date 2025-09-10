@@ -10,8 +10,6 @@ const OrderDetail = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  //get orderproduct detail
-
   // get order product detail
   useEffect(() => {
     const fetchOrders = async () => {
@@ -27,7 +25,7 @@ const OrderDetail = () => {
     };
 
     fetchOrders();
-  }, []); // ✅ run once on mount
+  }, []); 
 
   if (loading) return <p>Loading orders...</p>;
 

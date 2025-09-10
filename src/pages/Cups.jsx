@@ -1,4 +1,4 @@
-import React, { useRef, useState,useEffect } from "react";
+import React, {useState,useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from 'axios';
 
@@ -17,7 +17,6 @@ const [formData, setFormData] = useState({
     useEffect(() => {
           const fetchProduct = async () => {
     
-            const token = localStorage.getItem('authToken');
        
             try {
               const response = await axios.get('https://gts.tsitcloud.com/api/products/single/products-by-category', {

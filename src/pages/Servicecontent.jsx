@@ -1,52 +1,14 @@
-import { useState, useEffect } from "react";
 import HomeHeader from "../Layout/HomeHeader";
 import "./Servicecontent.css";
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
-
 import qualityshirt from "../images/Premium-Quality.png";
 import outstandquality from "../images/Outstanding-Quality1.png";
 import secpayment from "../images/Secure-payment1.png";
 import cussizestyle from "../images/Custom-SIze-STyle.png";
 import menstshirt from "../images/menst-shirt.jpg";
-import { FaRegArrowAltCircleRight } from "react-icons/fa";
-import bluef from "../images/blue-f.png"
 import serviceimage from "../images/serviceimage.png"
-import logofinal from "../images/GT-FInal-Logo.png"
-
-import applepay from "../images/apple.jpg";
-import gpay from "../images/gpay1.jpg";
-import visa from "../images/Visa1.jpg";
-import mastercard1 from "../images/Master1.jpg";
-import phonepay from "../images/Phonepe.jpg";
-import amex from "../images/amex.png";
-import { FaArrowRight } from "react-icons/fa6";
-import { FaTwitter } from "react-icons/fa";
-import { FaFacebookF } from "react-icons/fa6";
-import { FaInstagram } from "react-icons/fa6";
-import { FiYoutube } from "react-icons/fi";
 import Footer from '../Layout/Footer'
-
-import { SiAirbnb } from "react-icons/si";
-
-import tshirt from "../images/yourstyle.png";
-import yourprintone from "../images/yourprint.png";
-import quantity from "../images/yourquantity.jpg";
-import payment from "../images/payment.jpg";
-
-import { FiPhoneCall } from "react-icons/fi";
-import { HiOutlineMailOpen } from "react-icons/hi";
-import { IoLocationOutline } from "react-icons/io5";
-import { FaCircleArrowLeft } from "react-icons/fa6";
-
-import { FaCircleArrowRight } from "react-icons/fa6";
-
-import aboutus from "../images/about-us1.png";
-
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-
-
 import servicepagepick from "../images/Service-page2.png"
 import servicepageartwork from "../images/Service-page3.png"
 import servicepageship from "../images/Service-page4.png"
@@ -55,10 +17,6 @@ import leaf from "../images/service-page9.png"
 import fastshipping from "../images/fastshipping.png"
 import customerhappy from "../images/customerhappy.png"
 import videoimage from "../images/service-page1.png"
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules'; // for arrows and pagination
-
-import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { useNavigate } from "react-router-dom";
 import React from "react";
@@ -66,104 +24,9 @@ import Slider from "react-slick";
 import { MdArrowRightAlt } from "react-icons/md";
 
 
-const items = [
-  { id: 1, image: menstshirt, title: "Printing Service" },
-  { id: 2, image: menstshirt, title: "Design Service" },
-  { id: 3, image: menstshirt, title: "Digital Scanning" },
-  { id: 4, image: menstshirt, title: "Copying Services" },
-  { id: 5, image: menstshirt, title: "Custom Shirts" },
-  { id: 6, image: aboutus, title: "Printing Service" },
-  { id: 7, image: aboutus, title: "Printing Service" },
-  { id: 8, image: aboutus, title: "Printing Service" },
-  { id: 9, image: aboutus, title: "Printing Service" },
-  { id: 10, image: aboutus, title: "Printing Service" },
-];
-
-
-const responsive = {
-  superLargeDesktop: {
-    breakpoint: { max: 4000, min: 1200 },
-    items: 4
-  },
-  desktop: {
-    breakpoint: { max: 1024, min: 992 },
-    items: 4
-  },
-  tablet: {
-    breakpoint: { max: 992, min: 760 },
-    items: 3
-  },
-  mobile: {
-    breakpoint: { max: 768, min: 0 },
-    items: 1
-  }
-};
-
 const Servicecontent = () => {
-  const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(5);// Number of items to show at a time
 
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 770) {
-        setItemsPerPage(1); // Small screen (below 768px) - Show 2 items
-      }
-      else if(window.innerWidth < 1020){
-        setItemsPerPage(4);
-      }
-      
-       else {
-        setItemsPerPage(5); // Large screen - Show 5 items
-      }
-    };
-
-    handleResize(); // Set initial value
-    window.addEventListener("resize", handleResize); // Update on resize
-    return () => window.removeEventListener("resize", handleResize); // Cleanup
-  }, []);
-  const [currentStartIndex, setCurrentStartIndex] = useState(0);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const currentItem = items[currentIndex]; 
-  const totalPages = Math.ceil(items.length / itemsPerPage);
-  const startIndex = currentPage * itemsPerPage;
-  
-  const visibleItems = items.slice(
-    currentStartIndex,
-    currentStartIndex + itemsPerPage
-  );
-
-  const nextPage = () => {
-    if (currentPage < totalPages - 1) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  
-
-
-
-  
-
-  const prevPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const nextItem = () => {
-    if (currentStartIndex + itemsPerPage < items.length) {
-      setCurrentStartIndex(currentStartIndex + 1);
-    }
-  };
-
-  const prevItem = () => {
-    if (currentStartIndex > 0) {
-      setCurrentStartIndex(currentStartIndex - 1);
-    }
-  };
-
-  const settings = {
+const settings = {
   dots: false,
   infinite: true,
   speed: 500,
@@ -189,10 +52,7 @@ const Servicecontent = () => {
   ],
 };
 
-
- 
-
-  const navigate = useNavigate();
+const navigate = useNavigate();
   const buycheck = () =>{
     const token = localStorage.getItem('authToken');
     window.scrollTo(0,0);
@@ -229,7 +89,7 @@ const Servicecontent = () => {
         >
           Home - Service
         </p>
-        <img src={serviceimage} className="imagetopthree"></img>
+        <img src={serviceimage} alt="serviceimage" className="imagetopthree"></img>
       </div>
       <p style={{ marginBottom: "0", color: "#949494", marginTop: "70px" }}>
         ALL THE FEATURES YOU NEED{" "}
@@ -595,7 +455,7 @@ const Servicecontent = () => {
           <div className="row justify-content-center">
           
       <div className="w-20 start-50 video-box ">
-              <img className="videoimage rounded-4" src={videoimage}></img>
+              <img className="videoimage rounded-4" alt="videoimage" src={videoimage}></img>
             </div>
             
             </div>

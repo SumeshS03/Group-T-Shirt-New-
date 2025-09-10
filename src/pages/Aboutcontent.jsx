@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import HomeHeader from "../Layout/HomeHeader";
 import "./Aboutcontent.css";
 import { LiaCheckCircle } from "react-icons/lia";
-import designimage from "../images/designimage.png";
 import qualityshirt from "../images/Premium-Quality.png";
 import outstandquality from "../images/Outstanding-Quality1.png";
 import secpayment from "../images/Secure-payment1.png";
@@ -11,33 +10,14 @@ import shipworldwide from "../images/Shipping-worldwide.png";
 import noordermin from "../images/No-order-minimum.png";
 import highspeed from "../images/High-Speed-Service.png";
 import freetemplate from "../images/Free-Templates.png";
-import logofinal from "../images/GT-FInal-Logo.png"
-import bluef from "../images/blue-f.png"
-
 import { TbBrandElastic } from "react-icons/tb";
 import { SiAirbnb } from "react-icons/si";
-
 import tshirt from "../images/yourstyle.png";
 import yourprintone from "../images/yourprint.png";
 import quantity from "../images/yourquantity.jpg";
 import payment from "../images/payment.jpg";
-
-import amex from "../images/amex.png";
-import applepay from "../images/apple.jpg";
-import gpay from "../images/gpay1.jpg";
-import visa from "../images/Visa1.jpg";
-import mastercard1 from "../images/Master1.jpg";
-import phonepay from "../images/Phonepe.jpg";
-
-import { FiPhoneCall } from "react-icons/fi";
-import { HiOutlineMailOpen } from "react-icons/hi";
-import { IoLocationOutline } from "react-icons/io5";
-import { FaArrowRight } from "react-icons/fa6";
 import { FaTwitter } from "react-icons/fa";
-import { FaFacebookF } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa6";
-import { FiYoutube } from "react-icons/fi";
-import profilecommon from "../images/profilecommon.png";
 import profileone from "../images/Profileone.jpg"
 import profiletwo  from "../images/profiletwo.jpg"
 import profilethree from "../images/Profilethree.jpg"
@@ -50,15 +30,10 @@ import profilenine from "../images/profilenine.jpg"
 import profileten from "../images/profileten.jpg"
 import groupimage from "../images/groupimagehome.png"
 import Footer from "../Layout/Footer";
-
-
-
-
 import aboutus from "../images/about-us1.png";
 import { FaFacebook } from "react-icons/fa";
 import Slider from "react-slick";
 import { useNavigate } from 'react-router-dom';
-
 import aboutustwo from "../images/Aboutus2.png";
 import playbutton from "../images/play-button2.png"
 
@@ -111,20 +86,20 @@ const Aboutcontent = () => {
     }
 
   };
-  const newcheck = () =>{
-    const token = localStorage.getItem('authToken');
-    window.scrollTo(0, 0);
-    if (token) {
-      // User is authenticated
+  // const newcheck = () =>{
+  //   const token = localStorage.getItem('authToken');
+  //   window.scrollTo(0, 0);
+  //   if (token) {
+  //     // User is authenticated
      
-      navigate(`/newdesign`);
-    }
-    else{
-      alert("Please login to start shopping.");
-      navigate('/profile');
+  //     navigate(`/newdesign`);
+  //   }
+  //   else{
+  //     alert("Please login to start shopping.");
+  //     navigate('/profile');
 
-    }
-  }
+  //   }
+  // }
   return (
     <>
       <div>
@@ -143,7 +118,7 @@ const Aboutcontent = () => {
         >
           Home - About Us
         </p>
-        <img src={aboutus} className="imagetop"></img>
+        <img src={aboutus} alt="aboutus" className="imagetop"></img>
       </div>
 
       <div className="design-box container mt-5 ">

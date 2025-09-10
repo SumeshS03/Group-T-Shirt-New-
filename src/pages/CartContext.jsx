@@ -1,27 +1,10 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import HomeHeader from "../Layout/HomeHeader";
-import amex from "../images/amex.png";
-import applepay from "../images/apple.jpg";
-import gpay from "../images/gpay1.jpg";
-import visa from "../images/Visa1.jpg";
-import mastercard1 from "../images/Master1.jpg";
-import phonepay from "../images/Phonepe.jpg";
-import { FaArrowRight } from "react-icons/fa6";
-import { FaTwitter } from "react-icons/fa";
-import { FaFacebookF } from "react-icons/fa6";
-import { FaInstagram } from "react-icons/fa6";
-import { FiYoutube } from "react-icons/fi";
-import { FiPhoneCall } from "react-icons/fi";
-import { HiOutlineMailOpen } from "react-icons/hi";
-import { IoLocationOutline } from "react-icons/io5";
-import bluef from "../images/blue-f.png";
 import axios from "axios";
-import { useParams } from "react-router-dom";
 import { MdDelete, MdEdit } from "react-icons/md";
 import "./CartContext.css";
-import Button from "@mui/material/Button";
+import "./Shopcontentproduct.css";
 import Footer from "../Layout/Footer";
-import CustomerDetails from "./CustomerDetails";
 import {
   addproducttopayment,
   getproductdetail,
@@ -32,15 +15,10 @@ import { IoCartOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
 
 const CartContext = () => {
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [productdetail, setProductdetail] = useState(null);
   const [show, setShow] = useState(false);
   const [hasGst, setHasGst] = useState(false);
   const [gstNumber, setGstNumber] = useState("");
-  const [productsData, setProductsData] = useState([]);
   const [cartItems, setCartItems] = useState([]);
-  const [foundProduct, setfoundProduct] = useState([]);
-  const { id } = useParams();
   const navigate = useNavigate();
   const customerdetail = JSON.parse(localStorage.getItem("customer"));
   const BASE_URL_IMAGE = process.env.REACT_APP_IMAGE_URL;

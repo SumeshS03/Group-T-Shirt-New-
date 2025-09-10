@@ -4,13 +4,9 @@ import "./Homecontent.css";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { TiTickOutline } from "react-icons/ti";
 import { FaCircleArrowRight } from "react-icons/fa6";
-import { LiaCcAmex } from "react-icons/lia";
 import { SiAirbnb } from "react-icons/si";
-import { TbWorld } from "react-icons/tb";
 import { TbBrandElastic } from "react-icons/tb";
-import logo from "../images/gts.png";
 import qualityshirt from "../images/Premium-Quality.png";
 import secpayment from "../images/Secure-payment1.png";
 import cussizestyle from "../images/Custom-SIze-STyle.png";
@@ -24,57 +20,19 @@ import grouptshirttwo from "../images/grouptshirttwo.png";
 import grouptshirtthree from "../images/grouptshirtthree.png";
 import grouptshirtfour from "../images//grouptshirtfour.png";
 import grouptshirtfive from "../images/grouptshirtfive.png";
-import designimage from "../images/designimage.png";
 import groupimage from "../images/groupimagehome.png"
-import { MdOutlineAssignmentReturn } from "react-icons/md";
 import worldwideshipping from "../images/worldwide shipping.png";
 import returnicon from "../images/return icon.png";
 import onlinesupport from "../images/3.png";
 import flexiblepayment from "../images/flexible payment.png";
-import amex from "../images/amex.png";
-import applepay from "../images/apple.jpg";
-import gpay from "../images/gpay1.jpg";
-import visa from "../images/Visa1.jpg";
-import mastercard1 from "../images/Master1.jpg";
-import phonepay from "../images/Phonepe.jpg";
-import { LiaCheckCircleSolid } from "react-icons/lia";
-import bluef from "../images/blue-f.png"
-
-import { BsTelephoneOutbound } from "react-icons/bs";
-import aboutustwo from "../images/Aboutus2.png";
-
-import tshirtmen1 from "../images/tshiirtimage1.png";
-
-import tshirt from "../images/yourstyle.png";
-import yourprintone from "../images/yourprint.png";
-import quantity from "../images/yourquantity.jpg";
-import payment from "../images/payment.jpg";
-import profileicon from "../images/profile1.png";
-
-import { MdOutlineStarPurple500 } from "react-icons/md";
 import { LiaCheckCircle } from "react-icons/lia";
-import { WiDirectionUpRight } from "react-icons/wi";
-import { FiPhoneCall } from "react-icons/fi";
-import { HiOutlineMailOpen } from "react-icons/hi";
-import { IoLocationOutline } from "react-icons/io5";
-import { FaArrowRight } from "react-icons/fa6";
-import { FaTwitter } from "react-icons/fa";
-import { FaFacebookF } from "react-icons/fa6";
-import { FaInstagram } from "react-icons/fa6";
-import { FiYoutube } from "react-icons/fi";
-import { useState, useEffect } from "react";
 import { ReactTyped } from "react-typed";
 import { useNavigate } from "react-router-dom";
 import readystock from "../images/blue-rectangle.png"
-// import newdesign from "../images/Blue-recta2.png"
 import newdesign from "../images/blue-rect3.png"
-
-import { MdPlayArrow } from "react-icons/md";
 import boyimage from "../images/boy-image.png"
-
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import logofinal from "../images/GT-FInal-Logo.png"
 import Footer from '../Layout/Footer'
 import Rating from '../Layout/Rating'
 import HowToOrder from "./HowToOrder";
@@ -84,44 +42,6 @@ import HowToOrder from "./HowToOrder";
 const Homecontent = () => {
   
   const navigate = useNavigate();
-  const profiles = [
-    {
-      name: "Cristian L.",
-      position: "Manager",
-      review:
-        "Best services ever-Flags, programs for exceptional capacities, birthday, and are largely still mainstream on paper occasion welcome.",
-    },
-    {
-      name: "Samantha J.",
-      position: "Designer",
-      review:
-        "Amazing creativity and timely delivery. Our go-to company for events!",
-    },
-    {
-      name: "David M.",
-      position: "Team Lead",
-      review:
-        "Professional team and high-quality services. Really impressed.",
-    },
-    {
-      name: "Emma W.",
-      position: "Sales",
-      review:
-        "Their team exceeded expectations. Great customer support!",
-    },
-    {
-      name: "Lucas G.",
-      position: "HR",
-      review:
-        "Helpful, responsive and creative solutions always.",
-    },
-    {
-      name: "Olivia P.",
-      position: "Developer",
-      review:
-        "Their work helped boost our engagement by 40%. Superb service.",
-    },
-  ];
 
   const buycheck = () =>{
     const token = localStorage.getItem('authToken');
@@ -138,67 +58,9 @@ const Homecontent = () => {
     }
 
   };
-  const profilesettings = {
-    dots: false,
-    infinite: true,
-    speed: 1000,
-    slidesToShow: 3, // Change to 2 or 3 based on screen size
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    arrows: true,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: { slidesToShow: 3 }
-      },
-      {
-        breakpoint: 768,
-        settings: { slidesToShow: 1 }
-      }
-    ]
-  };
-
- 
 
 
-
-
-
-  const settings = {
-    dots: false,
-    infinite: true,
-    speed: 1000,
-    slidesToShow: 5,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    arrows: true,
-    responsive: [
-      {
-        breakpoint: 1024, // Tablets and smaller
-        settings: {
-          slidesToShow: 4, // Show 3 slides on tablets
-        },
-      },
-      {
-        breakpoint: 768, // Mobile devices
-        settings: {
-          slidesToShow: 3, // Show 3 slides on mobile as well
-        },
-      },
-      {
-        breakpoint: 320,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-    ],
-  };
-
-
-
-  const sliderSettingsicons = {
+const sliderSettingsicons = {
     dots: false,
     infinite: true,
     speed: 500,
@@ -337,11 +199,7 @@ const Homecontent = () => {
       <div className="design-box container ">
         <div className="row  ">
           <div className="  col-lg-6  col-md-12 ps-2  design-text d-flex flex-column justify-content text-start">
-            {/* <p
-              style={{ color: "#a2a2a2", marginLeft: "6px", fontSize: "20px" }}
-            >
-              Who are we
-            </p> */}
+           
             <h1 className="heading-text m-0 mt-lg-5 mt-4">Create Stunning Print</h1>
 
             <h1 className="m-0 text-start">
@@ -383,7 +241,7 @@ const Homecontent = () => {
           </div>
 
           <div className=" col-lg-6 col-md-12   justify-content-end position-relative hide-on-768 ">
-            <img src={groupimage} alt="Image 1" className="image" />
+            <img src={groupimage} alt="groupone" className="image" />
           </div>
         </div>
       </div>
@@ -914,7 +772,7 @@ const Homecontent = () => {
             <img
             className="shippingimagefix"
               src={worldwideshipping}
-              
+              alt="worldwide shipping"
             ></img>
 
             <text 
@@ -928,6 +786,7 @@ const Homecontent = () => {
           <div className="shippingdivider col-lg-3 d-flex flex-column align-items-center">
             <img
               src={returnicon}
+              alt="return icon"
               className="shippingimagefix"
             ></img>
             <text
@@ -940,6 +799,7 @@ const Homecontent = () => {
           <div className="shippingdivider col-lg-3 d-flex flex-column align-items-center">
             <img
               src={onlinesupport}
+              alt="online support"
               className="shippingimagefix"
             ></img>
 
@@ -953,6 +813,7 @@ const Homecontent = () => {
           <div className="shippingdivider col-lg-3 d-flex flex-column align-items-center">
             <img
               src={flexiblepayment}
+              alt="flexible payment"
               className="shippingimagefix"
             ></img>
             <text

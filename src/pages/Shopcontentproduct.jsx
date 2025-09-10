@@ -1,40 +1,11 @@
-import React, { useRef, useState,useEffect } from "react";
-
+import React, { useState,useEffect } from "react";
 import HomeHeader from "../Layout/HomeHeader";
 import shopimage from "../images/shopimage.png";
 import "./Shopcontentproduct.css";
 import "./Stockpage.css"
-
-import { Await, useLocation,useNavigate } from "react-router-dom";
-
-
-
-import qualityshirt from "../images/Premium-Quality.png";
-
-
-import amex from "../images/amex.png";
-import applepay from "../images/apple.jpg";
-import gpay from "../images/gpay1.jpg";
-import visa from "../images/Visa1.jpg";
-import mastercard1 from "../images/Master1.jpg";
-import phonepay from "../images/Phonepe.jpg";
-import { FaArrowRight } from "react-icons/fa6";
-import { FaTwitter } from "react-icons/fa";
-import { FaFacebookF } from "react-icons/fa6";
-import { FaInstagram } from "react-icons/fa6";
-import { FiYoutube } from "react-icons/fi";
-import bluef from "../images/blue-f.png"
-import { FiPhoneCall } from "react-icons/fi";
-import { HiOutlineMailOpen } from "react-icons/hi";
-import { IoLocationOutline } from "react-icons/io5";
+import { useLocation,useNavigate } from "react-router-dom";
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import Button from 'react-bootstrap/Button';
-import Hoodiesone from "../images/Hoodie1.png"
-import Hoodie from "../images/Hoodie.png"
-import Hoodiethree from "../images/Hoodie3.png"
-import tshirttwo from "../images/Tshirt2.png"
-import fullsleeveone from "../images/Full-Sleeve1.png"
 import axios from 'axios';
 import Footer from "../Layout/Footer"
 
@@ -54,14 +25,6 @@ const Shopcontentproduct = () => {
       else if (location.pathname === "/stock") setActiveTab("stock");
     }, [location.pathname]);
 
-const products = [
-                { id: 1, image: Hoodiesone,imageone:Hoodie,imagetwo:shopimage, label: "Sleeve", price: 299,sizes: {XS:2,S: 5,M: 4,L: 4,X: 2,XL: 1,'2XL': 3, '3XL': 2, '4XL': 1, '5XL': 0} },
-                { id: 2, image: tshirttwo,imageone:shopimage,imagetwo:qualityshirt, label: "Full Sleeve", price: 349,sizes: {XS:2,S: 5,M: 3,L: 1,X: 2,XL: 1,'2XL': 3, '3XL': 2, '4XL': 1, '5XL': 0} },
-                { id: 3, image: fullsleeveone,imageone:shopimage,imagetwo:qualityshirt, label: "Round Neck", price: 279,sizes: {XS:2,S: 2,M: 3,L: 4,X: 2,XL: 1,'2XL': 3, '3XL': 2, '4XL': 1, '5XL': 0} },
-                { id: 4, image: qualityshirt,imageone:shopimage,imagetwo:qualityshirt, label: "V Neck", price: 319,sizes: {XS:2,S: 5,M: 3,L: 1,X: 2,XL: 1,'2XL': 3, '3XL': 2, '4XL': 1, '5XL': 0} },
-                { id: 5, image: shopimage,imageone:shopimage,imagetwo:qualityshirt, label: "V Neck", price: 319,sizes: {XS:2,S: 5,M: 15,L: 4,X: 2,XL: 1,'2XL': 3, '3XL': 2, '4XL': 1, '5XL': 0} },
-                { id: 6, image: shopimage,imageone:shopimage,imagetwo:qualityshirt, label: "V Neck", price: 319,sizes: {XS:2,S: 5,M: 3,L: 4,X: 41,XL: 1,'2XL': 3, '3XL': 2, '4XL': 1, '5XL': 0} },
-              ];
 
   const responsive = {
     superLargeDesktop: {
@@ -82,13 +45,8 @@ const products = [
     },
   };
 
-  const [imageUrl, setImageUrl] = useState(null);
-  const [categoryData, setCategoryData] = useState(null);
-  const [productData, setProductData] = useState(null);
   const [loading, setLoading] = useState(true);
 
- 
-  const targetCategoryName = 'Collared Tshirts';
 
 // api to get all category
 useEffect(() => {
@@ -129,7 +87,7 @@ useEffect(() => {
         >
           Home - About Us
         </p>
-        <img src={shopimage} className="imagetopone"></img>
+        <img src={shopimage} alt="shopimage" className="imagetopone"></img>
       </div>
 
       <div className="choose-category  ">
