@@ -826,6 +826,7 @@ for (let pair of payload.entries()) {
                       placeholder="Minimum 16"
                       onChange={handleQuantityChange}
                       className={`form-control ${quantityError ? "is-invalid" : ""}`} // bootstrap red border
+                      onWheel={(e) => e.currentTarget.blur()}
                     />
                     <small className="text-muted">Minimum order quantity: 16</small>
                     {quantityError && (<div className="invalid-feedback">{quantityError}</div>)}
@@ -975,6 +976,7 @@ for (let pair of payload.entries()) {
               setIsDirty(true);
               setFormData((prev) => ({ ...prev, freelogoFile: e.target.files[0] }))
             }}
+            
           />
           <div className="form-text text-muted text-center mt-2">
             Accepted formats: JPG, PNG 
@@ -1168,6 +1170,7 @@ for (let pair of payload.entries()) {
                             setFormData({ ...formData, logoCount: count, logos: newLogos });
                           }}
                           className="form-control w-75"
+                          onWheel={(e) => e.currentTarget.blur()}
                         />
                       </div>
                     </div>
@@ -1367,6 +1370,7 @@ for (let pair of payload.entries()) {
                                       setIsDirty(true);
                                       handleChange("halfSleeve", size.label, e.target.value)
                                     }}
+                                    onWheel={(e) => e.currentTarget.blur()}
                                   />
                                 </td>
                                 {/* <td>

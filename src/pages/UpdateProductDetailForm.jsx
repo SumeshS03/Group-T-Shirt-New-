@@ -453,162 +453,178 @@ const UpdateProductDetailForm = () => {
     }));
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
-  
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (isSubmitting) return;
-  setIsSubmitting(true);
-
-  // ====== Validations (keep as you had) ======
-  if (parseInt(formData.quantity) < 16) {
-    Swal.fire("Validation Error", "Minimum quantity must be 16", "warning");
-    setIsSubmitting(false);
-    return;
-  }
-  if (!selectedGSM?.id) {
-    Swal.fire("Validation Error", "Please select a material/GSM", "warning");
-    setIsSubmitting(false);
-    return;
-  }
-  if (parseInt(formData.quantity) !== parseInt(formData.totalQuantity)) {
-    Swal.fire("Validation Error", "Men and Women Quantity and total must be equal", "warning");
-    setIsSubmitting(false);
-    return;
-  }
-  if (!formData.color) {
-    Swal.fire("Validation Error", "Please Select Your T-Shirt Color", "warning");
-    setIsSubmitting(false);
-    return;
-  }
-  if (parseInt(formData.logoCount) > 0) {
-    const incompleteLogos = (formData.logos || []).some(
-      (logo) => !(logo.file || logo.preview || logo.photo) || !logo.position || !logo.type
-    );
-    if (incompleteLogos) {
-      Swal.fire("Validation Error", "Please complete all logo details", "warning");
+    // ====== Validations (keep as you had) ======
+    if (parseInt(formData.quantity) < 16) {
+      Swal.fire("Validation Error", "Minimum quantity must be 16", "warning");
       setIsSubmitting(false);
       return;
     }
-  }
-  if (!formData.remark) {
-    Swal.fire("Validation Error", "Please Fill Remark", "warning");
-    setIsSubmitting(false);
-    return;
-  }
-
-  const token = localStorage.getItem("authToken");
-  if (!token) {
-    Swal.fire("Authentication Required", "Please login to continue", "info");
-    navigate("/profile");
-    return;
-  }
-
-  // ===== Build logo metadata =====
-  const logoMetadata = (formData.logos || []).map((logo) => {
-    let photo = logo.photo || null;
-    if (!photo && logo.preview) {
-      const match = logo.preview.match(/(\/uploads\/.*)$/);
-      if (match) photo = match[1];
+    if (!selectedGSM?.id) {
+      Swal.fire("Validation Error", "Please select a material/GSM", "warning");
+      setIsSubmitting(false);
+      return;
     }
-    if (logo.file) photo = null; // backend will set new path
-    return {
-      _id: logo._id || undefined,
-      position: logo.position || "",
-      logotype: logo.type || "",
-      photo,
-    };
-  });
+    if (parseInt(formData.quantity) !== parseInt(formData.totalQuantity)) {
+      Swal.fire(
+        "Validation Error",
+        "Men and Women Quantity and total must be equal",
+        "warning"
+      );
+      setIsSubmitting(false);
+      return;
+    }
+    if (!formData.color) {
+      Swal.fire(
+        "Validation Error",
+        "Please Select Your T-Shirt Color",
+        "warning"
+      );
+      setIsSubmitting(false);
+      return;
+    }
+    if (parseInt(formData.logoCount) > 0) {
+      const incompleteLogos = (formData.logos || []).some(
+        (logo) =>
+          !(logo.file || logo.preview || logo.photo) ||
+          !logo.position ||
+          !logo.type
+      );
+      if (incompleteLogos) {
+        Swal.fire(
+          "Validation Error",
+          "Please complete all logo details",
+          "warning"
+        );
+        setIsSubmitting(false);
+        return;
+      }
+    }
+    if (!formData.remark) {
+      Swal.fire("Validation Error", "Please Fill Remark", "warning");
+      setIsSubmitting(false);
+      return;
+    }
 
-  // ===== Build payload object =====
-  const formDataObj = {
-    customerId: localStorage.getItem("customerId"),
-    productId: productdetail?.productId?._id,
-    quantityCount: formData.quantity,
-    logoCount: formData.logoCount,
-    deliveryDate: formData.estimatedDeliveryDate,
-    color: formData.color,
-    collarColor: formData.collarColor,
-    hasCollarColor: formData.hasCollarColor,
-    cloth: selectedGSM.name,
-    clothMaterial: selectedGSM.type,
-    quantitySizeWise: {
-      half: formData.halfSleeve,
-      full: formData.fullSleeve,
-    },
-    quantitySleeveWise: {
-      halfTotal: formData.halftotal,
-      fullTotal: formData.fulltotal,
-    },
-    totalCount: parseInt(formData.quantity),
-    remark: formData.remark,
-    basePrice: selectedGSM.price,
-    discountPerPiece: formData.discountPerPiece,
-    discountedPrice: formData.discountedPrice,
-    amount: formData.grandtotal,
-    totalAmount: formData.grandtotal,
-    grandTotal: formData.finalAmount,
-    logos: logoMetadata,
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      Swal.fire("Authentication Required", "Please login to continue", "info");
+      navigate("/profile");
+      return;
+    }
+
+    // ===== Build logo metadata =====
+    const logoMetadata = (formData.logos || []).map((logo) => {
+      let photo = logo.photo || null;
+      if (!photo && logo.preview) {
+        const match = logo.preview.match(/(\/uploads\/.*)$/);
+        if (match) photo = match[1];
+      }
+      if (logo.file) photo = null; // backend will set new path
+      return {
+        _id: logo._id || undefined,
+        position: logo.position || "",
+        logotype: logo.type || "",
+        photo,
+      };
+    });
+
+    // ===== Build payload object =====
+    const formDataObj = {
+      customerId: localStorage.getItem("customerId"),
+      productId: productdetail?.productId?._id,
+      quantityCount: formData.quantity,
+      logoCount: formData.logoCount,
+      deliveryDate: formData.estimatedDeliveryDate,
+      color: formData.color,
+      collarColor: formData.collarColor,
+      hasCollarColor: formData.hasCollarColor,
+      cloth: selectedGSM.name,
+      clothMaterial: selectedGSM.type,
+      quantitySizeWise: {
+        half: formData.halfSleeve,
+        full: formData.fullSleeve,
+      },
+      quantitySleeveWise: {
+        halfTotal: formData.halftotal,
+        fullTotal: formData.fulltotal,
+      },
+      totalCount: parseInt(formData.quantity),
+      remark: formData.remark,
+      basePrice: selectedGSM.price,
+      discountPerPiece: formData.discountPerPiece,
+      discountedPrice: formData.discountedPrice,
+      amount: formData.grandtotal,
+      totalAmount: formData.grandtotal,
+      grandTotal: formData.finalAmount,
+      logos: logoMetadata,
+    };
+
+    // ===== Build multipart FormData =====
+    const payload = new FormData();
+
+    Object.entries(formDataObj).forEach(([key, value]) => {
+      if (key === "logos") {
+        payload.append("logos", JSON.stringify(value));
+      } else if (value !== null && typeof value === "object") {
+        payload.append(key, JSON.stringify(value));
+      } else if (typeof value !== "undefined") {
+        payload.append(key, value);
+      }
+    });
+
+    // append files with index field names
+    (formData.logos || []).forEach((logo, index) => {
+      if (logo.file) {
+        payload.append(`logoPhotos`, logo.file);
+      }
+    });
+
+    const BASE_URL =
+      process.env.REACT_APP_API_BASE_URL || "http://localhost:7000/api/";
+    const cart_id = productdetail?._id;
+    try {
+      const response = await axios.put(
+        `${BASE_URL}cartItems/update/${cart_id}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      flushSync(() => setIsDirty(false));
+      console.log("Form submitted successfully:", response.data);
+      navigate("/cart");
+      setTimeout(() => window.scrollTo(0, 0), 0);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      if (error.response?.status === 401) {
+        await Swal.fire(
+          "Session Expired",
+          "Please login to continue.",
+          "error"
+        );
+        localStorage.removeItem("authToken");
+        handleLoginModalShow();
+      } else {
+        Swal.fire(
+          "Error",
+          error.response?.data?.message ||
+            "Something went wrong. Please try again.",
+          "error"
+        );
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  // ===== Build multipart FormData =====
-  const payload = new FormData();
-
-  Object.entries(formDataObj).forEach(([key, value]) => {
-    if (key === "logos") {
-      payload.append("logos", JSON.stringify(value));
-    } else if (value !== null && typeof value === "object") {
-      payload.append(key, JSON.stringify(value));
-    } else if (typeof value !== "undefined") {
-      payload.append(key, value);
-    }
-  });
-
-  // append files with index field names
-  (formData.logos || []).forEach((logo, index) => {
-    if (logo.file) {
-      payload.append(`logoPhotos`, logo.file);
-    }
-  });
-
-  const BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:7000/api/";
-  const cart_id = productdetail?._id;
-  try {
-    const response = await axios.put(
-      `${BASE_URL}cartItems/update/${cart_id}`,
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    flushSync(() => setIsDirty(false));
-    console.log("Form submitted successfully:", response.data);
-    navigate("/cart");
-    setTimeout(() => window.scrollTo(0, 0), 0);
-  } catch (error) {
-    console.error("Error submitting form:", error);
-    if (error.response?.status === 401) {
-      await Swal.fire("Session Expired", "Please login to continue.", "error");
-      localStorage.removeItem("authToken");
-      handleLoginModalShow();
-    } else {
-      Swal.fire(
-        "Error",
-        error.response?.data?.message || "Something went wrong. Please try again.",
-        "error"
-      );
-    }
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
-
-  
-  
   useEffect(() => {
     // when material changes, reset selected color
     setFormData((prev) => ({
@@ -707,104 +723,97 @@ const handleSubmit = async (e) => {
       .catch(console.error);
   }, [productdetail]);
 
+  useEffect(() => {
+    if (productdetail) {
+      setOriginalData(productdetail); // save original for comparison
+      // ... your existing setFormData code
+      const matchedItem = materialOptions[productdetail.clothMaterial]?.find(
+        (item) => item.name === productdetail.cloth
+      );
+      if (matchedItem) {
+        setSelectedGSM({
+          id: matchedItem._id,
+          name: matchedItem.name,
+          price: matchedItem.price,
+          type: productdetail.clothMaterial,
+        });
+      }
 
+      // ✅ Map backend half/full sleeve sizes
+      const halfSleeveFromBackend = productdetail.quantitySizeWise?.half || {};
+      const fullSleeveFromBackend = productdetail.quantitySizeWise?.full || {};
 
+      // ✅ Calculate totals
+      const halftotal = Object.values(halfSleeveFromBackend).reduce(
+        (acc, val) => acc + (parseInt(val) || 0),
+        0
+      );
+      const fulltotal = Object.values(fullSleeveFromBackend).reduce(
+        (acc, val) => acc + (parseInt(val) || 0),
+        0
+      );
+      const totalQuantity = halftotal + fulltotal;
 
- useEffect(() => {
-  if (productdetail) {
-    setOriginalData(productdetail); // save original for comparison
-    // ... your existing setFormData code
-    const matchedItem = materialOptions[productdetail.clothMaterial]?.find(
-      (item) => item.name === productdetail.cloth
-    );
-    if (matchedItem) {
-      setSelectedGSM({
-        id: matchedItem._id,
-        name: matchedItem.name,
-        price: matchedItem.price,
-        type: productdetail.clothMaterial,
+      // ✅ Prepare logos from backend
+      const backendLogos = (productdetail.logos || []).map((logo) => ({
+        _id: logo._id,
+        file: null, // backend logos have only photo
+        preview: logo.photo
+          ? `${process.env.REACT_APP_IMAGE_URL}/${logo.photo}`
+          : "",
+        position: logo.position || "",
+        type: logo.logotype || "", // Printed / Embroidered
+      }));
+
+      // ✅ Save full logos in allLogos
+      setAllLogos(backendLogos);
+
+      setFormData((prev) => {
+        const updatedForm = {
+          ...prev,
+          quantity: productdetail.quantityCount || "",
+          logoCount: productdetail.logoCount || "0",
+          // logos: (productdetail.logos || []).map((logo) => ({
+          //   _id: logo._id,
+          //   file: null,
+          //   preview: logo.photo
+          //     ? `${process.env.REACT_APP_IMAGE_URL}/${logo.photo}`
+          //     : "",
+          //   position: logo.position || "",
+          //   type: logo.logotype || "",
+          // })),
+          logos: backendLogos.slice(0, productdetail.logoCount || 0),
+          color: productdetail.color || "",
+          collarColor: productdetail.collarColor ? "true" : "false",
+          hasCollarColor: productdetail.hasCollarColor ?? true,
+          halftotal,
+          fulltotal,
+          grandtotal: productdetail.grandtotal || 0,
+          halfSleeve: { ...emptySleeveState, ...halfSleeveFromBackend },
+          fullSleeve: { ...emptySleeveState, ...fullSleeveFromBackend },
+          remark: productdetail.remark || "",
+          cloth: productdetail.cloth || "",
+          clothMaterial: productdetail.clothMaterial || "Cotton",
+          discountPerPiece: productdetail.discountPerPiece || 0,
+          discountedPrice: productdetail.discountedPrice || 0,
+          basePrice: matchedItem
+            ? matchedItem.price
+            : productdetail.basePrice || 0,
+          deliveryDays: productdetail.deliveryDays || 0,
+          estimatedDeliveryDate: productdetail.estimatedDeliveryDate || "",
+          printamount: productdetail.printamount || "",
+          emposedamount: productdetail.emposedamount || "",
+          finalAmount: productdetail.finalAmount || 0,
+          totalQuantity,
+        };
+
+        // ✅ Ensure recalculation with initial logo types
+        calculateAndSetTotal(updatedForm);
+
+        return updatedForm;
       });
     }
-
-    // ✅ Map backend half/full sleeve sizes
-    const halfSleeveFromBackend = productdetail.quantitySizeWise?.half || {};
-    const fullSleeveFromBackend = productdetail.quantitySizeWise?.full || {};
-
-    // ✅ Calculate totals
-    const halftotal = Object.values(halfSleeveFromBackend).reduce(
-      (acc, val) => acc + (parseInt(val) || 0),
-      0
-    );
-    const fulltotal = Object.values(fullSleeveFromBackend).reduce(
-      (acc, val) => acc + (parseInt(val) || 0),
-      0
-    );
-    const totalQuantity = halftotal + fulltotal;
-
-     // ✅ Prepare logos from backend
-    const backendLogos = (productdetail.logos || []).map((logo) => ({
-      _id: logo._id,
-      file: null, // backend logos have only photo
-      preview: logo.photo
-        ? `${process.env.REACT_APP_IMAGE_URL}/${logo.photo}`
-        : "",
-      position: logo.position || "",
-      type: logo.logotype || "", // Printed / Embroidered
-    }));
-
-    // ✅ Save full logos in allLogos
-    setAllLogos(backendLogos);
-
-
-
-   
-
-    setFormData((prev) => {
-      const updatedForm = {
-        ...prev,
-        quantity: productdetail.quantityCount || "",
-        logoCount: productdetail.logoCount || "0",
-        // logos: (productdetail.logos || []).map((logo) => ({
-        //   _id: logo._id,
-        //   file: null,
-        //   preview: logo.photo
-        //     ? `${process.env.REACT_APP_IMAGE_URL}/${logo.photo}`
-        //     : "",
-        //   position: logo.position || "",
-        //   type: logo.logotype || "",
-        // })),
-        logos: backendLogos.slice(0, productdetail.logoCount || 0),
-        color: productdetail.color || "",
-        collarColor: productdetail.collarColor ? "true" : "false",
-        hasCollarColor: productdetail.hasCollarColor ?? true,
-        halftotal,
-        fulltotal,
-        grandtotal: productdetail.grandtotal || 0,
-        halfSleeve: { ...emptySleeveState, ...halfSleeveFromBackend },
-        fullSleeve: { ...emptySleeveState, ...fullSleeveFromBackend },
-        remark: productdetail.remark || "",
-        cloth: productdetail.cloth || "",
-        clothMaterial: productdetail.clothMaterial || "Cotton",
-        discountPerPiece: productdetail.discountPerPiece || 0,
-        discountedPrice: productdetail.discountedPrice || 0,
-        basePrice: matchedItem
-          ? matchedItem.price
-          : productdetail.basePrice || 0,
-        deliveryDays: productdetail.deliveryDays || 0,
-        estimatedDeliveryDate: productdetail.estimatedDeliveryDate || "",
-        printamount: productdetail.printamount || "",
-        emposedamount: productdetail.emposedamount || "",
-        finalAmount: productdetail.finalAmount || 0,
-        totalQuantity,
-      };
-
-      // ✅ Ensure recalculation with initial logo types
-      calculateAndSetTotal(updatedForm);
-
-      return updatedForm;
-    });
-  }
-}, [productdetail, materialOptions]);
+  }, [productdetail, materialOptions]);
 
   //check the page reloade or navigate to other page
   useNavigationGuard(
@@ -870,6 +879,7 @@ const handleSubmit = async (e) => {
                             className={`form-control ${
                               quantityError ? "is-invalid" : ""
                             }`} // bootstrap red border
+                            onWheel={(e) => e.currentTarget.blur()}
                           />
                           {/* <small className="text-muted">Minimum order quantity: 16</small> */}
                           {quantityError && (
@@ -1257,51 +1267,32 @@ const handleSubmit = async (e) => {
                             name="logoCount"
                             value={formData.logoCount}
                             placeholder="Enter number of logos"
-      //                      onChange={(e) => {
-      //   setIsDirty(true);
-      //   const count = parseInt(e.target.value) || 0;
+                            onChange={(e) => {
+                              setIsDirty(true);
+                              const count = parseInt(e.target.value) || 0;
 
-        
-      //   const newLogos = Array.from({ length: count }, (_, index) => {
-      //     return formData.logos[index] || {
-      //       file: null,
-      //       preview: "",
-      //       position: "",
-      //       type: "",
-      //     };
-      //   });
+                              // ✅ Expand master list if needed
+                              if (count > allLogos.length) {
+                                const newLogos = [...allLogos];
+                                for (let i = allLogos.length; i < count; i++) {
+                                  newLogos.push({
+                                    file: null,
+                                    preview: "",
+                                    position: "",
+                                    type: "",
+                                  });
+                                }
+                                setAllLogos(newLogos);
+                              }
 
-      //   setFormData({
-      //     ...formData,
-      //     logoCount: count,
-      //     logos: newLogos,
-      //   });
-      // }}
-      onChange={(e) => {
-    setIsDirty(true);
-    const count = parseInt(e.target.value) || 0;
-
-    // ✅ Expand master list if needed
-    if (count > allLogos.length) {
-      const newLogos = [...allLogos];
-      for (let i = allLogos.length; i < count; i++) {
-        newLogos.push({
-          file: null,
-          preview: "",
-          position: "",
-          type: "",
-        });
-      }
-      setAllLogos(newLogos);
-    }
-
-    // ✅ Only slice visible logos, never delete from master
-    setFormData((prev) => ({
-      ...prev,
-      logoCount: count,
-      logos: allLogos.slice(0, count),
-    }));
-  }}
+                              // ✅ Only slice visible logos, never delete from master
+                              setFormData((prev) => ({
+                                ...prev,
+                                logoCount: count,
+                                logos: allLogos.slice(0, count),
+                              }));
+                            }}
+                            onWheel={(e) => e.currentTarget.blur()}
                             className="form-control w-75"
                           />
                         </div>
@@ -1492,6 +1483,7 @@ const handleSubmit = async (e) => {
                                           e.target.value
                                         );
                                       }}
+                                      onWheel={(e) => e.currentTarget.blur()}
                                     />
                                   </td>
                                   <td>
@@ -1508,6 +1500,7 @@ const handleSubmit = async (e) => {
                                           e.target.value
                                         );
                                       }}
+                                      onWheel={(e) => e.currentTarget.blur()}
                                     />
                                   </td>
                                 </tr>

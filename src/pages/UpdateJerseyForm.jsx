@@ -974,6 +974,7 @@ function getChangedFields(original, updated) {
                       placeholder="Minimum 16"
                       onChange={handleQuantityChange}
                       className={`form-control ${quantityError ? "is-invalid" : ""}`} // bootstrap red border
+                      onWheel={(e) => e.currentTarget.blur()}
                     />
                     <small className="text-muted">Minimum order quantity: 16</small>
                     {quantityError && (<div className="invalid-feedback">{quantityError}</div>)}
@@ -1316,6 +1317,7 @@ function getChangedFields(original, updated) {
                             setFormData({ ...formData, logoCount: count, logos: newLogos });
                           }}
                           className="form-control w-75"
+                          onWheel={(e) => e.currentTarget.blur()}
                         />
                       </div>
                     </div>
@@ -1515,6 +1517,7 @@ function getChangedFields(original, updated) {
                                       setIsDirty(true);
                                       handleChange("halfSleeve", size.label, e.target.value)
                                     }}
+                                    onWheel={(e) => e.currentTarget.blur()}
                                   />
                                 </td>
                                 {/* <td>
