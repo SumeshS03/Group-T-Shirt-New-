@@ -782,7 +782,7 @@ const UpdateProductDetailForm = () => {
           //   position: logo.position || "",
           //   type: logo.logotype || "",
           // })),
-          logos: backendLogos.slice(0, productdetail.logoCount || 0),
+          logos: backendLogos,
           color: productdetail.color || "",
           collarColor: productdetail.collarColor ? "true" : "false",
           hasCollarColor: productdetail.hasCollarColor ?? true,
@@ -834,6 +834,8 @@ const UpdateProductDetailForm = () => {
       }));
     }
   }, [selectedGSM]);
+
+  
 
   if (!productdetail) return <p>Loading...</p>;
   console.log("Category value:", productdetail?.productId?.category);

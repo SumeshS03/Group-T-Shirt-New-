@@ -182,6 +182,7 @@ const UpdateJerseyForm = () => {
   const [productdetail, setProductdetail] = useState(null);
   const [originalData, setOriginalData] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [allLogos, setAllLogos] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedGSM, setSelectedGSM] = useState({ id: "", name: "", price: 0, type: "" });
   const [materialOptions, setMaterialOptions] = useState({
@@ -495,6 +496,7 @@ console.log("formdata" , formData);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setIsSubmitting(true);
 
     // Validation
@@ -563,15 +565,22 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
     }
 
     if (parseInt(formData.logoCount) > 0) {
-      const incompleteLogos = formData.logos.some(logo => 
-        !logo.file || !logo.position || !logo.type
-      );
-      if (incompleteLogos) {
-        Swal.fire("Validation Error", "Please complete all logo details", "warning");
-        setIsSubmitting(false);
-        return;
-      }
-    }
+          const incompleteLogos = (formData.logos || []).some(
+            (logo) =>
+              !(logo.file || logo.preview || logo.photo) ||
+              !logo.position ||
+              !logo.type
+          );
+          if (incompleteLogos) {
+            Swal.fire(
+              "Validation Error",
+              "Please complete all logo details",
+              "warning"
+            );
+            setIsSubmitting(false);
+            return;
+          }
+        }
 
     if (!formData.remark) {
       Swal.fire("Validation Error", "Please Fill Remark", "warning");
@@ -593,29 +602,24 @@ if (formData.halfSleeve && formData.nameNumberPrint === 'yes') {
       return;
     }
 
-     // ✅ Prepare logo metadata
-const logoMetadata = (formData.logos || []).map((logo) => {
-  let photo = logo.photo || null; // keep existing photo if no changes
+    // ===== Build logo metadata =====
+    const logoMetadata = (formData.logos || []).map((logo) => {
+      let photo = logo.photo || null;
+      if (!photo && logo.preview) {
+        const match = logo.preview.match(/(\/uploads\/.*)$/);
+        if (match) photo = match[1];
+      }
+      if (logo.file) photo = null; // backend will set new path
+      return {
+        _id: logo._id || undefined,
+        position: logo.position || "",
+        logotype: logo.type || "",
+        photo,
+      };
+    });
 
-  if (logo.file) {
-    // new file chosen
-    photo = `/uploads/pending/${logo.file.name}`;
-  } else if (logo.preview) {
-    // if preview exists, extract the relative /uploads path
-    const match = logo.preview.match(/(\/uploads\/.*)$/);
-    if (match) {
-      photo = match[1];
-    }
-  }
 
-  return {
-    _id: logo._id || undefined,  // preserve old ID
-    position: logo.position || "",
-    logotype: logo.type || "",
-    photo,                       // always send a photo
-  };
-});
-
+// ===== Build payload object =====
     const formDataObj = {
       customerId: localStorage.getItem('customerId'),
       quantityCount: formData.quantity,
@@ -654,40 +658,23 @@ const logoMetadata = (formData.logos || []).map((logo) => {
     };
 
 
-//   const formDataObj = {
-//   customerId: localStorage.getItem("customerId"),
-//   ...rest,         
-//   jerseyDetail: jerseyDetailsArray,  
 
 
+const payload = new FormData();
+   Object.entries(formDataObj).forEach(([key, value]) => {
+      if (key === "logos") {
+        payload.append("logos", JSON.stringify(value));
+      } else if (value !== null && typeof value === "object") {
+        payload.append(key, JSON.stringify(value));
+      } else if (typeof value !== "undefined") {
+        payload.append(key, value);
+      }
+    });
 
-// };
-
-// ✅ Compare current vs original to get only changed fields
-const changedData = getChangedFields(originalData, formDataObj);
-
-// Always include logos (with metadata)
-changedData.logos = logoMetadata;
-console.log("Only changed data being sent:", changedData);
-  console.log("Final form data object:", formDataObj);
-
-    const payload = new FormData();
-Object.entries(changedData).forEach(([key, value]) => {
-  if (key === "logos") return;
-
-  if (typeof value === "object" && value !== null) {
-    payload.append(key, JSON.stringify(value));
-  } else {
-    payload.append(key, value);
-  }
-});
-
-// ✅ Append logos separately
-payload.append("logos", JSON.stringify(logoMetadata));
-
-    formData.logos.forEach((logo) => {
+    // append files with index field names
+    (formData.logos || []).forEach((logo, index) => {
       if (logo.file) {
-        payload.append('logoPhotos', logo.file);
+        payload.append(`logoPhotos`, logo.file);
       }
     });
 
@@ -700,7 +687,6 @@ const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 const cart_id = productdetail?._id;
 
     try {
-      console.log("Submitting form data:", payload);
       const response = await axios.put(`${BASE_URL}/cartItems/update/${cart_id}`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -712,13 +698,8 @@ const cart_id = productdetail?._id;
       // ✅ Force update immediately
       flushSync(() => setIsDirty(false));
       console.log("Form submitted successfully:", response.data);
-      // alert("Product added to cart successfully!");
-      navigate('/cart');
-
-      // wait a tick so the cart page loads first
-      setTimeout(() => {
-      window.scrollTo(0, 0);
-      }, 0);
+      navigate("/cart");
+      setTimeout(() => window.scrollTo(0, 0), 0);
 
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -799,8 +780,8 @@ const cart_id = productdetail?._id;
     if (selectedCategory) {
       const options = {
         Collar: [],
-        RoundNeck: [],
-        VNeck: []
+        "Round Neck" : [],
+        "V neck" : []
       };
 
       selectedCategory.cloth_type.forEach((type) => {
@@ -828,8 +809,8 @@ const cart_id = productdetail?._id;
   useEffect(() => {
     if (productdetail){
       setOriginalData(productdetail);
-        const matchedItem = materialOptions[productdetail.clothMaterial]?.find(
-      (item) => item.name === productdetail.cloth
+        const matchedItem = materialOptions[productdetail.clothMaterial.replace(/\s/g, '')]?.find(
+  (item) => item.name === productdetail.cloth
     );
     if (matchedItem) {
       setSelectedGSM({
@@ -855,19 +836,52 @@ const cart_id = productdetail?._id;
     );
     const totalQuantity = halftotal + fulltotal;
 
-    setFormData((prev) => ({
-      ...prev,
-      quantity: productdetail.quantityCount || "",
-      logoCount: productdetail.logoCount || "0",
-      logos: (productdetail.logos || []).map((logo) => ({
+    // ✅ Prepare logos from backend
+      const backendLogos = (productdetail.logos || []).map((logo) => ({
         _id: logo._id,
-        file: null,
+        file: null, // backend logos have only photo
         preview: logo.photo
           ? `${process.env.REACT_APP_IMAGE_URL}/${logo.photo}`
           : "",
         position: logo.position || "",
-        type: logo.logotype || "", // map logotype → type
-      })),
+        type: logo.logotype || "", // Printed / Embroidered
+      }));
+
+      // ✅ Save full logos in allLogos
+      setAllLogos(backendLogos);
+
+
+
+
+    const jerseyDetailsMap = {};
+const halfSleeveNamesMap = {};
+const halfSleeveNumbersMap = {};
+
+(productdetail.jerseyDetails || []).forEach((detail) => {
+  // detail.size = "xs", "m", etc.
+  jerseyDetailsMap[detail.size] = detail.players || [];
+
+  // Build names + numbers arrays
+  halfSleeveNamesMap[detail.size] = detail.players.map((p) => p.name || "");
+  halfSleeveNumbersMap[detail.size] = detail.players.map((p) => p.jerseyNumber || "");
+});
+
+
+    setFormData((prev) => {
+      const updatedForm = {
+      ...prev,
+      quantity: productdetail.quantityCount || "",
+      logoCount: productdetail.logoCount || "0",
+      // logos: (productdetail.logos || []).map((logo) => ({
+      //   _id: logo._id,
+      //   file: null,
+      //   preview: logo.photo
+      //     ? `${process.env.REACT_APP_IMAGE_URL}/${logo.photo}`
+      //     : "",
+      //   position: logo.position || "",
+      //   type: logo.logotype || "", // map logotype → type
+      // })),
+      logos: backendLogos.slice(0, productdetail.logoCount || 0),
       color: productdetail.color || "",
       collarColor: productdetail.collarColor ? "true" : "false",
       hasCollarColor: productdetail.hasCollarColor ?? true,
@@ -889,7 +903,15 @@ const cart_id = productdetail?._id;
       finalAmount: productdetail.finalAmount || 0,
       totalQuantity,
       nameNumberPrint: productdetail.needJerseyDetails || "false",
-    }));
+      jerseyDetails: jerseyDetailsMap,
+    halfSleeveNames: halfSleeveNamesMap,
+    halfSleeveNumbers: halfSleeveNumbersMap,
+    }
+      // ✅ Ensure recalculation with initial logo types
+        calculateAndSetTotal(updatedForm);
+
+        return updatedForm;
+    });
 
   };
 
@@ -897,24 +919,7 @@ const cart_id = productdetail?._id;
   
   }, [productdetail, materialOptions]);
 
-function getChangedFields(original, updated) {
-  const changed = {};
 
-  for (const key in updated) {
-    if (typeof updated[key] === "object" && updated[key] !== null) {
-      // deep compare objects
-      if (JSON.stringify(original[key]) !== JSON.stringify(updated[key])) {
-        changed[key] = updated[key];
-      }
-    } else {
-      if (original[key] !== updated[key]) {
-        changed[key] = updated[key];
-      }
-    }
-  }
-
-  return changed;
-}
 
 
  //clear the color if user select different material
@@ -1002,7 +1007,7 @@ function getChangedFields(original, updated) {
                             </tr>
                           </thead>
                           <tbody>
-                            {materialOptions.Collar.map((item) => (
+                            {materialOptions.Collar?.map((item) => (
                               <tr key={item._id} className={selectedGSM.id === item._id ? 'table-active' : ''}>
                                 <td>
                                   <input
@@ -1048,7 +1053,7 @@ function getChangedFields(original, updated) {
                             </tr>
                           </thead>
                           <tbody>
-                            {materialOptions.RoundNeck.map((item) => (
+                            {materialOptions.RoundNeck?.map((item) => (
                               <tr key={item._id} className={selectedGSM.id === item._id ? 'table-active' : ''}>
                                 <td>
                                   <input
@@ -1083,7 +1088,7 @@ function getChangedFields(original, updated) {
                             </tr>
                           </thead>
                           <tbody>
-                            {materialOptions.VNeck.map((item) => (
+                            {materialOptions.VNeck?.map((item) => (
                               <tr key={item._id} className={selectedGSM.id === item._id ? 'table-active' : ''}>
                                 <td>
                                   <input
@@ -1310,12 +1315,30 @@ function getChangedFields(original, updated) {
                           value={formData.logoCount}
                           placeholder="Enter number of logos"
                           onChange={(e) => {
-                            const count = parseInt(e.target.value) || 0;
-                            const newLogos = [...Array(count)].map((_, index) => {
-                              return formData.logos[index] || { file: null, position: "", type: "" };
-                            });
-                            setFormData({ ...formData, logoCount: count, logos: newLogos });
-                          }}
+                              setIsDirty(true);
+                              const count = parseInt(e.target.value) || 0;
+
+                              // ✅ Expand master list if needed
+                              if (count > allLogos.length) {
+                                const newLogos = [...allLogos];
+                                for (let i = allLogos.length; i < count; i++) {
+                                  newLogos.push({
+                                    file: null,
+                                    preview: "",
+                                    position: "",
+                                    type: "",
+                                  });
+                                }
+                                setAllLogos(newLogos);
+                              }
+
+                              // ✅ Only slice visible logos, never delete from master
+                              setFormData((prev) => ({
+                                ...prev,
+                                logoCount: count,
+                                logos: allLogos.slice(0, count),
+                              }));
+                            }}
                           className="form-control w-75"
                           onWheel={(e) => e.currentTarget.blur()}
                         />
@@ -1339,14 +1362,15 @@ function getChangedFields(original, updated) {
                                 <input
                                   type="file"
                                   accept="image/*"
-                                  required
                                   onChange={(e) => {
                                     const file = e.target.files[0];
                                     const newLogos = [...formData.logos];
                                     newLogos[index] = {
                                       ...newLogos[index],
                                       file,
-                                      preview: URL.createObjectURL(file)
+                                      preview: file
+                                          ? URL.createObjectURL(file)
+                                          : newLogos[index].preview,
                                     };
                                     setFormData({ ...formData, logos: newLogos });
                                   }}
