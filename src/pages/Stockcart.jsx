@@ -5,6 +5,7 @@ import { MdDelete } from "react-icons/md";
 import Button from '@mui/material/Button';
 import Footer from '../Layout/Footer';
 import "./Shopcontentproduct.css";
+import Swal from 'sweetalert2';
 
 
 
@@ -68,7 +69,7 @@ export const Stockcart = () => {
     }catch (error) {
     const errorMsg = error.response?.data?.message || "Error deleting item.";
     console.error("Delete error:", errorMsg);
-    alert(errorMsg);
+    Swal.fire(errorMsg);
   }
   };
 

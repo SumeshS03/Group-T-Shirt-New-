@@ -17,6 +17,7 @@ import { Stockcart } from './pages/Stockcart';
 import Orders from './pages/Orders';
 import Orderinfo from './pages/Orderinfo';
 import UpdateProduct from './pages/UpdateProduct';
+import CartTab from './pages/CartTab';
 
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
         <Route path='/orders' element={<Orders></Orders>}></Route>
         <Route path='/orders/:id' element={<Orderinfo></Orderinfo>}></Route>
         <Route path='/updateproduct/:id' element={<UpdateProduct></UpdateProduct>}></Route>
+        <Route path='carttest' element={<CartTab></CartTab>}></Route>
         
       </Routes>
     {/* </Router> */}

@@ -8,6 +8,9 @@ import './Profile.css';
 import axios from 'axios';
 import { Button, Form, Input, Typography } from 'antd';
 import Swal from 'sweetalert2';
+import Alert from "@mui/material/Alert";
+import CheckIcon from "@mui/icons-material/Check";
+import ErrorIcon from "@mui/icons-material/Error";
 
 const { Title } = Typography;
 
@@ -18,6 +21,9 @@ const Shopcontent = () => {
   const [mobile, setMobile] = useState('');
   const [isMobileValid, setIsMobileValid] = useState(false);
   const navigate = useNavigate();
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
+
 
   const handleMobileChange = (e) => {
     const onlyDigits = e.target.value.replace(/\D/g, '');
@@ -43,28 +49,19 @@ const Shopcontent = () => {
       );
 
       if (response.status === 200) {
-        Swal.fire({
-          title: "Success",
-          text: "'OTP sent successfully",
-          icon: "success",
-          confirmButtonText: "OK",
-        });
+       setSuccess("OTP Sent Successfully ✅");
+        setError(""); // clear error
+        setTimeout(() => setSuccess(""), 3000);
       } else {
-        Swal.fire({
-          title: "Error",
-          text: response.data.message || 'Failed to send OTP',
-          icon: "error",
-          confirmButtonText: "OK",
-        });
+        setError(response.data.message || "Failed to send OTP ❌");
+        setSuccess("");
+        setTimeout(() => setError(""), 3000);
       }
     } catch (error) {
       console.error("Error sending OTP:", error);
-      Swal.fire({
-        title: "Error",
-        text: error.response?.data?.message || 'An error occurred while sending OTP',
-        icon: "error",
-        confirmButtonText: "OK",
-      });
+      setError(error.response?.data?.message || "An error occurred while sending OTP ❌");
+      setSuccess("");
+      setTimeout(() => setError(""), 3000);
     }
     finally {
     setLoading(false); // re-enable button after request finishes
@@ -88,39 +85,36 @@ const Shopcontent = () => {
       if (response.status === 200) {
         const { token, customer } = response.data;
         const customerId = customer?._id;
-        // console.log("customer detail:", response.data);
 
-        if (token) localStorage.setItem('authToken', token);
-        if (customerId) localStorage.setItem('customerId', customerId);
-        if (customer) localStorage.setItem('customer', JSON.stringify(customer));
+        if (token) localStorage.setItem("authToken", token);
+        if (customerId) localStorage.setItem("customerId", customerId);
+        if (customer) localStorage.setItem("customer", JSON.stringify(customer));
 
-        Swal.fire({
-          title: "Success",
-          text: "OTP verified successfully",
-          icon: "success",
-          confirmButtonText: "OK",
-        });
-        navigate('/product');
+        // ✅ Show success alert
+        setSuccess("OTP verified successfully ✅");
+        setError("");
+        setTimeout(() => {
+          setSuccess("");
+          navigate("/product"); // redirect after alert
+        }, 2000);
       } else {
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('customerId');
-        Swal.fire({
-          title: "Error",
-          text: response.data.message || 'OTP verification failed',
-          icon: "error",
-          confirmButtonText: "OK",
-        });
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("customerId");
+
+        // ❌ Show error alert
+        setError(response.data.message || "OTP verification failed ❌");
+        setSuccess("");
+        setTimeout(() => setError(""), 3000);
       }
     } catch (error) {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('customerId');
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("customerId");
       console.error("OTP verification error:", error);
-      Swal.fire({
-        title: "Error",
-        text: error.response?.data?.message || 'Network error while verifying OTP',
-        icon: "error",
-        confirmButtonText: "OK",
-      });
+
+      // ❌ Show network error alert
+      setError(error.response?.data?.message || "Network error while verifying OTP ❌");
+      setSuccess("");
+      setTimeout(() => setError(""), 3000);
     }
   };
 
@@ -223,6 +217,42 @@ const Shopcontent = () => {
             Register
           </Link>
         </div>
+      {/* ✅ Alert fixed at the top */}
+      {/* ✅ Alerts fixed at the top */}
+      {success && (
+        <div
+          style={{
+            position: "fixed",
+            top: 50,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 9999,
+            width: "90%",
+            maxWidth: "600px",
+          }}
+        >
+          <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+            {success}
+          </Alert>
+        </div>
+      )}
+      {error && (
+        <div
+          style={{
+            position: "fixed",
+            top: 50,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 9999,
+            width: "90%",
+            maxWidth: "600px",
+          }}
+        >
+          <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
+            {error}
+          </Alert>
+        </div>
+      )}
       </div>
     </>
   );

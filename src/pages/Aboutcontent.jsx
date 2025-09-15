@@ -36,6 +36,8 @@ import Slider from "react-slick";
 import { useNavigate } from 'react-router-dom';
 import aboutustwo from "../images/Aboutus2.png";
 import playbutton from "../images/play-button2.png"
+import Swal from "sweetalert2";
+
 
 const sliderSettingsicons = {
     dots: false,
@@ -80,26 +82,13 @@ const Aboutcontent = () => {
       navigate(`/product`);
     }
     else{
-      alert("Please login to start shopping.");
+      Swal.fire("Please login to start shopping.");
       navigate('/profile');
 
     }
 
   };
-  // const newcheck = () =>{
-  //   const token = localStorage.getItem('authToken');
-  //   window.scrollTo(0, 0);
-  //   if (token) {
-  //     // User is authenticated
-     
-  //     navigate(`/newdesign`);
-  //   }
-  //   else{
-  //     alert("Please login to start shopping.");
-  //     navigate('/profile');
 
-  //   }
-  // }
   return (
     <>
       <div>

@@ -9,17 +9,21 @@ import {
   addproducttopayment,
   getproductdetail,
 } from "../ApiFunctions/Continuepayment";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import CustomerDetailEditModal from "./CustomerDetailEditModal";
 import { IoCartOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
+import { getstockdetail } from "../ApiFunctions/Stockdetail";
 
 const CartContext = () => {
   const [show, setShow] = useState(false);
   const [hasGst, setHasGst] = useState(false);
   const [gstNumber, setGstNumber] = useState("");
   const [cartItems, setCartItems] = useState([]);
+  const [activeTab, setActiveTab] = useState("product");
+  const [stockDetail,setStockDetail] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
   const customerdetail = JSON.parse(localStorage.getItem("customer"));
   const BASE_URL_IMAGE = process.env.REACT_APP_IMAGE_URL;
 
@@ -38,6 +42,24 @@ const CartContext = () => {
 
     fetchProduct();
   }, []);
+
+  //get stock product detail ans store
+
+  useEffect(() =>{
+    const fetchProduct = async () =>{
+      try{
+        const data = await getstockdetail();
+        if(data){
+          setStockDetail(data);
+        }
+
+      }catch(error){
+        console.error("Error fetching product:", error);
+      }
+    };
+    fetchProduct();
+  }, [])
+
 
   //scroll to the top
   useEffect(() => {
@@ -144,6 +166,14 @@ const CartContext = () => {
     }
   };
 
+
+  // ✅ Check if we came from Product or Ready
+  useEffect(() => {
+    if (location.state?.openTab) {
+      setActiveTab(location.state.openTab);
+    }
+  }, [location.state]);
+
   return (
     <>
       <div>
@@ -158,96 +188,153 @@ const CartContext = () => {
 
       <div className="container text-start mt-5 mb-5">
         <div className="row">
+
           <div className="col-lg-7 p-1">
-            <div className="productcatoutbox p-5 rounded  bg-white mb-2">
-              {cartItems && cartItems.length > 0 ? (
-                cartItems.map((product, index) => (
-                  <div
-                    key={product.id}
-                    className="row align-items-center mb-3 product-row"
-                  >
-                    {/* Product Image */}
-                    <div className="col-3">
-                      <div className="ratio ratio-1x1 border rounded overflow-hidden">
-                        <img
-                          src={`${BASE_URL_IMAGE}${product.productId.images[0]}`}
-                          alt={product.name}
-                          className="img-fluid object-fit-cover"
-                        />
-                      </div>
-                    </div>
+            <div className="productcatoutbox p-5 rounded bg-white mb-2">
+              <div className="d-flex justify-content-center gap-3 mb-5">
+          <button className={`btn ${activeTab === "product" ? "btn-primary" : "btn-outline-primary"}`} onClick={() => setActiveTab("product")}>Product Cart</button>
+          <button className={`btn ${activeTab === "ready" ? "btn-primary" : "btn-outline-primary"}`} onClick={() => setActiveTab("ready")}>Ready Stock</button>
+        </div>
+                {/* ✅ Show Product Cart only when activeTab is "product" */}
+  {activeTab === "product" ? (
+  cartItems && cartItems.length > 0 ? (
+    cartItems.map((product, index) => (
+      <div key={product.id} className="row align-items-center mb-3 product-row">
+        {/* Product Image */}
+        <div className="col-3">
+          <div className="ratio ratio-1x1 border rounded overflow-hidden">
+            <img
+              src={`${BASE_URL_IMAGE}${product.productId.images[0]}`}
+              alt={product.name}
+              className="img-fluid object-fit-cover"
+            />
+          </div>
+        </div>
 
-                    {/* Product Details */}
-                    <div className="col-7">
-                      <h6 className="fw-bold mb-1 productnametext">
-                        {product.productId.name}
-                      </h6>
-                      <p className="m-0">
-                        Quantity: {product.quantityCount} &nbsp;&nbsp; Material:{" "}
-                        {product.clothMaterial}
-                      </p>
-                      <p className="m-0">Price: {product.amount}</p>
-                      <p className="m-0">Total: {product.grandTotal}</p>
-                      <p className="m-0">Delivery: {product.deliveryDate}</p>
-                    </div>
+        {/* Product Details */}
+        <div className="col-7">
+          <h6 className="fw-bold mb-1 productnametext">
+            {product.productId.name}
+          </h6>
+          <p className="m-0">
+            Quantity: {product.quantityCount} &nbsp;&nbsp; Material:{" "}
+            {product.clothMaterial}
+          </p>
+          <p className="m-0">Price: {product.amount}</p>
+          <p className="m-0">Total: {product.grandTotal}</p>
+          <p className="m-0">Delivery: {product.deliveryDate}</p>
+        </div>
 
-                    <div className="col-2 text-end d-flex flex-column align-items-end gap-2">
-                      {/* Edit Button */}
-                      <MdEdit
-                        className="rounded-circle text-primary"
-                        style={{ fontSize: "20px", cursor: "pointer" }}
-                        onClick={() => navigate(`/updateproduct/${product._id}`)}
-                      />
+        {/* Action Buttons */}
+        <div className="col-2 text-end d-flex flex-column align-items-end gap-2">
+          <MdEdit
+            className="rounded-circle text-primary"
+            style={{ fontSize: "20px", cursor: "pointer" }}
+            onClick={() => navigate(`/updateproduct/${product._id}`)}
+          />
+          <MdDelete
+            className="rounded-circle text-danger top-0"
+            style={{ fontSize: "20px", cursor: "pointer" }}
+            onClick={() => handleDelete(product._id)}
+          />
+        </div>
 
-                      {/* Delete Button */}
-                      <MdDelete
-                        className="rounded-circle text-danger top-0"
-                        style={{ fontSize: "20px", cursor: "pointer" }}
-                        onClick={() => handleDelete(product._id)}
-                      />
-                    </div>
-
-                    {/* Logos */}
-                    {Array.isArray(product.logos) &&
-                      product.logos.length > 0 && (
-                        <div className="mt-3">
-                          <strong>Logos:</strong>
-                          <div className="d-flex flex-wrap gap-3 mt-2">
-                            {product.logos.map((logo, idx) => (
-                              <div key={idx} className="text-center">
-                                <img
-                                  src={`https://gts.tsitcloud.com/${logo.photo?.replace(
-                                    /\\/g,
-                                    "/"
-                                  )}`}
-                                  alt={logo.logotype}
-                                  className="img-thumbnail"
-                                  style={{
-                                    width: "80px",
-                                    height: "80px",
-                                    objectFit: "contain",
-                                  }}
-                                />
-                                <div className="small mt-1">
-                                  {logo.position}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                  </div>
-                ))
-              ) : (
-                <div className="text-center my-5">
-                  <h5 className="text-muted">
-                    <span className="me-2">
-                      <IoCartOutline size={30} />
-                    </span>
-                    Add product to cart and continue
-                  </h5>
+        {/* Logos */}
+        {Array.isArray(product.logos) && product.logos.length > 0 && (
+          <div className="mt-3">
+            <strong>Logos:</strong>
+            <div className="d-flex flex-wrap gap-3 mt-2">
+              {product.logos.map((logo, idx) => (
+                <div key={idx} className="text-center">
+                  <img
+                    src={`https://gts.tsitcloud.com/${logo.photo?.replace(
+                      /\\/g,
+                      "/"
+                    )}`}
+                    alt={logo.logotype}
+                    className="img-thumbnail"
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      objectFit: "contain",
+                    }}
+                  />
+                  <div className="small mt-1">{logo.position}</div>
                 </div>
-              )}
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    ))
+  ) : (
+    <div className="text-center my-5">
+      <h5 className="text-muted">
+        <span className="me-2">
+          <IoCartOutline size={30} />
+        </span>
+        Add product to cart and continue
+      </h5>
+    </div>
+  )
+) : activeTab === "ready" ? (
+  stockDetail && stockDetail.length > 0 ? (
+    <div>
+      {stockDetail.map((item, idx) => (
+              <div key={item.id} className="row align-items-center mb-3 product-row">
+                {/* Product Image */}
+        <div className="col-3">
+          <div className="ratio ratio-1x1 border rounded overflow-hidden">
+            <img
+              src={`${BASE_URL_IMAGE}${item.stockId.images[0]}`}
+              alt={item.name}
+              className="img-fluid object-fit-cover"
+            />
+          </div>
+        </div>
+
+        {/* Product Details */}
+        <div className="col-7">
+          <h6 className="fw-bold mb-1 productnametext">
+            {item.stockId.productName}
+          </h6>
+          <p className="m-0">
+            Quantity: {item.quantity} &nbsp;&nbsp; Material:{" "}
+            {item.stockId.clothType}
+          </p>
+          <p className="m-0">Price: {item.price}</p>
+          <p className="m-0">Total: {item.totalAmount}</p>
+          <p className="m-0">Delivery: {item.deliveryDate}</p>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="col-2 text-end d-flex flex-column align-items-end gap-2">
+          <MdEdit
+            className="rounded-circle text-primary"
+            style={{ fontSize: "20px", cursor: "pointer" }}
+            // onClick={() => navigate(`/updateproduct/${product._id}`)}
+          />
+          <MdDelete
+            className="rounded-circle text-danger top-0"
+            style={{ fontSize: "20px", cursor: "pointer" }}
+            // onClick={() => handleDelete(product._id)}
+          />
+        </div>
+                </div>
+      ))}
+    </div>
+  ) : (
+    <div className="text-center my-5">
+      <h5 className="text-muted">
+        <span className="me-2">
+          <IoCartOutline size={30} />
+        </span>
+        Ready stock cart empty
+      </h5>
+    </div>
+  )
+) : null}
+
             </div>
             <div className="text-center mt-3">
               <button
@@ -362,9 +449,9 @@ const CartContext = () => {
 
       {/* <CustomerDetails customerdetail={customerdetail}></CustomerDetails> */}
 
-      <div className="social container-fluid  ">
+      <div className="social container-fluid ">
         <div class="row justify-content-center">
-          <div className="sociladivider   d-flex justify-content-around text-white">
+          <div className="sociladivider d-flex justify-content-around text-white">
             <div className="d-flex align-items-center justify-content-center socialone col-2 ">
               <text className="socialtexts" style={{ color: "white" }}>
                 Facebook

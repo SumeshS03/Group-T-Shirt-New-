@@ -45,7 +45,6 @@ const Orderinfo = () => {
       <div className="container-fluid">
   <div className="container py-5" style={{ minHeight: "100vh" }}>
     <h2 className="mb-4">Order Info Page</h2>
-    <p><strong>Order ID:</strong> {id}</p>
 
     {/* Order Summary Section */}
     <div className="card shadow-sm p-4 mb-4 mx-auto">

@@ -36,6 +36,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import Footer from '../Layout/Footer'
 import Rating from '../Layout/Rating'
 import HowToOrder from "./HowToOrder";
+import Swal from "sweetalert2";
 
 
 
@@ -52,7 +53,7 @@ const Homecontent = () => {
       navigate(`/product`);
     }
     else{
-      alert("Please login to start shopping.");
+      Swal.fire("Please login to start shopping.");
       navigate('/profile');
 
     }

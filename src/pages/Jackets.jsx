@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaShoppingCart } from 'react-icons/fa';
 import Ratemodal from './Ratemodal';
+import Swal from "sweetalert2";
 
 const Jackets = () => {
   const { id } = useParams();
@@ -336,13 +337,13 @@ console.log("formdata" , formData);
 
     // Validation
     if (parseInt(formData.quantity) < 16) {
-      alert("Minimum quantity must be 16");
+      Swal.fire("Minimum quantity must be 16");
       setIsSubmitting(false);
       return;
     }
 
     if (!selectedGSM.id) {
-      alert("Please select a material/GSM");
+      Swal.fire("Please select a material/GSM");
       setIsSubmitting(false);
       return;
     }
@@ -352,7 +353,7 @@ console.log("formdata" , formData);
         !logo.file || !logo.position || !logo.type
       );
       if (incompleteLogos) {
-        alert("Please complete all logo details");
+        Swal.fire("Please complete all logo details");
         setIsSubmitting(false);
         return;
       }
@@ -360,7 +361,7 @@ console.log("formdata" , formData);
 
     const token = localStorage.getItem('authToken');
     if (!token) {
-      alert('Please login to continue');
+      Swal.fire('Please login to continue');
       navigate('/profile');
       return;
     }
@@ -420,16 +421,16 @@ console.log("formdata" , formData);
       });
 
       console.log("Form submitted successfully:", response.data);
-      alert("Product added to cart successfully!");
+      Swal.fire("Product added to cart successfully!");
       navigate('/cart');
     } catch (error) {
       console.error("Error submitting form:", error);
       if (error.response?.status === 401) {
-        alert("Session expired. Please login to continue.");
+        Swal.fire("Session expired. Please login to continue.");
         localStorage.removeItem("authToken");
         navigate("/profile");
       } else {
-        alert(error.response?.data?.message || "Something went wrong. Please try again.");
+        Swal.fire(error.response?.data?.message || "Something went wrong. Please try again.");
       }
     } finally {
       setIsSubmitting(false);

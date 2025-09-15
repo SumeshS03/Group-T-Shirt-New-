@@ -7,8 +7,11 @@ import "./Productdetail.css";
 import "react-multi-carousel/lib/styles.css";
 import "./Stockdetail.css";
 import axios from "axios";
-import { FaShoppingCart } from 'react-icons/fa';
-import Footer from '../Layout/Footer'
+import { FaShoppingCart } from "react-icons/fa";
+import Footer from "../Layout/Footer";
+import Swal from "sweetalert2";
+
+
 
 const Stockdetail = () => {
   const baseurl = process.env.REACT_APP_API_BASE_URL;
@@ -18,56 +21,82 @@ const Stockdetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
   const [hoveredImage, setHoveredImage] = useState(null);
-   const [selectedSize, setSelectedSize] = useState("");
-  const [enteredQty, setEnteredQty] = useState("");
   const [activeTab, setActiveTab] = useState("");
+
   const navigate = useNavigate();
+  const [error, setError] = useState("");
+
+  const [formData, setFormData] = useState({
+  logoCount: 0,
+  logos: [],
+  selectedSize: "",
+  enteredQty: "",
+});
+const { logoCount, logos, selectedSize, enteredQty } = formData;
+
+const [sizeWiseQty, setSizeWiseQty] = useState(
+  productdetail?.quantityBySize
+    ? Object.fromEntries(Object.keys(productdetail.quantityBySize).map(size => [size, 0]))
+    : {}
+);
+
   
 
+  const logoOptions = [
+    { label: "Printed", price: 50 },
+    { label: "Embroidered", price: 150 },
+  ];
+
   useEffect(() => {
-  const fetchProduct = async () => {
-    console.log("Current ID:", id);
-    const token = localStorage.getItem("authToken");
+    const fetchProduct = async () => {
+      console.log("Current ID:", id);
+      const token = localStorage.getItem("authToken");
 
-    try {
-      const response = await axios.get(
-        `${baseurl}/stocks/grouped-by-category`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      try {
+        const response = await axios.get(
+          `${baseurl}stocks/grouped-by-category`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
 
+        console.log("response data", response.data.data);
 
-      const allStocks = response.data.flatMap((cat) => 
-        cat.stocks.map((stock) => stock)
-      );
-      console.log("response data",response.data)
-      console.log("allProducts" , allStocks);
-      
-      setProductsData(allStocks);
-      
-      // Correct comparison using _id as string
-      const foundStock = allStocks.find((p) => p._id === id);
-      console.log("foundproductid",foundStock)
+        // Flatten all products across categories into a single array
+        const allStocks = response.data.data.flatMap(
+          (category) => category.stocks
+        );
 
-      if (foundStock) {
-        setProductdetail(foundStock);
-        
-        // Safely set selected image
-        if (foundStock.product.images && foundStock.product.images.length > 0) {
-          setSelectedImage(`https://gts.tsitcloud.com/${foundStock.product.images[0]}`);
+        console.log("allProducts", allStocks);
+
+        // Find specific product by id
+        const foundStock = allStocks.find((p) => p._id === id);
+        console.log("foundProduct", foundStock);
+
+        if (foundStock) {
+          setProductdetail(foundStock);
+
+          // Safely set selected image
+          if (foundStock.images && foundStock.images.length > 0) {
+            setSelectedImage(
+              `https://gts.tsitcloud.com/${foundStock.images[0]}`
+            );
+          }
+
+          // Store categoryId if needed
+          if (foundStock.categoryId) {
+            localStorage.setItem("categoryId", foundStock.categoryId);
+          }
         }
-        // Store category ID if needed
-        const categoryId = foundStock?.category?._id;
-        if (categoryId) localStorage.setItem("categoryId", categoryId);
-      }
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Failed to fetch product:", error);
-      setIsLoading(false);
-    }
-  };
 
-  fetchProduct();
-}, [id]); 
+        setProductsData(allStocks);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch product:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id, baseurl]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -75,51 +104,75 @@ const Stockdetail = () => {
 
 
 
+
 const handleSubmit = async (e) => {
   e.preventDefault();
 
+
+
   const cusid = localStorage.getItem("customerId");
   if (!cusid) {
-    alert("Login and continue");
+    Swal.fire("Login and continue");
     navigate("/profile");
     return;
   }
 
-  if (!selectedSize || !enteredQty) {
-    alert("Please select a size and enter quantity");
-    return;
-  }
 
-  const payload = {
-    customerId: cusid,
-    stockId: productdetail._id,
-    quantity: Number(enteredQty),
-    size: selectedSize,
-    sleeveType: productdetail.sleeveType,
-    price: productdetail.priceFromMaterial,
-  };
 
-  try {
-    const response = await fetch("https://gts.tsitcloud.com/api/stockCart/add", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
 
-    const result = await response.json();
-
-    if (response.ok) {
-      console.log("Order submitted successfully:", result);
-      alert("Added to Ready stock cart");
-      navigate('/stockcart')
-    } else {
-      console.error("Failed to submit order:", result);
-    }
-  } catch (error) {
-    console.error("Error while submitting order:", error);
-  }
+const totalQty = Object.values(sizeWiseQty).reduce((a, b) => a + b, 0);
+  // Prepare formData object
+const formDataObj = {
+  customerId: cusid,
+  stockId: productdetail._id,
+  quantity: totalQty, 
+  sizeWiseQty,
+  sleeveType: productdetail.sleeveType,
+  price: Number(productdetail.Price),          // ✅ Use correct key
+  totalAmount: Number(productdetail.Price) * totalQty, // ✅ Correct calculation
+   logos: formData.logos.map((logo) => ({
+    position: logo.position,
+    logotype: logo.type,   // send 'type' as 'logotype'
+  })), 
 };
 
+  // Create FormData
+  const payload = new FormData();
+  Object.entries(formDataObj).forEach(([key, value]) => {
+    if (typeof value === "object") {
+      payload.append(key, JSON.stringify(value));
+    } else {
+      payload.append(key, value);
+    }
+  });
+
+  // Append logos
+  formData.logos.forEach((logo) => {
+    if (logo.file) {
+      payload.append("logoPhotos", logo.file); // 'logoPhotos' is key expected by backend
+    }
+  });
+
+  const token = localStorage.getItem("authToken");
+
+  try {
+    const response = await axios.post(`${baseurl}stockCart/add`, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // Do NOT set 'Content-Type' manually; axios sets it automatically for FormData
+      },
+    });
+
+    console.log("Order submitted successfully:", response.data);
+    Swal.fire("Added to Ready stock cart");
+    navigate("/cart", { state: { openTab: "ready" } });
+  } catch (error) {
+    console.error("Error while submitting order:", error.response || error);
+    Swal.fire(
+      error.response?.data?.message || "Error while submitting order"
+    );
+  }
+};
 
 
   return (
@@ -172,206 +225,327 @@ const handleSubmit = async (e) => {
         </div>
       </div>
 
-      
-        <form onSubmit={handleSubmit} className="mb-5">
-            <div className="container mt-5">
-              <div className="row">
-              <div className="col-lg-5 col-12">
-              {productdetail && (
-  <>
-    <div className="product-imagefulone p-2 position-relative">
-      <img
-        src={
-          hoveredImage ||
-          selectedImage ||
-          `https://gts.tsitcloud.com/${productdetail.product?.images?.[0] || ''}`
-        }
-        alt={productdetail.product?.name}
-        className="img-fluid"
-        style={{
-          filter: !productdetail.product?.inStock ? 'blur(2px) grayscale(30%)' : 'none',
-          opacity: !productdetail.product?.inStock ? 0.7 : 1,
-          transition: 'filter 0.3s ease',
-        }}
-      />
+      <form onSubmit={handleSubmit} className="mb-5">
+      <div className="container mt-5">
+        <div className="row g-4">
+          {/* ---------- Left: Product Images ---------- */}
+          <div className="col-lg-5 col-12">
+            {productdetail && (
+              <>
+                {/* Main Image */}
+                <div className="p-2 position-relative border rounded shadow-sm">
+                  <img
+                    src={
+                      hoveredImage ||
+                      selectedImage ||
+                      `https://gts.tsitcloud.com/${productdetail.images?.[0] || ""}`
+                    }
+                    alt={productdetail.productName}
+                    className="img-fluid w-100"
+                    style={{
+                      filter: !productdetail.inStock
+                        ? "blur(2px) grayscale(30%)"
+                        : "none",
+                      opacity: !productdetail.inStock ? 0.7 : 1,
+                      transition: "filter 0.3s ease",
+                    }}
+                  />
 
-      {/* Overlay for Out of Stock */}
-      {!productdetail.product?.inStock && (
-        <div
-          className="out-of-stock-overlay"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'rgba(255, 255, 255, 0.5)',
-            color: '#dc3545',
-            fontWeight: 'bold',
-            fontSize: '1.3rem',
-          }}
-        >
-          Out of Stock
+                  {!productdetail.inStock && (
+                    <div
+                      className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                      style={{
+                        backgroundColor: "rgba(255, 255, 255, 0.5)",
+                        color: "#dc3545",
+                        fontWeight: "bold",
+                        fontSize: "1.3rem",
+                      }}
+                    >
+                      Out of Stock
+                    </div>
+                  )}
+                </div>
+
+                {/* Thumbnails */}
+                {productdetail?.images?.slice(1).map((img, i) => {
+                  const imgUrl = `https://gts.tsitcloud.com/${img}`;
+                  return (
+                    <div
+                      key={i}
+                      className="d-inline-block mt-3 me-3"
+                      onMouseEnter={() => setHoveredImage(imgUrl)}
+                      onMouseLeave={() => setHoveredImage(null)}
+                      onClick={() => setSelectedImage(imgUrl)}
+                      style={{
+                        border:
+                          selectedImage === imgUrl
+                            ? "2px solid blue"
+                            : "2px solid transparent",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <img
+                        src={imgUrl}
+                        alt="Product Thumbnail"
+                        className="img-fluid"
+                        style={{
+                          height: "70px",
+                          width: "70px",
+                          objectFit: "cover",
+                          filter: !productdetail.inStock
+                            ? "blur(1px) grayscale(30%)"
+                            : "none",
+                          opacity: !productdetail.inStock ? 0.7 : 1,
+                        }}
+                      />
+                    </div>
+                  );
+                })}
+              </>
+            )}
+          </div>
+
+          {/* ---------- Right: Product Info ---------- */}
+          <div className="col-lg-7 col-12">
+            {productdetail && (
+              <div className="row g-2">
+                <div className="col-12 d-flex">
+                  <div className="fw-bold me-2" style={{ width: "140px" }}>
+                    Category:
+                  </div>
+                  <div>{productdetail.productName}</div>
+                </div>
+                <div className="col-12 d-flex">
+                  <div className="fw-bold me-2" style={{ width: "140px" }}>
+                    Sleeve Type:
+                  </div>
+                  <div>{productdetail.sleeveType}</div>
+                </div>
+                <div className="col-12 d-flex">
+                  <div className="fw-bold me-2" style={{ width: "140px" }}>
+                    Material:
+                  </div>
+                  <div>{productdetail.clothType}</div>
+                </div>
+                <div className="col-12 d-flex">
+                  <div className="fw-bold me-2" style={{ width: "140px" }}>
+                    Price:
+                  </div>
+                  <div>₹{productdetail.Price}</div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      )}
-    </div>
 
-    <div className="d-flex mt-4 gap-4 w-100 align-items-start">
-      <div
-        className="productdetail-image"
-        onMouseEnter={() =>
-          setHoveredImage(
-            `https://gts.tsitcloud.com/${productdetail.product?.images?.[1] || ''}`
-          )
-        }
-        onMouseLeave={() => setHoveredImage(null)}
-        style={{
-          border: selectedImage === `https://gts.tsitcloud.com/${productdetail.product?.images?.[1] || ''}`
-            ? '2px solid blue'
-            : '2px solid transparent',
-        }}
-      >
-        <img
-          src={`https://gts.tsitcloud.com/${productdetail.product?.images?.[1] || ''}`}
-          alt="Second"
-          className="img-fluid"
-          style={{
-            cursor: 'pointer',
-            filter: !productdetail.product?.inStock ? 'blur(1px) grayscale(30%)' : 'none',
-            opacity: !productdetail.product?.inStock ? 0.7 : 1,
-          }}
-        />
-      </div>
-    </div>
-  </>
-)}
+        {/* ---------- Logos Section ---------- */}
+        <div className="row mb-3 mt-3 align-items-center">
+          <label className="form-label text-start fw-bold mb-2 ">
+            How Many Logos?
+          </label>
 
+          <div className="col-8 col-md-3">
+            <input
+              type="number"
+              min="0"
+              className="form-control"
+              placeholder="Enter number"
+              value={logoCount}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, logoCount: e.target.value }))
+              }
+            />
+          </div>
+        </div>
+
+        {Number(logoCount) > 0 && (
+          <div className="card mt-3">
+            <div className="card-header bg-secondary text-white">
+              Logo Details
             </div>
-            <div className="col-lg-5 col-12 mt-lg-5 mt-0">
-  {productdetail && (
-    <div className="row g-2 ">
-      <div className="col-12 d-flex">
-        <div className="fw-bold me-2" style={{ width: "140px" }}>Category:</div>
-        <div>{productdetail.product.name}</div>
-      </div>
-      <div className="col-12 d-flex">
-        <div className="fw-bold me-2" style={{ width: "140px" }}>Sleeve Type:</div>
-        <div>{productdetail.sleeveType}</div>
-      </div>
-      <div className="col-12 d-flex">
-        <div className="fw-bold me-2" style={{ width: "140px" }}>Material:</div>
-        <div>{productdetail.product.material}</div>
-      </div>
-      <div className="col-12 d-flex">
-        <div className="fw-bold me-2" style={{ width: "140px" }}>Material Price:</div>
-        <div>₹{productdetail.priceFromMaterial}</div>
-      </div>
-      <div className="col-12 d-flex">
-        <div className="fw-bold me-2" style={{ width: "140px" }}>Brand:</div>
-        <div>{productdetail.product.brand}</div>
-      </div>
-      <div className="col-12 d-flex">
-        <div className="fw-bold me-2" style={{ width: "140px" }}>Description:</div>
-        <div>{productdetail.product.description}</div>
-      </div>
-      <div className="col-12 d-flex">
-        <div className="fw-bold me-2" style={{ width: "140px" }}>Weight:</div>
-        <div>{productdetail.product.weight}</div>
-      </div>
+            <div className="card-body">
+              {[...Array(Number(logoCount))].map((_, i) => (
+                <div key={i} className="row g-3 mb-4 pb-3">
+                  {/* Upload Logo */}
+                  <div className="col-lg-4">
+                    <label className="form-label">Upload Logo {i + 1}</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="form-control"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          const newLogos = [...logos];
+                          newLogos[i] = { ...newLogos[i], file };
+                          setFormData((prev) => ({ ...prev, logos: newLogos }));
+                        }
+                      }}
+                    />
 
-      
+                    {logos[i]?.file && (
+                      <div className="mt-2 text-center">
+                        <img
+                          src={URL.createObjectURL(logos[i].file)}
+                          alt={`Logo ${i + 1}`}
+                          className="img-fluid rounded shadow"
+                          style={{ maxHeight: "100px", objectFit: "contain" }}
+                        />
+                      </div>
+                    )}
+                  </div>
 
-    </div>
-  )}
-</div>
+                  {/* Position */}
+                  <div className="col-lg-4">
+                    <label className="form-label">Position</label>
+                    <select
+                      className="form-select"
+                      value={logos[i]?.position || ""}
+                      onChange={(e) => {
+                        const newLogos = [...logos];
+                        newLogos[i] = {
+                          ...newLogos[i],
+                          position: e.target.value,
+                        };
+                        setFormData((prev) => ({ ...prev, logos: newLogos }));
+                      }}
+                    >
+                      <option value="">Select position</option>
+                      <option value="right chest">Right Chest</option>
+                      <option value="left sleeve">Left Sleeve</option>
+                      <option value="right sleeve">Right Sleeve</option>
+                      <option value="front center">Front Center</option>
+                      <option value="back top">Back Top</option>
+                      <option value="back center">Back Center</option>
+                      <option value="on pocket">On Pocket</option>
+                    </select>
+                  </div>
 
-
-
-
-
+                  {/* Logo Type */}
+                  <div className="col-lg-4">
+                    <label className="form-label">Logo Type</label>
+                    <table className="table table-bordered table-striped">
+                      <tbody>
+                        {logoOptions.map((option, index) => (
+                          <tr key={index}>
+                            <td>
+                              <input
+                                type="radio"
+                                name={`logoType-${i}`}
+                                value={option.label}
+                                checked={logos[i]?.type === option.label}
+                                onChange={(e) => {
+                                  const newLogos = [...logos];
+                                  newLogos[i] = {
+                                    ...newLogos[i],
+                                    type: e.target.value,
+                                    price: option.price,
+                                  };
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    logos: newLogos,
+                                  }));
+                                }}
+                              />
+                            </td>
+                            <td>{option.label}</td>
+                            <td>₹{option.price}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="row mt-2">
+          </div>
+        )}
 
-<div className="col-12">
+        {/* ---------- Quantity Selection ---------- */}
+        <div className="mt-4">
   <table className="table table-bordered text-center">
     <thead className="table-light">
       <tr>
         <th colSpan="3">Choose Your Quantity</th>
       </tr>
       <tr>
-        <th>Select</th>
         <th>Size</th>
-        <th>Quantity</th>
+        <th>Available</th>
+        <th>Enter Quantity</th>
       </tr>
     </thead>
     <tbody>
-  {productdetail &&
-    Object.entries(productdetail.quantityBySize).map(([size, quantity]) =>
-      quantity > 0 ? (
-        <tr key={size}>
-          <td>
-            <input
-              type="radio"
-              name="size"
-              value={size}
-              onChange={(e) => setSelectedSize(e.target.value)}
-            />
-          </td>
-          <td>{size}</td>
-          <td>
-            <input
-              type="number"
-              min="1"
-              max={quantity}
-              placeholder={`Quantity Available ${quantity}`}
-              className="form-control"
-              onChange={(e) => setEnteredQty(e.target.value)}
-              disabled={selectedSize !== size}
-              value={selectedSize === size ? enteredQty : ""}
-            />
-          </td>
-        </tr>
-      ) : null
-    )}
-</tbody>
+      {productdetail &&
+        Object.entries(productdetail.quantityBySize).map(
+          ([size, quantity]) =>
+            quantity > 0 ? (
+              <tr key={size}>
+                <td>{size}</td>
+                <td>{quantity}</td>
+                <td>
+                  <input
+                    type="number"
+                    min="0"
+                    max={quantity}
+                    placeholder={`Available: ${quantity}`}
+                    className="form-control"
+                    value={sizeWiseQty[size] || 0}
+                    onChange={(e) => {
+                      let value = e.target.value;
+                      if (value === "") {
+                        setSizeWiseQty((prev) => ({ ...prev, [size]: 0 }));
+                        return;
+                      }
+                      value = Number(value.replace(/^0+/, "")) || 0;
 
+                      if (value > quantity) {
+                        setSizeWiseQty((prev) => ({ ...prev, [size]: quantity }));
+                        setError(`Only ${quantity} available in size ${size}`);
+                      } else {
+                        setSizeWiseQty((prev) => ({ ...prev, [size]: value }));
+                        setError("");
+                      }
+                    }}
+                    onWheel={(e) => e.target.blur()}
+                    onKeyDown={(e) => {
+                      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
+                  {/* {error && (
+                    <small style={{ color: "red" }}>{error}</small>
+                  )} */}
+                </td>
+              </tr>
+            ) : null
+        )}
+    </tbody>
   </table>
 </div>
 
-            </div>
 
-
-            <div className="row d-flex align-items-center justify-content-center">
-              <div className="col-lg-2 col-12 mt-5 d-flex flex-column gap-2 justify-content-center align-items-center">
- 
-  
-  <button
-  type="submit"
-  className="btn btn-lg w-100 d-flex justify-content-center align-items-center addtocartbuttonsize"
-  style={{
-    backgroundColor: productdetail.product?.inStock ? '#0d6efd' : '#dc3545',
-    color: productdetail.product?.inStock ? 'white' : '#eee',
-    cursor: productdetail.product?.inStock ? 'pointer' : 'not-allowed',
-    opacity: productdetail.product?.inStock ? 1 : 0.7,
-  }}
-  disabled={!productdetail.product?.inStock}
->
-  <FaShoppingCart className="me-2" />
-  {productdetail.product?.inStock ? 'Add to Cart' : 'Out of Stock'}
-</button>
-</div>
-
-
-            </div>
+        {/* ---------- Add to Cart ---------- */}
+        <div className="d-flex justify-content-center mt-4">
+          <button
+            type="submit"
+            className="btn btn-lg addtocartbuttonsize d-flex align-items-center"
+            style={{
+              backgroundColor: productdetail.inStock ? "#0d6efd" : "#dc3545",
+              color: "white",
+              cursor: productdetail.inStock ? "pointer" : "not-allowed",
+              opacity: productdetail.inStock ? 1 : 0.7,
+            }}
             
-          </div>
-        </form>
+          >
+            <FaShoppingCart className="me-2" />
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </form>
 
-       <Footer className='mt-5'></Footer>
-      
+      <Footer className="mt-5"></Footer>
     </>
   );
 };

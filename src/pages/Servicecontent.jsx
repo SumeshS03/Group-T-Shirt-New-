@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import React from "react";
 import Slider from "react-slick";
 import { MdArrowRightAlt } from "react-icons/md";
+import Swal from "sweetalert2";
 
 
 const Servicecontent = () => {
@@ -62,7 +63,7 @@ const navigate = useNavigate();
       navigate(`/product`);
     }
     else{
-      alert("Please login to start shopping.");
+      Swal.fire("Please login to start shopping.");
       navigate('/profile');
 
     }

@@ -13,7 +13,7 @@ import Footer from '../Layout/Footer'
 
 const Shopcontentproduct = () => {
   const [activeTab, setActiveTab] = useState("product");
-  const [stockData, setstockData] = useState(null);
+  const [stockData, setstockData] = useState([]);
  const baseurl = process.env.REACT_APP_API_BASE_URL;
   const [loading, setLoading] = useState(true);
   const location = useLocation();
@@ -56,15 +56,15 @@ const Shopcontentproduct = () => {
     const token = localStorage.getItem("authToken");
     
     try {
-      const response = await axios.get(`${baseurl}/stocks/grouped-by-category`, {
+      const response = await axios.get(`${baseurl}stocks/grouped-by-category`, {
         headers: {
           Authorization: `Bearer ${token}`,  // ✅ Also using token from localStorage
           'Content-Type': 'application/json'
         }
       });
 
-      setstockData(response.data);
-      console.log("Fetched grouped data:", response.data);
+      setstockData(response.data.data);
+      console.log("Fetched grouped data:", response.data.data);
       
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -144,84 +144,80 @@ const Shopcontentproduct = () => {
 
 
   <div className="container mt-5 productshowbox">
-      {loading ? (
-        <div className="text-center my-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      ) : (
-        stockData.map((categoryItem, catIndex) => (
-          <div key={catIndex} className="mb-5">
-            {categoryItem.stocks.length > 0 && (
-  <h2 className="h4 text-start mb-3">{categoryItem.categoryName}</h2>
-)}
-  {console.log("categoryItem" , categoryItem)
-  }
-            {categoryItem.stocks && categoryItem.stocks.length > 0 ? (
-  <div className="product-slider-container">
-    <Carousel responsive={responsive} infinite={false} arrows={true}>
-  {categoryItem.stocks.map((stockItem, prodIndex) => {
-    const stockId = stockItem._id;
-    const product = stockItem.product;
-    const isOutOfStock = !product.inStock;
-
-    return (
-      <div key={prodIndex} className="product-card text-center p-2 position-relative">
-        <div
-          className="product-image"
-          onClick={() => navigate(`/stockdetail/${stockId}`)}
-          style={{ cursor: 'pointer', position: 'relative' }}
-        >
-          <img
-            src={`https://gts.tsitcloud.com/${product.images[0]}`}
-            alt={`product-img-${prodIndex}`}
-            style={{
-              width: '100%',
-              height: '200px',
-              objectFit: 'cover',
-              filter: isOutOfStock ? 'blur(2px) grayscale(30%)' : 'none',
-              opacity: isOutOfStock ? 0.7 : 1,
-              transition: 'filter 0.3s ease',
-            }}
-          />
-
-          {isOutOfStock && (
-            <div
-              className="out-of-stock-overlay"
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                color: '#dc3545',
-                fontWeight: 'bold',
-                fontSize: '1.2rem',
-              }}
-            >
-              Out of Stock
-            </div>
-          )}
-        </div>
+  {loading ? (
+    <div className="text-center my-5">
+      <div className="spinner-border text-primary" role="status">
+        <span className="visually-hidden">Loading...</span>
       </div>
-    );
-  })}
-</Carousel>
-
-  </div>
-) : (
-  <p>No products available in this category.</p>
-)}
-
-          </div>
-        ))
-      )}
     </div>
+  ) : (
+    stockData.map((categoryItem, catIndex) => (
+      <div key={catIndex} className="mb-5">
+        {/* Category name */}
+        {categoryItem.stocks.length > 0 && (
+          <h2 className="h4 text-start mb-3">{categoryItem.categoryName}</h2>
+        )}
+
+        {/* Products in category */}
+        {categoryItem.stocks.length > 0 ? (
+          <div className="product-slider-container">
+            <Carousel responsive={responsive} infinite={false} arrows={true}>
+              {categoryItem.stocks.map((stockItem, prodIndex) => {
+                const product = stockItem;
+                const isOutOfStock = !product.inStock;
+
+                return (
+                  <div key={prodIndex} className="product-card text-center p-2 position-relative">
+                    <div
+                      className="product-image"
+                      onClick={() => navigate(`/stockdetail/${product._id}`)}
+                      style={{ cursor: 'pointer', position: 'relative' }}
+                    >
+                      <img
+                        src={`https://gts.tsitcloud.com/${product.images[0]}`}
+                        alt={product.productName}
+                        style={{
+                          width: '100%',
+                          height: '200px',
+                          objectFit: 'cover',
+                          filter: isOutOfStock ? 'blur(2px) grayscale(30%)' : 'none',
+                          opacity: isOutOfStock ? 0.7 : 1,
+                        }}
+                      />
+                      {isOutOfStock && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: 'rgba(255,255,255,0.5)',
+                            color: '#dc3545',
+                            fontWeight: 'bold',
+                            fontSize: '1.2rem',
+                          }}
+                        >
+                          Out of Stock
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </Carousel>
+          </div>
+        ) : (
+          <p>No products available in this category.</p>
+        )}
+      </div>
+    ))
+  )}
+</div>
+
       
       
       

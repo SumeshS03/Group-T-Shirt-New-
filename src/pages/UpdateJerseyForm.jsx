@@ -1655,132 +1655,129 @@ const halfSleeveNumbersMap = {};
 </div>
 </div>
     </div>            
-                <div className="col-md-4 ">
-                  <div className="p-1 sticky-col">
-                  {/* Price Summary */}
-                <div className="card mb-4">
-                      <div className="card-header bg-success text-white">
-                        <h6>Price Summary</h6>
-                      </div>
-
-                      <div className="card-body d-flex justify-content-center">
-                        <div className="row w-100 g-3 mb-4">
-                          <div className="col-12">
-                            <div className="card h-100 border-0 shadow-sm">
-                              <div className="card-body">
-                                <h6 className="card-title fw-bold text-primary">T-Shirt Cost</h6>
-                                <div className="d-flex justify-content-between py-2 border-bottom">
-                                  <span className="text-muted">Quantity:</span>
-                                  <span className="fw-semibold">{formData.quantity || 0}</span>
+                <div className="col-md-4">
+                                  <div className="sticky-col">
+                                    <div className="card mb-4">
+                                      <div className="card-header bg-success text-white">
+                                        <h6>Price Summary</h6>
+                                      </div>
+                                
+                                      <div className="card-body d-flex justify-content-center">
+                                        <div className="row w-100 g-3 mb-4">
+                                          <div className="col-12">
+                                            {/* ✅ Responsive Table */}
+                                            <div className="table-responsive">
+                                              <table className="table table-bordered text-center align-middle">
+                                                <thead className="table-light">
+                                                  <tr>
+                                                    <th></th>
+                                                    <th>Quantity</th>
+                                                    <th>Rate</th>
+                                                    <th>Amount</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  <tr>
+                                                    <td>T-Shirt</td>
+                                                    <td>{formData.quantity || 0}</td>
+                                                    <td>{formData.discountedPrice ? `₹${formData.discountedPrice}` : '₹0.00'}</td>
+                                                    <td>
+                                                      {formData.grandtotal
+                                                        ? `₹${formData.quantity * formData.discountedPrice}`
+                                                        : '₹0.00'}
+                                                    </td>
+                                                  </tr>
+                                                  <tr>
+                                                    <td>Logo</td>
+                                                    <td>{formData.quantity || 0}</td>
+                                                    <td>
+                                                      {formData.totalLogoPricePerPiece
+                                                        ? `₹${formData.totalLogoPricePerPiece}`
+                                                        : '₹0.00'}
+                                                    </td>
+                                                    <td>
+                                                      {formData.totalLogoPricePerPiece
+                                                        ? `₹${formData.totalLogoPrice}`
+                                                        : '₹0.00'}
+                                                    </td>
+                                                  </tr>
+                                                  <tr>
+                                                    <td>Total</td>
+                                                    <td colSpan={3}>
+                                                      {formData.quantity && formData.discountedPrice
+                                                        ? `₹${
+                                                            formData.quantity * formData.discountedPrice +
+                                                            (formData.totalLogoPrice || 0)
+                                                          }`
+                                                        : '₹0.00'}
+                                                    </td>
+                                                  </tr>
+                                                  <tr>
+                                                    <td>GST (5%)</td>
+                                                    <td colSpan={3}>
+                                                      ₹{(
+                                                        ((formData.quantity * formData.discountedPrice) +
+                                                          (formData.totalLogoPrice || 0)) *
+                                                        0.05
+                                                      ).toFixed(2)}
+                                                    </td>
+                                                  </tr>
+                                                  <tr>
+                                                    <td>Grand Total</td>
+                                                    <td colSpan={3}>
+                                                      ₹{(
+                                                        ((formData.quantity * formData.discountedPrice) +
+                                                          (formData.totalLogoPrice || 0)) *
+                                                          1.05
+                                                      ).toFixed(2)}
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                            {/* ✅ End Responsive Table */}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                
+                                    {/* Buttons */}
+                                    <div className="d-grid gap-2">
+                                      {localStorage.getItem("authToken") ? (
+                                        <button
+                                          type="submit"
+                                          className="btn btn-primary btn-lg"
+                                          disabled={isSubmitting || !selectedGSM.id}
+                                        >
+                                          {isSubmitting ? (
+                                            <>
+                                              <span
+                                                className="spinner-border spinner-border-sm me-2"
+                                                role="status"
+                                                aria-hidden="true"
+                                              ></span>
+                                              Adding to Cart...
+                                            </>
+                                          ) : (
+                                            <>
+                                              <FaShoppingCart className="me-2" />
+                                              Add to Cart
+                                            </>
+                                          )}
+                                        </button>
+                                      ) : (
+                                        <button
+                                          type="button"
+                                          className="btn btn-primary btn-lg"
+                                          disabled={!selectedGSM.id}
+                                          onClick={handleLoginModalShow}
+                                        >
+                                          Add to Cart
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="d-flex justify-content-between py-2 border-bottom">
-                                  <span className="text-muted">Rate:</span>
-                                  <span className="fw-semibold">
-                                    {formData.discountedPrice ? `₹${formData.discountedPrice}` : '₹0.00'}
-                                  </span>
-                                </div>
-                                <div className="d-flex justify-content-between py-2">
-                                  <span className="text-muted">Total:</span>
-                                  <span className="fw-bold text-success">
-                                    {formData.grandtotal
-                                      ? `₹${(formData.quantity) * (formData.discountedPrice)}`
-                                      : '₹0.00'}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="col-12">
-
-                            <div className="card h-100 border-0 shadow-sm">
-                              <div className="card-body">
-                                <h6 className="card-title fw-bold text-primary">Logo Costs</h6>
-                                <div className="d-flex justify-content-between py-2 border-bottom">
-                                  <span className="text-muted">Quantity:</span>
-                                  <span className="fw-semibold">{formData.logoCount || 0}</span>
-                                </div>
-                                <div className="d-flex justify-content-between py-2 border-bottom">
-                                  <span className="text-muted">Total Rate(Per T-Shirt):</span>
-                                  <span className="fw-semibold">
-                                    {formData.totalLogoPricePerPiece ? `₹${formData.totalLogoPricePerPiece}` : '₹0.00'}
-                                  </span>
-                                </div>
-                                <div className="d-flex justify-content-between py-2">
-                                  <span className="text-muted">Total:</span>
-                                  <span className="fw-bold text-success">
-                                    {formData.totalLogoPricePerPiece ? `₹${formData.totalLogoPrice}` : '₹0.00'}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="col-12">
-
-                            <div className="card h-100 border-0 shadow-sm">
-                              <div className="card-body">
-                                <h6 className="card-title fw-bold text-primary">Total</h6>
-                                <div className="d-flex justify-content-between py-2 border-bottom">
-                                  <span className="text-muted">Gst(5%):</span>
-                                  <span className="fw-semibold">
-                                    ₹{((parseFloat(formData.grandtotal) || 0) * 0.05)}
-                                  </span>
-                                </div>
-                                <div className="d-flex justify-content-between py-2">
-                                  <span className="text-muted">Grand Total:</span>
-                                  <span className="fw-bold text-success">
-                                    ₹{(((parseFloat(formData.grandtotal) || 0) * 0.05) + ((parseFloat(formData.grandtotal))))}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-
-                    </div>
-
-                {/* Submit Button */}
-                <div className="d-grid gap-2">
-                  {localStorage.getItem("authToken") ? (
-                    // 👉 If token exists, show Add to Cart
-                    <button
-                      type="submit"
-                      className="btn btn-primary btn-lg"
-                      disabled={isSubmitting || !selectedGSM.id}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <span
-                            className="spinner-border spinner-border-sm me-2"
-                            role="status"
-                            aria-hidden="true"
-                          ></span>
-                          Adding to Cart...
-                        </>
-                      ) : (
-                        <>
-                          <FaShoppingCart className="me-2" />
-                          Add to Cart test
-                        </>
-                      )}
-                    </button>
-                  ) : (
-                    // 👉 If no token, show Login button
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-lg"
-                      disabled={!selectedGSM.id}
-                      onClick={handleLoginModalShow} // <-- open your login popup
-                    >
-                      Add to Cart
-                    </button>
-                  )}
-                </div>
-                </div>
-              </div>
               
             
           
