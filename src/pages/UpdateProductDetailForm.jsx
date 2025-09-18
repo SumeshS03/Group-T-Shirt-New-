@@ -391,8 +391,8 @@ const UpdateProductDetailForm = () => {
     setIsDirty(true);
     const quantity = parseInt(e.target.value) || 0;
     calculateAndSetTotal({ ...formData, quantity: quantity.toString() });
-    if (value && value < 16) {
-      setQuantityError("⚠️ Minimum order is 16");
+    if (value && value < productdetail.minQuantity) {
+      setQuantityError(`⚠️ Minimum order is ${productdetail.minQuantity}`);
     } else {
       setQuantityError("");
     }
@@ -459,8 +459,10 @@ const UpdateProductDetailForm = () => {
     setIsSubmitting(true);
 
     // ====== Validations (keep as you had) ======
-    if (parseInt(formData.quantity) < 16) {
-      Swal.fire("Validation Error", "Minimum quantity must be 16", "warning");
+    if (parseInt(formData.quantity) < productdetail.minQuantity) {
+      Swal.fire("Validation Error", 
+        `Minimum quantity must be ${productdetail.minQuantity}`, 
+        "warning");
       setIsSubmitting(false);
       return;
     }
@@ -872,11 +874,11 @@ const UpdateProductDetailForm = () => {
                           </label>
                           <input
                             type="number"
-                            min="16"
+                            min={productdetail.minQuantity}
                             name="quantity"
                             value={formData.quantity}
                             required
-                            placeholder="Minimum 16"
+                            placeholder={`minimum ${productdetail.minQuantity}`}
                             onChange={handleQuantityChange}
                             className={`form-control ${
                               quantityError ? "is-invalid" : ""
@@ -1579,11 +1581,11 @@ const UpdateProductDetailForm = () => {
                                   <tr>
                                     <td>T-Shirt</td>
                                     <td>{formData.quantity || 0}</td>
-                                    <td>{formData.discountedPrice ? `₹${formData.discountedPrice}` : '₹0.00'}</td>
+                                    <td>{formData.discountedPrice ? `₹ ${formData.discountedPrice}` : '₹ 0'}</td>
                                     <td>
                                       {formData.grandtotal
-                                        ? `₹${formData.quantity * formData.discountedPrice}`
-                                        : '₹0.00'}
+                                        ? `₹ ${(formData.quantity * formData.discountedPrice).toLocaleString("en-IN")}`
+                                        : '₹ 0'}
                                     </td>
                                   </tr>
                                   <tr>
@@ -1591,44 +1593,45 @@ const UpdateProductDetailForm = () => {
                                     <td>{formData.quantity || 0}</td>
                                     <td>
                                       {formData.totalLogoPricePerPiece
-                                        ? `₹${formData.totalLogoPricePerPiece}`
-                                        : '₹0.00'}
+                                        ? `₹ ${formData.totalLogoPricePerPiece.toLocaleString("en-IN")}`
+                                        : '₹ 0'}
                                     </td>
                                     <td>
                                       {formData.totalLogoPricePerPiece
-                                        ? `₹${formData.totalLogoPrice}`
-                                        : '₹0.00'}
+                                        ? `₹ ${formData.totalLogoPrice.toLocaleString("en-IN")}`
+                                        : '₹ 0'}
                                     </td>
                                   </tr>
                                   <tr>
                                     <td>Total</td>
-                                    <td colSpan={3}>
+                                    <td colSpan={3} className="text-end">
                                       {formData.quantity && formData.discountedPrice
-                                        ? `₹${
+                                        ? `₹ ${(
                                             formData.quantity * formData.discountedPrice +
                                             (formData.totalLogoPrice || 0)
+                                        ).toLocaleString("en-IN")
                                           }`
-                                        : '₹0.00'}
+                                        : '₹ 0.00'}
                                     </td>
                                   </tr>
                                   <tr>
                                     <td>GST (5%)</td>
-                                    <td colSpan={3}>
-                                      ₹{(
+                                    <td colSpan={3} className="text-end">
+                                      ₹ {(
                                         ((formData.quantity * formData.discountedPrice) +
                                           (formData.totalLogoPrice || 0)) *
                                         0.05
-                                      ).toFixed(2)}
+                                      ).toLocaleString("en-IN")}
                                     </td>
                                   </tr>
                                   <tr>
                                     <td>Grand Total</td>
-                                    <td colSpan={3}>
-                                      ₹{(
+                                    <td colSpan={3} className="text-end">
+                                      ₹ {(
                                         ((formData.quantity * formData.discountedPrice) +
                                           (formData.totalLogoPrice || 0)) *
                                           1.05
-                                      ).toFixed(2)}
+                                      ).toLocaleString("en-IN")}
                                     </td>
                                   </tr>
                                 </tbody>

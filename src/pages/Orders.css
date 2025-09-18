@@ -1,3 +1,22 @@
 .advancebutton{
     width: 45% !important;
 }
+
+.product-imgorder {
+  width: 100%;
+  height: 150px; /* mobile */
+  object-fit: contain; /* Shows entire image */
+  object-position: top;
+}
+
+@media (min-width: 768px) {
+  .product-imgorder {
+    height: 200px; /* tablet */
+  }
+}
+
+@media (min-width: 1200px) {
+  .product-imgorder {
+    height: 250px; /* desktop */
+  }
+}

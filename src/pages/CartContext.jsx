@@ -8,12 +8,13 @@ import Footer from "../Layout/Footer";
 import {
   addproducttopayment,
   getproductdetail,
+  addstocktopayment,
 } from "../ApiFunctions/Continuepayment";
 import { useNavigate,useLocation } from "react-router-dom";
 import CustomerDetailEditModal from "./CustomerDetailEditModal";
 import { IoCartOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
-import { getstockdetail } from "../ApiFunctions/Stockdetail";
+import { getstockdetail,handleDeleteStock } from "../ApiFunctions/Stockdetail";
 
 const CartContext = () => {
   const [show, setShow] = useState(false);
@@ -35,7 +36,12 @@ const CartContext = () => {
         if (data) {
           setCartItems(data); // ✅ set state
         }
+        
       } catch (error) {
+       if (error.response && error.response.data?.message === "Invalid token") {
+        localStorage.removeItem("authToken");
+        navigate("/profile"); // optional redirect
+      }
         console.error("Error fetching product:", error);
       }
     };
@@ -115,6 +121,21 @@ const CartContext = () => {
     }
   };
 
+  //delete stock added product
+
+  const deletestockproduct = async (id) =>{
+    try{
+      const result = await handleDeleteStock(id);
+      if (result) {
+        setStockDetail((prev) => prev.filter((item) => item._id !== id));
+      }
+      
+    }
+    catch{
+
+    }
+  }
+
   //continue payment function
 
   const continuepayment = async () => {
@@ -165,6 +186,57 @@ const CartContext = () => {
       console.error("Payment error:", err);
     }
   };
+
+
+  function addDaysToDate(days) {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  return date.toISOString().split("T")[0]; // returns YYYY-MM-DD
+}
+
+
+  const continuestockpay = async () =>{
+    try {
+      // example payload, replace with your real cart details
+      const customerId = localStorage.getItem("customerId");
+      const customer = JSON.parse(localStorage.getItem("customer"));
+      // ✅ set delivery date 7 days from today
+    const deliveryDate = addDaysToDate(7);
+      
+
+      const cartdetail = {
+      customerId: customerId,
+      deliveryDetails: {
+        name: customer?.name || "",
+        phone: customer?.mobile || "",
+        email: customer?.email || "",
+        addressLine1: customer?.address || "",
+        addressLine2: customer?.address?.line2 || "",
+        city: customer?.address || "",
+        state: customer?.address || "",
+        postalCode: customer?.address?.pincode || "623315"
+      },
+      deliveryDate: deliveryDate, // take from your state/input
+      remark: "",             // take from your state/input
+      gstNumber: gstNumber || ""        // optional if backend supports
+    };
+    console.log("Payload sending to backend:", cartdetail);
+      // console.log("Payload sending to backend:", cartdetail);
+      const res = await addstocktopayment(cartdetail);
+      // console.log("Payment created:", res);
+      if (res.message === "Order created successfully and stock updated") {
+        // navigate("/orders");
+        navigate("/orders", { state: { openTab: "stock" } });
+      }
+      
+    } catch (err) {
+      console.error("Payment error:", err);
+    }
+    
+
+    
+
+  }
 
 
   // ✅ Check if we came from Product or Ready
@@ -312,12 +384,12 @@ const CartContext = () => {
           <MdEdit
             className="rounded-circle text-primary"
             style={{ fontSize: "20px", cursor: "pointer" }}
-            // onClick={() => navigate(`/updateproduct/${product._id}`)}
+            onClick={() => navigate(`/updatestock/${item._id}`)}
           />
           <MdDelete
             className="rounded-circle text-danger top-0"
             style={{ fontSize: "20px", cursor: "pointer" }}
-            // onClick={() => handleDelete(product._id)}
+            onClick={() => deletestockproduct(item._id)}
           />
         </div>
                 </div>
@@ -408,17 +480,35 @@ const CartContext = () => {
                 <h4 className="productnametext">Price Details</h4>
                 <p>Total Amount ({cartItems.length} Products)</p>
                 <hr />
-                <p>
-                  <strong>Total Amount: ₹</strong>
-                  <strong>
-                    {cartItems.reduce(
-                      (acc, item) => acc + (item.grandTotal || 0),
-                      0
-                    )}
-                  </strong>
-                </p>
-                <hr />
+                {activeTab === "product" && (
+  <p>
+    <strong>Total Amount: ₹</strong>
+    <strong>
+      {cartItems.reduce(
+        (acc, item) => acc + (Number(item.grandTotal) || 0),
+        0
+      )}
+    </strong>
+  </p>
+)}
+{activeTab === "ready" && (
+  <p>
+    <strong>Total Amount: ₹</strong>
+    <strong>
+      {Array.isArray(stockDetail)
+        ? stockDetail.reduce(
+            (acc, item) => acc + (Number(item.totalAmount) || 0),
+            0
+          )
+        : 0}
+    </strong>
+  </p>
+)}
 
+
+               
+                <hr />
+{activeTab === "product" && (
                 <div className="text-center mt-3">
                   <button
                     className="btn btn-primary rounded"
@@ -428,6 +518,18 @@ const CartContext = () => {
                     Place Order
                   </button>
                 </div>
+)}
+{activeTab === "ready" && (
+                <div className="text-center mt-3">
+                  <button
+                    className="btn btn-primary rounded"
+                    type="button"
+                    onClick={continuestockpay}
+                  >
+                    Place Order
+                  </button>
+                </div>
+)}
               </>
             ) : (
               <div className="text-center p-4">

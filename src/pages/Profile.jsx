@@ -6,13 +6,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import 'antd/dist/reset.css';
 import './Profile.css';
 import axios from 'axios';
-import { Button, Form, Input, Typography } from 'antd';
-import Swal from 'sweetalert2';
-import Alert from "@mui/material/Alert";
-import CheckIcon from "@mui/icons-material/Check";
-import ErrorIcon from "@mui/icons-material/Error";
+import { Button, Form, Input} from 'antd';
 
-const { Title } = Typography;
+
 
 const Shopcontent = () => {
   const [otp, setOtp] = useState('');
@@ -21,8 +17,11 @@ const Shopcontent = () => {
   const [mobile, setMobile] = useState('');
   const [isMobileValid, setIsMobileValid] = useState(false);
   const navigate = useNavigate();
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpSendSuccess, setOtpSendSuccess] = useState("");
+const [otpSendError, setOtpSendError] = useState("");
+const [otpVerifySuccess, setOtpVerifySuccess] = useState("");
+const [otpVerifyError, setOtpVerifyError] = useState("");
 
 
   const handleMobileChange = (e) => {
@@ -49,19 +48,20 @@ const Shopcontent = () => {
       );
 
       if (response.status === 200) {
-       setSuccess("OTP Sent Successfully ✅");
-        setError(""); // clear error
-        setTimeout(() => setSuccess(""), 3000);
+       setOtpSendSuccess("OTP Sent Successfully ✅");
+      setOtpSendError("");
+      setOtpSent(true);
+      setTimeout(() => setOtpSendSuccess(""), 3000);
       } else {
-        setError(response.data.message || "Failed to send OTP ❌");
-        setSuccess("");
-        setTimeout(() => setError(""), 3000);
+       setOtpSendError(response.data.message || "Failed to send OTP ❌");
+      setOtpSendSuccess("");
+      setTimeout(() => setOtpSendError(""), 3000);
       }
     } catch (error) {
       console.error("Error sending OTP:", error);
-      setError(error.response?.data?.message || "An error occurred while sending OTP ❌");
-      setSuccess("");
-      setTimeout(() => setError(""), 3000);
+    setOtpSendError(error.response?.data?.message || "Error sending OTP ❌");
+    setOtpSendSuccess("");
+    setTimeout(() => setOtpSendError(""), 3000);
     }
     finally {
     setLoading(false); // re-enable button after request finishes
@@ -91,20 +91,20 @@ const Shopcontent = () => {
         if (customer) localStorage.setItem("customer", JSON.stringify(customer));
 
         // ✅ Show success alert
-        setSuccess("OTP verified successfully ✅");
-        setError("");
-        setTimeout(() => {
-          setSuccess("");
-          navigate("/product"); // redirect after alert
-        }, 2000);
+        setOtpVerifySuccess("OTP verified successfully ✅");
+      setOtpVerifyError("");
+      setTimeout(() => {
+        setOtpVerifySuccess("");
+        navigate("/product");
+      }, 2000);
       } else {
         localStorage.removeItem("authToken");
         localStorage.removeItem("customerId");
 
         // ❌ Show error alert
-        setError(response.data.message || "OTP verification failed ❌");
-        setSuccess("");
-        setTimeout(() => setError(""), 3000);
+       setOtpVerifyError(response.data.message || "OTP verification failed ❌");
+      setOtpVerifySuccess("");
+      setTimeout(() => setOtpVerifyError(""), 3000);
       }
     } catch (error) {
       localStorage.removeItem("authToken");
@@ -112,9 +112,9 @@ const Shopcontent = () => {
       console.error("OTP verification error:", error);
 
       // ❌ Show network error alert
-      setError(error.response?.data?.message || "Network error while verifying OTP ❌");
-      setSuccess("");
-      setTimeout(() => setError(""), 3000);
+      setOtpVerifyError(error.response?.data?.message || "Network error ❌");
+    setOtpVerifySuccess("");
+    setTimeout(() => setOtpVerifyError(""), 3000);
     }
   };
 
@@ -153,16 +153,20 @@ const Shopcontent = () => {
           placeholder="Enter the number"
         />
       </Form.Item>
+      
       <div className="mt-5">
         <Button
           type="primary"
           className="mobilenumber-boxone rounded-5 py-lg-4 py-md-4 py-sm-2 custom-disabled-btn"
           block
-          disabled={!isMobileValid || loading}
+          disabled={!isMobileValid || loading || otpSent}
           onClick={sendOTP}
         >
         {loading ? "Sending..." : "SEND OTP"}
         </Button>
+         {/* ✅ Success & Error under button */}
+    {otpSendSuccess && <p className="text-success mt-2">{otpSendSuccess}</p>}
+    {otpSendError && <p className="text-danger mt-2">{otpSendError}</p>}
       </div>
     </Form>
   </div>
@@ -202,6 +206,9 @@ const Shopcontent = () => {
     >
       SUBMIT
     </Button>
+    {/* ✅ Success & Error under button */}
+    {otpVerifySuccess && <p className="text-success mt-2">{otpVerifySuccess}</p>}
+    {otpVerifyError && <p className="text-danger mt-2">{otpVerifyError}</p>}
   </div>
 </Form>
 
@@ -217,42 +224,6 @@ const Shopcontent = () => {
             Register
           </Link>
         </div>
-      {/* ✅ Alert fixed at the top */}
-      {/* ✅ Alerts fixed at the top */}
-      {success && (
-        <div
-          style={{
-            position: "fixed",
-            top: 50,
-            left: "50%",
-            transform: "translateX(-50%)",
-            zIndex: 9999,
-            width: "90%",
-            maxWidth: "600px",
-          }}
-        >
-          <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
-            {success}
-          </Alert>
-        </div>
-      )}
-      {error && (
-        <div
-          style={{
-            position: "fixed",
-            top: 50,
-            left: "50%",
-            transform: "translateX(-50%)",
-            zIndex: 9999,
-            width: "90%",
-            maxWidth: "600px",
-          }}
-        >
-          <Alert icon={<ErrorIcon fontSize="inherit" />} severity="error">
-            {error}
-          </Alert>
-        </div>
-      )}
       </div>
     </>
   );

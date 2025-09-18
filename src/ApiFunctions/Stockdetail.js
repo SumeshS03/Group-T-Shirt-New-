@@ -12,7 +12,7 @@ export const getstockdetail = async() =>{
     }
     
     const response = await axios.post(
-      `${BASE_URL}/stockCart/getByCustomer`,
+      `${BASE_URL}stockCart/getByCustomer`,
       { customerId },
       {
         headers: {
@@ -28,3 +28,30 @@ export const getstockdetail = async() =>{
     throw error; // ✅ re-throw so caller can handle
   }
 }
+
+
+export const handleDeleteStock = async (id) => {
+  try {
+    const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      console.warn("Missing authToken in localStorage");
+      return null;
+    }
+
+    const response = await axios.delete(
+      `${BASE_URL}stockCart/remove/${id}`, // ✅ fixed missing slash
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Deleted stock cart item:", response.data);
+    return response.data; // ✅ return so caller can update UI
+  } catch (error) {
+    console.error("Error deleting stock item:", error);
+    throw error; // ✅ let caller handle error
+  }
+};

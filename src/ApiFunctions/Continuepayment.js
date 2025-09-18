@@ -1,6 +1,7 @@
 import axios from "axios";
 
 
+
 const BASE_URL =process.env.REACT_APP_API_BASE_URL;
 
 
@@ -16,7 +17,7 @@ export const getproductdetail = async () => {
     }
 
     const response = await axios.get(
-      `${BASE_URL}/cartItems/list/${customerId}`,
+      `${BASE_URL}cartItems/list/${customerId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -25,7 +26,11 @@ export const getproductdetail = async () => {
     );
 
     console.log("Fetched product:", response.data);
-    return response.data; // ✅ return so caller can use it
+
+   
+
+  return response.data; // ✅ return so caller can use it
+    
   } catch (error) {
     console.error("Error fetching product:", error);
     throw error; // ✅ re-throw so caller can handle
@@ -69,7 +74,7 @@ export const deleteproductbyid = async (id) => {
 export const addproducttopayment = async (cartdetail) => {
   try {
     const response = await axios.post(
-      `${BASE_URL}/order/create`,
+      `${BASE_URL}order/create`,
       cartdetail,   // 🟢 this is the body
       {
         headers: {
@@ -78,29 +83,35 @@ export const addproducttopayment = async (cartdetail) => {
         },
       }
     );
-    return response.data;
+
+   // return immediately
+    const responseData = response.data;
+
+    // run cleanup in background
+    if (responseData.message === "Order created successfully") {
+      setTimeout(async () => {
+        try {
+          const products = await getproductdetail();
+          if (products && Array.isArray(products)) {
+            for (const item of products) {
+              console.log("Cart Item ID:", item._id);
+              await deleteproductbyid(item._id);
+            }
+          }
+        } catch (err) {
+          console.error("Error while deleting products:", err);
+        }
+      }, 0);
+    }
+
+    return responseData;
+
+    
   } catch (error) {
     console.error("Error in addproducttopayment:", error);
     throw error;
-  } finally{
-    try {
-      
-      const products = await getproductdetail();
-
-      if (products && Array.isArray(products)) {
-        
-        products.forEach((item) => {
-          console.log("Cart Item ID:", item._id);
-          const id = item._id;
-          deleteproductbyid(id);
-        });
-      } else {
-        console.warn("No products found after payment.");
-      }
-    } catch (err) {
-      console.error("Error fetching product details in finally:", err);
-    }
-  }
+  } 
+ 
 };
 
 
@@ -162,5 +173,26 @@ export const viewdetails = async (id) =>{
     throw error;
   }
 
+}
+
+
+export const addstocktopayment = async (stockdetail) =>{
+  try{
+    const response = await axios.post(
+      `${BASE_URL}stockOrder/Create`,
+       stockdetail,
+       {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+       }
+    );
+    return response.data;
+  }
+  catch (error){
+    console.error("Error in addstocktopayment:", error);
+    throw error;
+  } 
 }
 

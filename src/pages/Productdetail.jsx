@@ -252,27 +252,50 @@ useEffect(() => {
       {productdetail ? (
         <>
           <h2 className="text-start productnametext">{productdetail?.name}</h2>
-          <p className="text-start">{productdetail?.description}</p>
+         <p className="text-start">
+  {productdetail?.description
+    ?.split(/(?=Type:|Fit:|Fabric:|Quality:|Design:)/) // split but keep keywords
+    .map((line, idx) => {
+      // Extract keyword + rest of line
+      const match = line.match(/^(Type:|Fit:|Fabric:|Quality:|Design:)(.*)/);
 
-          <hr className="divider-line" />
+      if (match) {
+        return (
+          <div key={idx}>
+            <strong>{match[1]}</strong>
+            {match[2].trim()}
+          </div>
+        );
+      }
+
+      return <div key={idx}>{line.trim()}</div>;
+    })}
+</p>
+
+
+
+
+
+
+          {/* <hr className="divider-line" />
 
           <p className="text-start"><strong>Color:</strong> {productdetail?.color}</p>
           <p className="text-start"><strong>Material:</strong> {productdetail?.material}</p>
           <p className="text-start"><strong>Brand:</strong> {productdetail?.brand}</p>
           <p className="text-start"><strong>Weight:</strong> {productdetail?.weight}</p>
 
-          <hr className="divider-line" />
+          <hr className="divider-line" /> */}
 
-          <h5 className="mb-2">About this item</h5>
+          {/* <h5 className="mb-2">About this item</h5>
           <ul className="text-start">
             <li><strong>Type:</strong> Comfortable Cotton T-Shirt</li>
             <li><strong>Fit:</strong> Regular Fit – Comfortable for daily wear</li>
             <li><strong>Fabric:</strong> 100% Pure Cotton – Durable and skin-friendly</li>
             <li><strong>Design:</strong> Printed Graphic – Stylish and trendy look</li>
-          </ul>
+          </ul> */}
 
           {/* Responsive Table */}
-          <div className="table-responsive mt-4">
+          {/* <div className="table-responsive mt-4">
             <table className="table table-bordered text-center">
               <thead>
                 <tr>
@@ -301,7 +324,7 @@ useEffect(() => {
                 </tr>
               </tbody>
             </table>
-          </div>
+          </div> */}
         </>
       ) : (
         <p>Loading product details...</p>

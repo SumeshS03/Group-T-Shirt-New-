@@ -18,6 +18,8 @@ import Orders from './pages/Orders';
 import Orderinfo from './pages/Orderinfo';
 import UpdateProduct from './pages/UpdateProduct';
 import CartTab from './pages/CartTab';
+import Updatestockdetail from './pages/Updatestockdetail';
+import StockOrderInfo from './pages/StockOrderInfo';
 
 
 function App() {
@@ -44,6 +46,8 @@ function App() {
         <Route path='/orders/:id' element={<Orderinfo></Orderinfo>}></Route>
         <Route path='/updateproduct/:id' element={<UpdateProduct></UpdateProduct>}></Route>
         <Route path='carttest' element={<CartTab></CartTab>}></Route>
+        <Route path='/updatestock/:id' element={<Updatestockdetail></Updatestockdetail>}></Route>
+        <Route path='/stockorderdetail/:id' element={<StockOrderInfo></StockOrderInfo>}></Route>
         
       </Routes>
     {/* </Router> */}

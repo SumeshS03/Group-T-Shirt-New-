@@ -153,6 +153,7 @@
     display: flex; /* Enables flexbox */
     align-items: center; /* Centers vertically */
     justify-content: center;
+    cursor: pointer;
 }
 
 

@@ -1,0 +1,50 @@
+import React, { useState } from "react";
+import { Modal, Button, Form } from "react-bootstrap";
+
+const CancelStockModel = ({ show, onHide, orderId }) => {
+  const [reason, setReason] = useState("");
+  const handleSubmit = () => {
+    console.log("Cancel Data:", { orderId, reason });
+    // ✅ Call cancel API here with orderId + reason
+    onHide(); // Close modal after submitting
+  };
+  return (
+    <Modal show={show} onHide={onHide} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Cancel Order</Modal.Title>
+          </Modal.Header>
+    
+          <Modal.Body>
+            <Form>
+              <Form.Group className="mb-3">
+                <Form.Label>Order ID</Form.Label>
+                <Form.Control type="text" value={orderId} disabled />
+              </Form.Group>
+    
+              {/* <Form.Group className="mb-3">
+                <Form.Label>Reason</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                  rows={3}
+                  placeholder="Enter reason"
+                  required
+                />
+              </Form.Group> */}
+            </Form>
+          </Modal.Body>
+    
+          <Modal.Footer>
+            <Button variant="secondary" onClick={onHide}>
+              Close
+            </Button>
+            <Button variant="danger" onClick={handleSubmit}>
+              Confirm Cancel
+            </Button>
+          </Modal.Footer>
+        </Modal>
+  )
+}
+
+export default CancelStockModel

@@ -179,7 +179,6 @@ const Shopcontentproduct = () => {
                         style={{
                           width: '100%',
                           height: '200px',
-                          objectFit: 'cover',
                           filter: isOutOfStock ? 'blur(2px) grayscale(30%)' : 'none',
                           opacity: isOutOfStock ? 0.7 : 1,
                         }}
