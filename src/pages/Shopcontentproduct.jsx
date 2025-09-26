@@ -16,6 +16,7 @@ const Shopcontentproduct = () => {
   const navigate = useNavigate();
   const [productsData, setProductsData] = useState([]);
  const base_url = process.env.REACT_APP_API_BASE_URL;
+ const [selectedCategory, setSelectedCategory] = useState(0);
 
 
     useEffect(() => {
@@ -145,7 +146,7 @@ useEffect(() =>{
   
 
  
-  <div className="container mt-5 productshowbox">
+  {/* <div className="container mt-5 productshowbox">
     {loading ? (
       <div className="text-center my-5">
         <div className="spinner-border text-primary" role="status">
@@ -188,10 +189,84 @@ useEffect(() =>{
         </div>
       ))
     )}
-  </div>
+  </div> */}
 
-  
-      
+<div className="container mt-5">
+      {/* 🔹 Tabs Row */}
+      <div className="row mb-4">
+        <div className="d-flex flex-wrap gap-3 justify-content-center">
+          {productsData.map((categoryItem, catIndex) =>
+            categoryItem.products.length > 0 && (
+              <button
+                key={catIndex}
+                className={`btn rounded-pill px-3 py-1 ${
+                  selectedCategory === catIndex
+                    ? "btn-primary"
+                    : "btn-outline-primary"
+                }`}
+                onClick={() => setSelectedCategory(catIndex)}
+              >
+                {categoryItem.category}
+              </button>
+            )
+          )}
+        </div>
+      </div>
+
+      {/* 🔹 Products for Selected Category */}
+      <div className="row">
+        {productsData[selectedCategory]?.products?.length > 0 ? (
+          <div className="mb-5">
+            <h2 className="h4 text-start mb-3">
+              {productsData[selectedCategory].category}
+            </h2>
+
+            <div className="row g-4">
+  {productsData[selectedCategory].products.map((product, prodIndex) => (
+    <div
+      key={prodIndex}
+      className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex" // responsive + flex for equal height
+    >
+      <div className="product-card text-center p-3 border rounded shadow-sm flex-fill">
+        {/* Product Image */}
+        <div
+          className="product-image position-relative"
+          onClick={() => navigate(`/productdetail/${product._id}`)}
+          style={{ cursor: "pointer" }}
+        >
+          <img
+            src={`https://gts.tsitcloud.com/${product.images[0]}`}
+            alt={`product-img-${prodIndex}`}
+            className="img-fluid"
+            style={{
+              width: "100%",
+              height: "200px",
+              objectFit: "contain",
+            }}
+          />
+        </div>
+
+        {/* Product Info */}
+        <p className="mt-3">
+          <strong>{product.name}</strong>
+        </p>
+        <small>
+          <strong>Minimum Order:</strong> {product.minQuantity}
+        </small>
+      </div>
+    </div>
+  ))}
+</div>
+
+
+          </div>
+        ) : (
+          <p className="text-muted">No products found.</p>
+        )}
+      </div>
+    </div>
+
+
       
       
       

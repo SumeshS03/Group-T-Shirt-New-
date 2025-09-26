@@ -3,6 +3,7 @@ import { stockdetailcustomer } from "../ApiFunctions/StockPayment";
 import { useNavigate } from "react-router-dom";
 import CancelStockModel from "./CancelStockModel";
 import { handlePayment } from "../ApiFunctions/PaymentGateway";
+import OrderCountdown from "./OrderCountdown";
 
 const StockOrder = () => {
   const [orderDetail, setOrderDetail] = useState([]);
@@ -216,10 +217,27 @@ postalCode}`}</span>
           </div>
           <div className="row">
             <div className="col-lg-12 text-end" >
-              {order.orderStatus === "Cancelled" && (
-                <span className="badge bg-danger fs-6">
-                  Order Cancelled
-                </span>
+              {order.orderStatus === "Pending" && (
+                <OrderCountdown
+  createdAt={order.createdAt}
+  orderStatus={order.orderStatus}
+  orderId={order.orderId}
+  onExpire={async (expiredOrderId) => {
+    // Update locally
+    setOrderDetail(prevOrders =>
+      prevOrders.map(order =>
+        order.orderId === expiredOrderId
+          ? { ...order, orderStatus: "Cancelled" }
+          : order
+      )
+    );
+     // Auto-cancel API call
+      await handleOpenCancel(expiredOrderId);
+
+    
+  }}
+/>
+
               )}
             </div>
           </div>

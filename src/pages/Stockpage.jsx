@@ -16,8 +16,12 @@ const Shopcontentproduct = () => {
   const [stockData, setstockData] = useState([]);
  const baseurl = process.env.REACT_APP_API_BASE_URL;
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
+  
+
+  const products = stockData[selectedCategory]?.stocks || [];
 
     useEffect(() => {
       // Set activeTab based on current path
@@ -26,6 +30,7 @@ const Shopcontentproduct = () => {
       else if (location.pathname === "/stock") setActiveTab("stock");
     }, [location.pathname]);
 
+    
 
   const responsive = {
     superLargeDesktop: {
@@ -76,7 +81,7 @@ const Shopcontentproduct = () => {
   fetchProducts();
 }, [baseurl]);
 
- 
+ if (!stockData || stockData.length === 0) return null;
   return (
     <>
       <div>
@@ -143,7 +148,7 @@ const Shopcontentproduct = () => {
 
 
 
-  <div className="container mt-5 productshowbox">
+  {/* <div className="container mt-5 productshowbox">
   {loading ? (
     <div className="text-center my-5">
       <div className="spinner-border text-primary" role="status">
@@ -153,12 +158,12 @@ const Shopcontentproduct = () => {
   ) : (
     stockData.map((categoryItem, catIndex) => (
       <div key={catIndex} className="mb-5">
-        {/* Category name */}
+
         {categoryItem.stocks.length > 0 && (
           <h2 className="h4 text-start mb-3">{categoryItem.categoryName}</h2>
         )}
 
-        {/* Products in category */}
+
         {categoryItem.stocks.length > 0 ? (
           <div className="product-slider-container">
             <Carousel responsive={responsive} infinite={false} arrows={true}>
@@ -216,10 +221,84 @@ const Shopcontentproduct = () => {
       </div>
     ))
   )}
-</div>
+</div> */}
 
       
-      
+<div className="container mt-5">
+      {/* Category Tabs */}
+      <div className="d-flex flex-wrap gap-3 justify-content-center mb-4">
+        {stockData.map((categoryItem, index) =>
+          categoryItem.stocks.length > 0 ? (
+            <button
+              key={index}
+              className={`btn rounded-pill px-3 py-1 ${
+                selectedCategory === index ? "btn-primary" : "btn-outline-primary"
+              }`}
+              onClick={() => setSelectedCategory(index)}
+            >
+              {categoryItem.categoryName}
+            </button>
+          ) : null
+        )}
+      </div>
+
+      {/* Products Grid */}
+      <div className="row g-4 mb-5">
+        {products.map((product, prodIndex) => {
+          const isOutOfStock = product.totalQuantity === 0;
+
+          return (
+            <div key={prodIndex} className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+              <div className="product-card text-center p-3 border rounded shadow-sm flex-fill">
+                {/* Product Image */}
+                <div
+                  className="product-image position-relative"
+                  onClick={() => navigate(`/stockdetail/${product._id}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <img
+                    src={`https://gts.tsitcloud.com/${product.images[0]}`}
+                    alt={product.productName}
+                    style={{
+                      width: "100%",
+                      height: "200px",
+                      objectFit: "contain",
+                      filter: isOutOfStock ? "blur(2px) grayscale(30%)" : "none",
+                      opacity: isOutOfStock ? 0.7 : 1,
+                    }}
+                  />
+                  {isOutOfStock && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        backgroundColor: "rgba(255,255,255,0.5)",
+                        color: "#dc3545",
+                        fontWeight: "bold",
+                        fontSize: "1.2rem",
+                      }}
+                    >
+                      Out of Stock
+                    </div>
+                  )}
+                </div>
+
+                {/* Product Info */}
+                <p className="mt-3">
+                  <strong>{product.productName}</strong>
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>      
       
       
       
