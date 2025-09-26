@@ -1,4 +1,4 @@
-import React from "react";
+import React,{ useState } from "react";
 import HomeHeader from "../Layout/HomeHeader";
 import "./Homecontent.css";
 import Slider from "react-slick";
@@ -37,12 +37,15 @@ import Footer from '../Layout/Footer'
 import Rating from '../Layout/Rating'
 import HowToOrder from "./HowToOrder";
 import Swal from "sweetalert2";
+import HowToOrderModal from "./HowToOrderModal";
 
 
 
 const Homecontent = () => {
   
   const navigate = useNavigate();
+  const [showHowToOrder, setShowHowToOrder] = useState(false);
+
 
   const buycheck = () =>{
     const token = localStorage.getItem('authToken');
@@ -150,14 +153,25 @@ const sliderSettingsicons = {
             <p className="print-shirt">
               For all your Bulk Customized T-Shirt Requirments 
             </p>
-            <button className="start-btd fs-5 "  onClick={buycheck}  >Order Now</button>
+            
+  <button className="start-btd fs-5" onClick={buycheck}>Order Now</button>
+  
+            
           </div>
-          <div></div>
+          
+  
         </div>
 
-       
-       
-         
+        <div className="d-flex gap-3 mt-1 mb-5 button-flex">
+          <button
+  className="btn btn-primary px-4 py-2 fs-5 rounded-pill shadow-sm fw-semibold hover-scale"
+  onClick={() => setShowHowToOrder(true)}
+>
+  <i className="bi bi-info-circle me-2"></i> How to Order
+</button>
+
+        </div>
+
       <Slider   {...settingsone}>
   <div>
     <img src={grouptshirtone} alt="Group T-shirt 1" className="slider-image" />
@@ -664,7 +678,7 @@ const sliderSettingsicons = {
       </div>
 
 
-       <HowToOrder />
+       {/* <HowToOrder /> */}
       <Rating></Rating>
 
       <div className="mailbox  mt-4">
@@ -861,6 +875,12 @@ const sliderSettingsicons = {
         </div>
       </div>
       <Footer></Footer>
+
+      <HowToOrderModal
+  show={showHowToOrder}
+  handleClose={() => setShowHowToOrder(false)}
+/>
+
     </>
   );
 };

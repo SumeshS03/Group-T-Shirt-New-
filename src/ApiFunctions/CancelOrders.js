@@ -19,3 +19,22 @@ export const cancelProduct = async (orderId) => {
     throw error; // rethrow so caller can handle it
   }
 };
+
+
+export const cancelstockorder = async (orderId) =>{
+  const token = localStorage.getItem("authToken")
+  try{
+    const response = await axios.post(`${BASE_URL}stockOrder/cancelStockOrder`,
+      {orderId: orderId},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      } // send orderId in request body
+    )
+    return response.data;
+  }catch(error){
+    console.error("Error cancelling product:", error);
+    throw error; // rethrow so caller can handle it
+  }
+}

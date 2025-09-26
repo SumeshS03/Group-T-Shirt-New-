@@ -68,6 +68,13 @@ useEffect(() => {
 }, [base_url]);
 
 
+//scroll top
+
+useEffect(() =>{
+   window.scrollTo(0, 0);
+},[]);
+
+
 
   return (
     <>
@@ -170,6 +177,8 @@ useEffect(() => {
             />
             
           </div>
+          <p className="mt-3" > <strong>{product.name}</strong></p>
+          <small><strong>Minimun Order : </strong>{product.minQuantity}</small>
         </div>
       ))}
     </Carousel>

@@ -337,29 +337,37 @@ const getLogoPricePerPiece = (quantity, logos = []) => {
     };
   };
 
-  const calculateDeliveryDate = (days) => {
-  if (!days) return '';
+//   const calculateDeliveryDate = (days) => {
+//   if (!days) return '';
   
-  const today = new Date();
-  let count = 0;
-  const deliveryDate = new Date(today);
+//   const today = new Date();
+//   let count = 0;
+//   const deliveryDate = new Date(today);
    
-  while (count < days) {
-    deliveryDate.setDate(deliveryDate.getDate() + 1);
-    // Skip weekends (optional)
-    if (deliveryDate.getDay() !== 0 && deliveryDate.getDay() !== 6) {
-      count++;
-    }
-  }
+//   while (count < days) {
+//     deliveryDate.setDate(deliveryDate.getDate() + 1);
   
-  return deliveryDate.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-};
-  // Handlers
+//     if (deliveryDate.getDay() !== 0 && deliveryDate.getDay() !== 6) {
+//       count++;
+//     }
+//   }
+  
+//   return deliveryDate.toLocaleDateString('en-US', {
+//     weekday: 'long',
+//     year: 'numeric',
+//     month: 'long',
+//     day: 'numeric'
+//   });
+// };
+
+
+
+
+
+
+
+
+
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
   const handlePolyesterShow = () => setShowPolyesterModal(true);
@@ -379,8 +387,8 @@ const calculateAndSetTotal = (updatedFormData) => {
     const quantity = parseInt(updatedFormData.quantity) || 0;
     const discountPerPiece = getDiscountPerPiece(quantity);
     const deliveryDays = getDeliveryDays(quantity);
-    const estimatedDeliveryDate = calculateDeliveryDate(deliveryDays);
-
+    // const estimatedDeliveryDate = calculateDeliveryDate(deliveryDays);
+    const estimatedDeliveryDate = deliveryDays;
 
     const selectedPrice = updatedFormData.selectedGSM?.price || selectedGSM?.price || 0;
     const discountedPrice = Math.max(0, selectedPrice - discountPerPiece);
@@ -476,7 +484,7 @@ console.log("formdata" , formData);
 
 
     if (formData.quantity && totalQuantity !== parseInt(formData.quantity)) {
-    setSleeveError("Half & Full sleeve total must match required quantity above.");
+    setSleeveError("Size-wise total does not match with Order Quantity");
   } else {
     setSleeveError("");
   }

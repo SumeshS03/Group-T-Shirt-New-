@@ -22,6 +22,7 @@ import { Popover } from "antd";
 const HomeHeader = () => {
   const location = useLocation(); // Get current URL
   const [activeLink, setActiveLink] = useState("");
+  const [customerName, setCustomerName] = useState("");
   const navigate = useNavigate();
   const currentPath = location.pathname;
   const isShopActive =
@@ -36,6 +37,27 @@ const HomeHeader = () => {
   useEffect(() => {
     setActiveLink(location.pathname.replace("/", ""));
   }, [location]);
+
+
+//update the username
+  // Function to update state from localStorage
+  const updateCustomerName = () => {
+    const customer = JSON.parse(localStorage.getItem("customer"));
+    if (customer?.name) {
+      setCustomerName(customer.name);
+    }
+  };
+
+  useEffect(() => {
+    // Initial load
+    updateCustomerName();
+
+    // Listen for custom event
+    window.addEventListener("customerUpdated", updateCustomerName);
+
+    // Cleanup
+    return () => window.removeEventListener("customerUpdated", updateCustomerName);
+  }, []);
 
   const handlehistoryclick = () => {
     const token = localStorage.getItem("authToken");
@@ -229,14 +251,14 @@ const HomeHeader = () => {
               </Link>
             </div>
             <div className="home-divider1">
-              <div className="search-container">
+              {/* <div className="search-container">
                 <input
                   type="text"
                   className="search-box"
                   placeholder="Search..."
                 />
                 <FaSearch className="search-icon" />
-              </div>
+              </div> */}
               <div className="pofile-box">
                 {!authToken ? (
                   <MdPerson
@@ -245,21 +267,40 @@ const HomeHeader = () => {
                   />
                 ) : (
                   <Popover
-                    content={
-                      <div className="text-center">
-                        <button
-                          className="btn btn-sm btn-outline-danger w-100"
-                          onClick={handleLogout}
-                        >
-                          Logout
-                        </button>
-                      </div>
-                    }
-                    trigger="hover"
-                    placement="bottom"
-                  >
-                    <MdPerson className="profileicons" />
-                  </Popover>
+  content={
+    <div className="p-2" style={{ minWidth: "160px" }}>
+      {/* Header */}
+      <div className="fw-semibold text-center mb-2 border-bottom pb-1">
+      {customerName}
+    </div>
+
+      {/* Profile Option */}
+      <button
+        className="btn btn-sm btn-light w-100 text-start d-flex align-items-center mb-2"
+        onClick={() => navigate('/updateprofile')}
+      >
+        <i className="bi bi-person-circle me-2 text-primary"></i>
+        Profile
+      </button>
+
+      {/* Logout Option */}
+      <button
+        className="btn btn-sm btn-outline-danger w-100 text-start d-flex align-items-center"
+        onClick={handleLogout}
+      >
+        <i className="bi bi-box-arrow-right me-2"></i>
+        Logout
+      </button>
+    </div>
+  }
+  trigger="hover"
+  placement="bottom"
+>
+  <MdPerson className="profileicons" />
+</Popover>
+
+
+
                 )}
                 {/* <MdPerson className='profileicons'
 
@@ -294,14 +335,14 @@ const HomeHeader = () => {
             </div>
 
             <div className="hamburger-menu search-boxhead mb-4">
-              <div className="search-container">
+              {/* <div className="search-container">
                 <input
                   type="text"
                   className="search-box"
                   placeholder="Search..."
                 />
                 <FaSearch className="search-icon" />
-              </div>
+              </div> */}
               <div className="pofile-box">
                 {!authToken ? (
                   <MdPerson
@@ -310,21 +351,37 @@ const HomeHeader = () => {
                   />
                 ) : (
                   <Popover
-                    content={
-                      <div className="text-center">
-                        <button
-                          className="btn btn-sm btn-outline-danger w-100"
-                          onClick={handleLogout}
-                        >
-                          Logout
-                        </button>
-                      </div>
-                    }
-                    trigger="hover"
-                    placement="bottom"
-                  >
-                    <MdPerson className="profileicons" />
-                  </Popover>
+  content={
+    <div className="p-2" style={{ minWidth: "160px" }}>
+      {/* Header */}
+      <div className="fw-semibold text-center mb-2 border-bottom pb-1">
+      {customerName}
+    </div>
+
+      {/* Profile Option */}
+      <button
+        className="btn btn-sm btn-light w-100 text-start d-flex align-items-center mb-2"
+        onClick={() => navigate('/updateprofile')}
+      >
+        <i className="bi bi-person-circle me-2 text-primary"></i>
+        Profile
+      </button>
+
+      {/* Logout Option */}
+      <button
+        className="btn btn-sm btn-outline-danger w-100 text-start d-flex align-items-center"
+        onClick={handleLogout}
+      >
+        <i className="bi bi-box-arrow-right me-2"></i>
+        Logout
+      </button>
+    </div>
+  }
+  trigger="hover"
+  placement="bottom"
+>
+  <MdPerson className="profileicons" />
+</Popover>
                 )}
                 {/* <MdPerson className='profileicons'
 

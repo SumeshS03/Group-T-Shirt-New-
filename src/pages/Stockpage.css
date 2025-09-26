@@ -91,6 +91,8 @@
     padding: 10px;
     margin: auto;
     text-align: center;
+    /* min-height: 350px; */
+    height: 350px;
   }
 
 

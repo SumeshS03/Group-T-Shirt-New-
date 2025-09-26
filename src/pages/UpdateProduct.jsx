@@ -235,8 +235,27 @@ if (!product) return <h2>Product not found</h2>;
     <div className="col-lg-6 col-12">
       {productdetail ? (
         <>
-          <h2 className="text-start productnametext">{productdetail?.productId?.name}</h2>
-          <p className="text-start">{productdetail?.description}</p>
+        <h2 className="text-start productnametext">{productdetail?.productId.name}</h2>
+        <p className="text-start">
+  {productdetail?.productId.description
+    ?.split(/(?=Type:|Fit:|Fabric:|Quality:|Design:)/) // split but keep keywords
+    .map((line, idx) => {
+      // Extract keyword + rest of line
+      const match = line.match(/^(Type:|Fit:|Fabric:|Quality:|Design:)(.*)/);
+
+      if (match) {
+        return (
+          <div key={idx}>
+            <strong>{match[1]}</strong>
+            {match[2].trim()}
+          </div>
+        );
+      }
+
+      return <div key={idx}>{line.trim()}</div>;
+    })}
+</p>
+          {/* <p className="text-start">{productdetail?.description}</p>
 
           <hr className="divider-line" />
 
@@ -253,10 +272,10 @@ if (!product) return <h2>Product not found</h2>;
             <li><strong>Fit:</strong> Regular Fit – Comfortable for daily wear</li>
             <li><strong>Fabric:</strong> 100% Pure Cotton – Durable and skin-friendly</li>
             <li><strong>Design:</strong> Printed Graphic – Stylish and trendy look</li>
-          </ul>
+          </ul> */}
 
           {/* Responsive Table */}
-          <div className="table-responsive mt-4">
+          {/* <div className="table-responsive mt-4">
             <table className="table table-bordered text-center">
               <thead>
                 <tr>
@@ -285,7 +304,7 @@ if (!product) return <h2>Product not found</h2>;
                 </tr>
               </tbody>
             </table>
-          </div>
+          </div> */}
         </>
       ) : (
         <p>Loading product details...</p>

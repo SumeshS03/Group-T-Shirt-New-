@@ -6,7 +6,7 @@
 
 .home-feed{
     
-    height: 530px;
+    /* height: 530px; */
     background-color: #f8f7f3;
     display: flex;
     flex-direction: column;
@@ -550,6 +550,7 @@
 }
 .createstyleflex{
     display: flex;
+    
 
 }
 .profile-icon{
@@ -1363,7 +1364,7 @@
         font-size: 15px;
     }
     .home-feed {
-        height: 470px;
+        /* height: 470px; */
         
     }
     .box {

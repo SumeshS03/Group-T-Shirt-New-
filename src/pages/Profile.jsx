@@ -218,12 +218,12 @@ const [otpVerifyError, setOtpVerifyError] = useState("");
         </div>
 
         {/* Register Link */}
-        <div className="row justify-content-center mt-5 fs-5 mb-5">
+        {/* <div className="row justify-content-center mt-5 fs-5 mb-5">
           You don't have an account?
           <Link to="/register" className="text-warning fw-semibold text-decoration-none">
             Register
           </Link>
-        </div>
+        </div> */}
       </div>
     </>
   );

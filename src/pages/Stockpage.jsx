@@ -204,6 +204,7 @@ const Shopcontentproduct = () => {
                         </div>
                       )}
                     </div>
+                    <p className="mt-3" > <strong>{product.productName}</strong></p>
                   </div>
                 );
               })}

@@ -1,13 +1,31 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import {cancelstockorder} from '../ApiFunctions/CancelOrders'
 
-const CancelStockModel = ({ show, onHide, orderId }) => {
-  const [reason, setReason] = useState("");
-  const handleSubmit = () => {
-    console.log("Cancel Data:", { orderId, reason });
-    // ✅ Call cancel API here with orderId + reason
-    onHide(); // Close modal after submitting
-  };
+const CancelStockModel = ({ show, onHide, orderId,onCancelSuccess }) => {
+ 
+
+
+
+  const handleSubmit = async() => {
+    console.log("Cancel Data:", { orderId });
+    try{
+      const response = await cancelstockorder(orderId);
+      // console.log("Cancel Response:", response);
+    const message = response.data?.message || response.message;
+
+    if (message === "Order cancelled successfully and stock restored") {
+      onCancelSuccess(orderId);
+    }
+    onHide();
+    } catch (error) {
+    console.error("Cancel Error:", error);
+    // optional: show error message to user here
+  }
+};
+
+
+
   return (
     <Modal show={show} onHide={onHide} centered>
           <Modal.Header closeButton>

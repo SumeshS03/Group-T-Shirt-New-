@@ -11,10 +11,12 @@ import {
   addstocktopayment,
 } from "../ApiFunctions/Continuepayment";
 import { useNavigate,useLocation } from "react-router-dom";
-import CustomerDetailEditModal from "./CustomerDetailEditModal";
+import CustomerDetailAddModal from "./CustomerDetailAddModal";
 import { IoCartOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
 import { getstockdetail,handleDeleteStock } from "../ApiFunctions/Stockdetail";
+import {getuseraddressdetail,deleteuseraddress} from "../ApiFunctions/CustomerAdress"
+import CustomerAdressEditModal from "./CustomerAdressEditModal";
 
 const CartContext = () => {
   const [show, setShow] = useState(false);
@@ -23,6 +25,10 @@ const CartContext = () => {
   const [cartItems, setCartItems] = useState([]);
   const [activeTab, setActiveTab] = useState("product");
   const [stockDetail,setStockDetail] = useState("");
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editAddress, setEditAddress] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const customerdetail = JSON.parse(localStorage.getItem("customer"));
@@ -139,53 +145,79 @@ const CartContext = () => {
   //continue payment function
 
   const continuepayment = async () => {
-    try {
-      // example payload, replace with your real cart details
-      const customerId = localStorage.getItem("customerId");
-      const customer = JSON.parse(localStorage.getItem("customer"));
+  try {
+    const customerId = localStorage.getItem("customerId");
+    const customer = JSON.parse(localStorage.getItem("customer"));
 
-      // Transform cartItems into the format backend needs
-      const transformedCartItems = cartItems.map((item) => ({
-        productId: {
-          _id: item.productId._id,
-          name: item.productId.name,
-          description: item.productId.description,
-        },
-        quantityCount: item.quantityCount,
-        logoCount: item.logoCount,
-        deliveryDate: item.deliveryDate,
-        color: item.color,
-        collarColor: item.collarColor,
-        cloth: item.cloth,
-        clothMaterial: item.clothMaterial,
-        logos: item.logos || [],
-        quantitySizeWise: item.quantitySizeWise,
-        quantitySleeveWise: item.quantitySleeveWise,
-        totalCount: item.totalCount,
-        remark: item.remark,
-        amount: item.amount,
-        totalAmount: item.grandTotal,
-      }));
-
-      const cartdetail = {
-        customerId: customerId,
-        customerName: customer.name,
-        customerMobile: customer.mobile,
-        customerEmail: customer.email,
-        deliveryAddress: customer.address,
-        gstNumber: gstNumber,
-        cartItems: transformedCartItems,
-      };
-      // console.log("Payload sending to backend:", cartdetail);
-      const res = await addproducttopayment(cartdetail);
-      // console.log("Payment created:", res);
-      if (res.message === "Order created successfully") {
-        navigate("/orders");
-      }
-    } catch (err) {
-      console.error("Payment error:", err);
+    // 🔎 Check if any address exists
+    if (!addresses || addresses.length === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "No Address Found",
+        text: "Please add a delivery address before continuing.",
+      });
+      return;
     }
-  };
+
+    // 🔎 Check if an address is selected
+    const selectedAddrObj = addresses.find(
+      (addr) => addr._id === selectedAddress
+    );
+
+    if (!selectedAddrObj) {
+      Swal.fire({
+        icon: "warning",
+        title: "No Address Selected",
+        text: "Please select a delivery address before continuing.",
+      });
+      return;
+    }
+
+    // ✅ Transform cart items
+    const transformedCartItems = cartItems.map((item) => ({
+      productId: {
+        _id: item.productId._id,
+        name: item.productId.name,
+        description: item.productId.description,
+      },
+      quantityCount: item.quantityCount,
+      logoCount: item.logoCount,
+      deliveryDate: new Date(
+        Date.now() + (item.deliveryDate || 0) * 24 * 60 * 60 * 1000
+      ).toISOString(),
+      color: item.color,
+      collarColor: item.collarColor,
+      cloth: item.cloth,
+      clothMaterial: item.clothMaterial,
+      logos: item.logos || [],
+      quantitySizeWise: item.quantitySizeWise,
+      quantitySleeveWise: item.quantitySleeveWise,
+      totalCount: item.totalCount,
+      remark: item.remark,
+      amount: item.amount,
+      totalAmount: item.grandTotal,
+    }));
+
+    // ✅ Final payload
+    const cartdetail = {
+      customerId: customerId,
+      customerName: customer.name,
+      customerMobile: customer.mobile,
+      customerEmail: customer.email,
+      deliveryDetails: `${selectedAddrObj.name}, ${selectedAddrObj.mobile}, ${selectedAddrObj.addressLine1}, ${selectedAddrObj.city}, ${selectedAddrObj.state}, ${selectedAddrObj.postalCode}`,
+      gstNumber: gstNumber,
+      cartItems: transformedCartItems,
+    };
+
+    // 🚀 Send to backend
+    const res = await addproducttopayment(cartdetail);
+    if (res.message === "Order created successfully") {
+      navigate("/orders");
+    }
+  } catch (err) {
+    console.error("Payment error:", err);
+  }
+};
 
 
   function addDaysToDate(days) {
@@ -202,19 +234,41 @@ const CartContext = () => {
       const customer = JSON.parse(localStorage.getItem("customer"));
       // ✅ set delivery date 7 days from today
     const deliveryDate = addDaysToDate(7);
+
+        // 🔎 Check if any address exists
+    if (!addresses || addresses.length === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "No Address Found",
+        text: "Please add a delivery address before continuing.",
+      });
+      return;
+    }
+
+    // 🔎 Check if an address is selected
+    const selectedAddrObj = addresses.find(
+      (addr) => addr._id === selectedAddress
+    );
+
+    if (!selectedAddrObj) {
+      Swal.fire({
+        icon: "warning",
+        title: "No Address Selected",
+        text: "Please select a delivery address before continuing.",
+      });
+      return;
+    }
       
 
       const cartdetail = {
       customerId: customerId,
       deliveryDetails: {
-        name: customer?.name || "",
-        phone: customer?.mobile || "",
-        email: customer?.email || "",
-        addressLine1: customer?.address || "",
-        addressLine2: customer?.address?.line2 || "",
-        city: customer?.address || "",
-        state: customer?.address || "",
-        postalCode: customer?.address?.pincode || "623315"
+        name: selectedAddrObj.name,
+        phone: selectedAddrObj.mobile,
+        addressLine1: selectedAddrObj.addressLine1,
+        city: selectedAddrObj.city,
+        state: selectedAddrObj.state,
+        postalCode: selectedAddrObj.postalCode,
       },
       deliveryDate: deliveryDate, // take from your state/input
       remark: "",             // take from your state/input
@@ -246,6 +300,66 @@ const CartContext = () => {
     }
   }, [location.state]);
 
+// fetch customer address
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      try {
+        const data = await getuseraddressdetail(); 
+        console.log("Fetched Addresses:", data.data);   
+        setAddresses(data.data);
+        if (data.data.length > 0) {
+        setSelectedAddress(data.data[0]._id);
+      }                        
+      } catch (error) {
+        console.error("Error fetching addresses:", error);
+      }
+    };
+
+    fetchAddresses(); // call async function
+  }, []);
+
+
+  // Callback to add new address immediately
+  const handleNewAddress = (newAddr) => {
+  // Add new address to addresses list
+  setAddresses((prev) => [...prev, newAddr]);
+
+  // ✅ Auto-select this new address
+  setSelectedAddress(newAddr._id);
+};
+
+  const handleAddressDelete = async (id) => {
+  try {
+    // Confirm deletion with the user
+    const confirmDelete = window.confirm("Are you sure you want to delete this address?");
+    if (!confirmDelete) return;
+
+    // Call API to delete
+    const response = await deleteuseraddress(id);
+    console.log("Deleted address:", response);
+
+    // Update local state to remove address immediately from UI
+    setAddresses((prev) => prev.filter((addr) => addr._id !== id));
+    
+    // If the deleted address was selected, reset selectedAddress
+    if (selectedAddress === id) setSelectedAddress(null);
+
+  } catch (error) {
+    console.error("Failed to delete address:", error);
+    alert("Failed to delete address. Please try again.");
+  }
+};
+
+const handleAddressEdit = (addr) => {
+  setEditAddress(addr);   // store the address to edit
+  setShowEditModal(true); // open modal
+};
+
+
+
+
+
+
   return (
     <>
       <div>
@@ -274,14 +388,16 @@ const CartContext = () => {
       <div key={product.id} className="row align-items-center mb-3 product-row">
         {/* Product Image */}
         <div className="col-3">
-          <div className="ratio ratio-1x1 border rounded overflow-hidden">
-            <img
-              src={`${BASE_URL_IMAGE}${product.productId.images[0]}`}
-              alt={product.name}
-              className="img-fluid object-fit-cover"
-            />
-          </div>
-        </div>
+  <div className="ratio ratio-1x1 border rounded overflow-hidden d-flex align-items-center justify-content-center bg-light">
+    <img
+      src={`${BASE_URL_IMAGE}${product.productId.images[0]}`}
+      alt={product.name}
+      className="img-fluid"
+      style={{ objectFit: "contain", maxHeight: "100%", maxWidth: "100%" }}
+    />
+  </div>
+</div>
+
 
         {/* Product Details */}
         <div className="col-7">
@@ -292,9 +408,9 @@ const CartContext = () => {
             Quantity: {product.quantityCount} &nbsp;&nbsp; Material:{" "}
             {product.clothMaterial}
           </p>
-          <p className="m-0">Price: {product.amount}</p>
-          <p className="m-0">Total: {product.grandTotal}</p>
-          <p className="m-0">Delivery: {product.deliveryDate}</p>
+          <p className="m-0">Price: ₹ {product.amount.toLocaleString("en-IN", { maximumFractionDigits: 0 })}</p>
+          <p className="m-0">Total: ₹ {product.grandTotal.toLocaleString("en-IN", { maximumFractionDigits: 0 })}</p>
+          <p className="m-0">Delivery in {product.deliveryDate} days after payment is done</p>
         </div>
 
         {/* Action Buttons */}
@@ -356,11 +472,12 @@ const CartContext = () => {
               <div key={item.id} className="row align-items-center mb-3 product-row">
                 {/* Product Image */}
         <div className="col-3">
-          <div className="ratio ratio-1x1 border rounded overflow-hidden">
+          <div className="ratio ratio-1x1 border rounded overflow-hidden d-flex align-items-center justify-content-center bg-light">
             <img
               src={`${BASE_URL_IMAGE}${item.stockId.images[0]}`}
               alt={item.name}
-              className="img-fluid object-fit-cover"
+              className="img-fluid"
+              style={{ objectFit: "contain", maxHeight: "100%", maxWidth: "100%" }}
             />
           </div>
         </div>
@@ -392,6 +509,31 @@ const CartContext = () => {
             onClick={() => deletestockproduct(item._id)}
           />
         </div>
+        {Array.isArray(item.logos) && item.logos.length > 0 && (
+          <div className="mt-3">
+            <strong>Logos:</strong>
+            <div className="d-flex flex-wrap gap-3 mt-2">
+              {item.logos.map((logo, idx) => (
+                <div key={idx} className="text-center">
+                  <img
+                    src={`https://gts.tsitcloud.com/${logo.photo?.replace(
+                      /\\/g,
+                      "/"
+                    )}`}
+                    alt={logo.logotype}
+                    className="img-thumbnail"
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      objectFit: "contain",
+                    }}
+                  />
+                  <div className="small mt-1">{logo.position}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
                 </div>
       ))}
     </div>
@@ -419,37 +561,112 @@ const CartContext = () => {
           </div>
 
           <div className="col-lg-5 p-3">
-            {customerdetail ? (
-              <>
-                <div className="d-flex justify-content-between align-items-center">
-                  <h4 className="productnametext m-0">Customer Details</h4>
-                  <button
-                    className="btn btn-sm btn-primary"
-                    onClick={() => setShow(true)}
-                  >
-                    Edit
-                  </button>
-                </div>
+           
+           
+                
 
-                <p>
-                  <strong>Name:</strong> {customerdetail.name}
-                </p>
-                <hr />
-                <p>
-                  <strong>Email:</strong> {customerdetail.email}
-                </p>
-                <hr />
-                <p>
-                  <strong>Mobile No:</strong> {customerdetail.mobile}
-                </p>
-                <hr />
-                <p>
-                  <strong>Address:</strong> {customerdetail.address}
-                </p>
-                <hr />
+<div>
+      <h4 className="productnametext">Shopping Address</h4>
+
+      {/* List of addresses */}
+      <div className="d-flex flex-column gap-3"
+  style={{
+    maxHeight: "350px", 
+    overflowY: "auto",   
+  }}
+>
+          {addresses.map((addr) => (
+  <div
+    key={addr._id}
+    className={`p-3 border rounded-3 position-relative d-flex justify-content-between align-items-start ${
+      selectedAddress === addr._id
+        ? "border-primary shadow-sm"
+        : "border-secondary"
+    }`}
+    style={{ cursor: "pointer", transition: "0.3s" }}
+  >
+    {/* Address Info */}
+    <div onClick={() => setSelectedAddress(addr._id)} style={{ flex: 1 }}>
+      <div><strong>Name:</strong> {addr.name}</div>
+      <div><strong>Mobile:</strong> {addr.mobile}</div>
+      <div>
+        <strong>Address:</strong> {addr.addressLine1}, {addr.city}, {addr.state}
+      </div>
+      <div><strong>Pincode:</strong> {addr.postalCode}</div>
+      <div
+  className="address-card p-2 mb-3 mt-2"
+  style={{
+    backgroundColor: "#f5f5f5", // light gray background
+    boxShadow: "0 2px 6px rgba(0,0,0,0.1)", // subtle shadow
+    borderRadius: "10px", // rounded corners
+    display: "inline-block", // keep compact
+    textAlign: "center",
+    fontWeight: "500",
+    color: "#333",
+  }}
+>
+  {addr.addressName}
+</div>
+
+    </div>
+
+    {/* Action Icons */}
+    <div className="d-flex flex-column gap-2 ms-3">
+      <MdEdit
+        className="rounded-circle text-primary"
+        size={20}
+        style={{ cursor: "pointer" }}
+        onClick={(e) => {
+    e.stopPropagation(); // prevent selecting the address
+    handleAddressEdit(addr._id);
+  }}
+      />
+
+      {/* Delete Icon */}
+      <MdDelete
+        className="rounded-circle text-danger"
+        size={20}
+        style={{ cursor: "pointer" }}
+        onClick={(e) => {
+    e.stopPropagation(); 
+    handleAddressDelete(addr._id);
+  }}
+      />
+    </div>
+
+    {/* Selected Badge */}
+    {selectedAddress === addr._id && (
+      <span
+        className="badge bg-primary position-absolute"
+        style={{ top: "10px", right: "10px", fontSize: "0.8rem" }}
+      >
+       
+      </span>
+    )}
+  </div>
+))} 
+
+      </div>
+
+      {/* Add button */}
+    <button
+  className="btn btn-primary mt-3 d-flex align-items-center justify-content-center fw-bold"
+  style={{
+    borderRadius: "8px",   // keep it slightly rounded instead of a circle
+    fontSize: "16px",
+    padding: "8px 16px",   // make room for text
+  }}
+  onClick={() => setShow(true)}
+>
+  <span style={{ fontSize: "20px", marginRight: "8px" }}>+</span> Add Address
+</button>
+    </div>
+
+
+               
 
                 {/* GST Details */}
-                <h4 className="productnametext">GST Details</h4>
+                <h4 className="productnametext mt-3">GST Details</h4>
                 <div className="form-check d-flex align-items-center">
                   <input
                     className="form-check-input me-2"
@@ -478,20 +695,28 @@ const CartContext = () => {
 
                 {/* Price Details */}
                 <h4 className="productnametext">Price Details</h4>
-                <p>Total Amount ({cartItems.length} Products)</p>
+                
                 <hr />
                 {activeTab === "product" && (
+                  <>
+                  <p>Total Amount ({cartItems.length} Products)</p>
   <p>
-    <strong>Total Amount: ₹</strong>
-    <strong>
-      {cartItems.reduce(
+    
+  <strong>Total Amount: ₹ </strong>
+  <strong>
+    {(
+      cartItems.reduce(
         (acc, item) => acc + (Number(item.grandTotal) || 0),
         0
-      )}
-    </strong>
-  </p>
+      )
+    ).toLocaleString("en-IN", { maximumFractionDigits: 0 })}
+  </strong>
+</p>
+</>
 )}
 {activeTab === "ready" && (
+  <>
+  {/* <p>Total Amount ({cartItems.length} Products)</p> */}
   <p>
     <strong>Total Amount: ₹</strong>
     <strong>
@@ -503,6 +728,7 @@ const CartContext = () => {
         : 0}
     </strong>
   </p>
+  </>
 )}
 
 
@@ -530,21 +756,8 @@ const CartContext = () => {
                   </button>
                 </div>
 )}
-              </>
-            ) : (
-              <div className="text-center p-4">
-                <h5>No Customer Details Found</h5>
-                <p className="text-muted">
-                  Please log in to continue with your order.
-                </p>
-                <button
-                  className="btn btn-primary"
-                  onClick={() => navigate("/profile")} // ✅ redirect user
-                >
-                  Login Now
-                </button>
-              </div>
-            )}
+             
+            
           </div>
         </div>
       </div>
@@ -583,10 +796,23 @@ const CartContext = () => {
         </div>
       </div>
       <Footer></Footer>
-      <CustomerDetailEditModal
+      <CustomerDetailAddModal
         show={show}
         onClose={() => setShow(false)}
-      ></CustomerDetailEditModal>
+        onAddressAdded={handleNewAddress} // ✅ Pass callback
+      ></CustomerDetailAddModal>
+      <CustomerAdressEditModal
+  show={showEditModal}
+  onClose={() => setShowEditModal(false)}
+  addressId={editAddress}
+  onSave={(updatedAddr) => {
+    setAddresses((prev) =>
+      prev.map((a) => (a._id === updatedAddr._id ? updatedAddr : a))
+    );
+    setShowEditModal(false);
+  }}
+/>
+
     </>
   );
 };

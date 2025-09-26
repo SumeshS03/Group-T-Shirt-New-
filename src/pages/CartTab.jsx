@@ -6,7 +6,7 @@ import {
   getproductdetail,
 } from "../ApiFunctions/Continuepayment";
 import Footer from "../Layout/Footer";
-import CustomerDetailEditModal from "./CustomerDetailEditModal";
+import CustomerDetailAddModal from "./CustomerDetailAddModal";
 import CartContext from './CartContext';
 import { IoCartOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
@@ -274,10 +274,10 @@ const CartTab = () => {
                 </div>
               </div>
               <Footer></Footer>
-              <CustomerDetailEditModal
+              <CustomerDetailAddModal
                 show={show}
                 onClose={() => setShow(false)}
-              ></CustomerDetailEditModal>
+              ></CustomerDetailAddModal>
     </>
   )
 }
