@@ -164,7 +164,7 @@ const formDataObj = {
     });
 
     console.log("Order submitted successfully:", response.data);
-    Swal.fire("Added to Ready stock cart");
+    // Swal.fire("Added to Ready stock cart");
     navigate("/cart", { state: { openTab: "ready" } });
   } catch (error) {
     console.error("Error while submitting order:", error.response || error);

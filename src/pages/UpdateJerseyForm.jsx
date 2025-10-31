@@ -999,12 +999,13 @@ const halfSleeveNumbersMap = {};
                 <div className="row mb-4">
                   
                   
-                  <div className="col-lg-12">
+                  <div className="col-12 col-lg-4 mb-3 mb-lg-0">
                     <div className="card">
                       <div className="card-header bg-success text-white">
                         <h6>Collar</h6>
                       </div>
                       <div className="card-body p-0">
+                        <div className="table-responsive">
                         <table className="table table-bordered mb-0">
                           <thead>
                             <tr>
@@ -1041,16 +1042,18 @@ const halfSleeveNumbersMap = {};
                             ))}
                           </tbody>
                         </table>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="col-lg-12 mt-lg-3 mt-3">
+                  <div className="col-12 col-lg-4 mb-3 mb-lg-0">
                     <div className="card">
                       <div className="card-header bg-info text-white">
                         <h6>Round Neck</h6>
                       </div>
                       <div className="card-body p-0">
+                        <div className="table-responsive">
                         <table className="table table-bordered mb-0">
                           <thead>
                             <tr>
@@ -1076,16 +1079,18 @@ const halfSleeveNumbersMap = {};
                             ))}
                           </tbody>
                         </table>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="col-lg-12 mt-lg-3 mt-3">
+                  <div className="col-12 col-lg-4 mb-3 mb-lg-0">
                     <div className="card">
                       <div className="card-header bg-warning text-dark">
                         <h6>V neck</h6>
                       </div>
                       <div className="card-body p-0">
+                        <div className="table-responsive">
                         <table className="table table-bordered mb-0">
                           <thead>
                             <tr>
@@ -1111,6 +1116,7 @@ const halfSleeveNumbersMap = {};
                             ))}
                           </tbody>
                         </table>
+                        </div>
                       </div>
                     </div>
                   </div>

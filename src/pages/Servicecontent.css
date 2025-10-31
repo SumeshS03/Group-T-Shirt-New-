@@ -460,6 +460,12 @@
   width: 24.666667%;
 }
 
+.profilecustomart {
+    position: absolute;
+    bottom: -74%;
+    width: 100%;
+}
+
 
 }
 
@@ -523,6 +529,8 @@
 .enjoyup {
   margin-top: 85% !important;
 }
+
+
 .pickproducttext {
   font-size: 12px;
 }

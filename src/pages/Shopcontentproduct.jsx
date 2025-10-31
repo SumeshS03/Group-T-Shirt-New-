@@ -1,31 +1,28 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import HomeHeader from "../Layout/HomeHeader";
 import shopimage from "../images/shopimage.png";
 import "./Shopcontentproduct.css";
-import "./Stockpage.css"
-import { useLocation,useNavigate } from "react-router-dom";
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
-import axios from 'axios';
-import Footer from "../Layout/Footer"
-
+import "./Stockpage.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+import axios from "axios";
+import Footer from "../Layout/Footer";
 
 const Shopcontentproduct = () => {
   const [activeTab, setActiveTab] = useState("product");
   const location = useLocation();
   const navigate = useNavigate();
   const [productsData, setProductsData] = useState([]);
- const base_url = process.env.REACT_APP_API_BASE_URL;
- const [selectedCategory, setSelectedCategory] = useState(0);
+  const base_url = process.env.REACT_APP_API_BASE_URL;
+  const [selectedCategory, setSelectedCategory] = useState(0);
 
-
-    useEffect(() => {
-      // Set activeTab based on current path
-      if (location.pathname === "/product") setActiveTab("product");
-      else if (location.pathname === "/newdesign") setActiveTab("new");
-      else if (location.pathname === "/stock") setActiveTab("stock");
-    }, [location.pathname]);
-
+  useEffect(() => {
+    // Set activeTab based on current path
+    if (location.pathname === "/product") setActiveTab("product");
+    else if (location.pathname === "/newdesign") setActiveTab("new");
+    else if (location.pathname === "/stock") setActiveTab("stock");
+  }, [location.pathname]);
 
   const responsive = {
     superLargeDesktop: {
@@ -48,34 +45,30 @@ const Shopcontentproduct = () => {
 
   const [loading, setLoading] = useState(true);
 
+  // api to get all category
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(
+          `${base_url}/products/single/products-by-category`
+        );
+        setProductsData(response.data);
+        console.log("products", response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-// api to get all category
-useEffect(() => {
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get(
-        `${base_url}/products/single/products-by-category`
-      );
-      setProductsData(response.data);
-      console.log("products", response.data);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchProducts();
+  }, [base_url]);
 
-  fetchProducts();
-}, [base_url]);
+  //scroll top
 
-
-//scroll top
-
-useEffect(() =>{
-   window.scrollTo(0, 0);
-},[]);
-
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>
@@ -102,51 +95,38 @@ useEffect(() =>{
         <div className="container-fluid d-flex flex-column justify-content-center align-items-center">
           <div className="row w-75 gap-2 pb-lg-5 pb-4 centerfixproductbutton">
             {/* <div className="products-type "> */}
-              <div
-                 className={`col-lg-3 col-12 product-page 
+            <div
+              className={`col-lg-3 col-12 product-page 
 
 
 
-                  ${
-                  activeTab === "product" ? "active-tab" : ""
-                }`
-              
-              }
+                  ${activeTab === "product" ? "active-tab" : ""}`}
               onClick={() => navigate("/product")}
-              >
-                <h2 className="h4 heading-text-product">Product</h2>
-              </div>
-              <div
-                className={`col-lg-3 col-12 new-design-page ${
-                  activeTab === "new" ? "active-tab" : ""
-                }`}
-                onClick={() => navigate("/newdesign")}
-              >
-                <h2 className="h4 heading-text-product">New Design</h2>
-              </div>
-              <div
-                className={`col-lg-3 col-12 stock-page ${
-                  activeTab === "stock" ? "active-tab" : ""
-                }`}
-                onClick={() => navigate("/stock")}
-              >
-                <h2 className="h4 heading-text-product">Ready Stock</h2>
-              </div>
+            >
+              <h2 className="h4 heading-text-product">Product</h2>
+            </div>
+            <div
+              className={`col-lg-3 col-12 new-design-page ${
+                activeTab === "new" ? "active-tab" : ""
+              }`}
+              onClick={() => navigate("/newdesign")}
+            >
+              <h2 className="h4 heading-text-product">New Design</h2>
+            </div>
+            <div
+              className={`col-lg-3 col-12 stock-page ${
+                activeTab === "stock" ? "active-tab" : ""
+              }`}
+              onClick={() => navigate("/stock")}
+            >
+              <h2 className="h4 heading-text-product">Ready Stock</h2>
+            </div>
             {/* </div> */}
           </div>
-
-          
-          
         </div>
       </div>
 
-      
-
-
-  
-
- 
-  {/* <div className="container mt-5 productshowbox">
+      {/* <div className="container mt-5 productshowbox">
     {loading ? (
       <div className="text-center my-5">
         <div className="spinner-border text-primary" role="status">
@@ -191,97 +171,94 @@ useEffect(() =>{
     )}
   </div> */}
 
-<div className="container mt-5">
-      {/* 🔹 Tabs Row */}
-      <div className="row mb-4">
-        <div className="d-flex flex-wrap gap-3 justify-content-center">
-          {productsData.map((categoryItem, catIndex) =>
-            categoryItem.products.length > 0 && (
-              <button
-                key={catIndex}
-                className={`btn rounded-pill px-3 py-1 ${
-                  selectedCategory === catIndex
-                    ? "btn-primary"
-                    : "btn-outline-primary"
-                }`}
-                onClick={() => setSelectedCategory(catIndex)}
-              >
-                {categoryItem.category}
-              </button>
-            )
+      <div className="container mt-5">
+        {/* 🔹 Tabs Row */}
+        <div className="row mb-4">
+          <div className="d-flex flex-wrap gap-3 justify-content-center">
+            {productsData.map(
+              (categoryItem, catIndex) =>
+                categoryItem.products.length > 0 && (
+                  <button
+                    key={catIndex}
+                    className={`btn rounded-pill px-3 py-1 ${
+                      selectedCategory === catIndex
+                        ? "btn-primary"
+                        : "btn-outline-primary"
+                    }`}
+                    onClick={() => setSelectedCategory(catIndex)}
+                  >
+                    {categoryItem.category}
+                  </button>
+                )
+            )}
+          </div>
+        </div>
+
+        {/* 🔹 Products for Selected Category */}
+        <div className="row">
+          {productsData[selectedCategory]?.products?.length > 0 ? (
+            <div className="mb-5">
+              <h2 className="h4 text-start mb-3">
+                {productsData[selectedCategory].category}
+              </h2>
+
+              <div className="row g-4">
+                {productsData[selectedCategory].products.map(
+                  (product, prodIndex) => (
+                    <div
+                      key={prodIndex}
+                      className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex" // responsive + flex for equal height
+                    >
+                      <div className="product-card text-center p-3 border rounded shadow-sm flex-fill">
+                        {/* Product Image */}
+                        <div
+                          className="product-image position-relative"
+                          onClick={() =>
+                            navigate(`/productdetail/${product._id}`)
+                          }
+                          style={{ cursor: "pointer" }}
+                        >
+                          <img
+                            src={`https://gts.tsitcloud.com/${product.images[0]}`}
+                            alt={`product-img-${prodIndex}`}
+                            className="img-fluid"
+                            style={{
+                              width: "100%",
+                              height: "200px",
+                              objectFit: "contain",
+                            }}
+                          />
+                        </div>
+
+                        {/* Product Info */}
+                        <p className="mt-3">
+                          <strong>{product.name}</strong>
+                        </p>
+                        <small>
+                          <strong>Minimum Order:</strong> {product.minQuantity}
+                        </small>
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="text-center">
+              <p className="text-muted">No products found.</p>
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
           )}
         </div>
       </div>
 
-      {/* 🔹 Products for Selected Category */}
-      <div className="row">
-        {productsData[selectedCategory]?.products?.length > 0 ? (
-          <div className="mb-5">
-            <h2 className="h4 text-start mb-3">
-              {productsData[selectedCategory].category}
-            </h2>
-
-            <div className="row g-4">
-  {productsData[selectedCategory].products.map((product, prodIndex) => (
-    <div
-      key={prodIndex}
-      className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex" // responsive + flex for equal height
-    >
-      <div className="product-card text-center p-3 border rounded shadow-sm flex-fill">
-        {/* Product Image */}
-        <div
-          className="product-image position-relative"
-          onClick={() => navigate(`/productdetail/${product._id}`)}
-          style={{ cursor: "pointer" }}
-        >
-          <img
-            src={`https://gts.tsitcloud.com/${product.images[0]}`}
-            alt={`product-img-${prodIndex}`}
-            className="img-fluid"
-            style={{
-              width: "100%",
-              height: "200px",
-              objectFit: "contain",
-            }}
-          />
-        </div>
-
-        {/* Product Info */}
-        <p className="mt-3">
-          <strong>{product.name}</strong>
-        </p>
-        <small>
-          <strong>Minimum Order:</strong> {product.minQuantity}
-        </small>
-      </div>
-    </div>
-  ))}
-</div>
-
-
-          </div>
-        ) : (
-          <p className="text-muted">No products found.</p>
-        )}
-      </div>
-    </div>
-
-
-      
-      
-      
-      
-      
-      
-      
-    <div className="social container-fluid  ">
+      <div className="social container-fluid  ">
         <div class="row justify-content-center">
           <div className="sociladivider   d-flex justify-content-around text-white">
             <div className="d-flex align-items-center justify-content-center socialone col-2 ">
-              <text
-                className="socialtexts"
-                style={{ color: "white"}}
-              >
+              <text className="socialtexts" style={{ color: "white" }}>
                 Facebook
               </text>
             </div>
@@ -308,35 +285,12 @@ useEffect(() =>{
           </div>
         </div>
       </div>
-         <Footer></Footer>
-           
+      <Footer></Footer>
     </>
   );
 };
 
 export default Shopcontentproduct;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //old-design
 
@@ -380,7 +334,7 @@ export default Shopcontentproduct;
 // const Shopcontentproduct = () => {
 //   const [activeTab, setActiveTab] = useState("product");
 //   const [showColors, setShowColors] = useState(false);
- 
+
 // const [showColorList, setShowColorList] = useState(false);
 // const colors = ["red", "blue", "green", "yellow", "black", "purple"];
 // const [selectedColor, setSelectedColor] = useState(['#ff0000', '#00ff00']);
@@ -420,13 +374,10 @@ export default Shopcontentproduct;
 //     setSelectedColors([...selectedColors, '#eee']); // Add a new default color slot (light gray)
 //   };
 
-
 //   const sizes = [ 'S', 'M', 'L', 'XL', 'XXL', '3XL', '4XL', '5XL'];
-
 
 //   const numbers = Array.from({ length: 2000 }, (_, i) => i + 10);
 
-  
 //   const handleSelect = (num) => {
 //     setSelectedNumber(num);
 //     setShowDropdown(false);
@@ -444,20 +395,19 @@ export default Shopcontentproduct;
 //   ];
 
 //   const [currentPage, setCurrentPage] = useState(0);
-  
+
 //   const [itemsPerPage, setItemsPerPage] = useState(window.innerWidth <= 768 ? 1 : 4);
 
 //   useEffect(() => {
 //     const handleResize = () => {
 //       setItemsPerPage(window.innerWidth <= 768 ? 1 : 4);
 //     };
-  
+
 //     window.addEventListener("resize", handleResize);
 //     return () => window.removeEventListener("resize", handleResize);
 //   }, []);
 
-//   // 
-  
+//   //
 
 //   const visibleItems = tshirtItems.slice(
 //     currentPage,
@@ -466,10 +416,6 @@ export default Shopcontentproduct;
 
 //   const canGoNext = currentPage < tshirtItems.length - itemsPerPage;
 //   const canGoPrev = currentPage > 0;
-
-
-
-
 
 //   const location = useLocation();
 //   const navigate = useNavigate();
@@ -488,9 +434,8 @@ export default Shopcontentproduct;
 //     "/sweater": "Sweater",
 //     "/hoodies": "Hoodies",
 //     "/cups": "Cups",
- 
-//   };
 
+//   };
 
 //   const allProducts = [
 //     { id: 1, title: "Tee 1", category: "T-Shirts", image: qualityshirt },
@@ -502,10 +447,6 @@ export default Shopcontentproduct;
 //     // Add more sample items
 //   ];
 
- 
-
-
-
 //   const handleClick = (item) => {
 //     setSelectedCategory(item.title);
 //     setCurrentPage(0); // reset to first page on new category
@@ -513,18 +454,12 @@ export default Shopcontentproduct;
 
 //   const selectedBox = selectedCategory;
 
-
-
-
 //   useEffect(() => {
 //     // Set activeTab based on current path
 //     if (location.pathname === "/product") setActiveTab("product");
 //     else if (location.pathname === "/newdesign") setActiveTab("new");
 //     else if (location.pathname === "/stock") setActiveTab("stock");
 //   }, [location.pathname]);
-
-
-
 
 //   const handleAddProduct = () => {
 //     setProductRows(prevRows => [...prevRows, { ...defaultRow }]);
@@ -540,18 +475,11 @@ export default Shopcontentproduct;
 //     selectedSize: 'M',
 //     showSizes: false,
 //   };
-  
+
 //   const [productRows, setProductRows] = useState([defaultRow]);
-
-
-
-
-
-
 
 //   const [visibleSizeCount, setVisibleSizeCount] = useState(1);
 //   const [sizeQuantities, setSizeQuantities] = useState({});
-
 
 //   const handleAddSize = () => {
 //     if (visibleSizeCount < sizes.length) {
@@ -565,16 +493,6 @@ export default Shopcontentproduct;
 //       [size]: value === "" ? "" : parseInt(value) || 0,
 //     }));
 //   };
-  
-
-
-  
-
-
-
-  
-  
-  
 
 //   return (
 //     <>
@@ -602,14 +520,12 @@ export default Shopcontentproduct;
 //           <div className="row w-75 gap-2">
 //             {/* <div className="products-type "> */}
 //               <div
-//                  className={`col-lg-3 col-12 product-page 
-
-
+//                  className={`col-lg-3 col-12 product-page
 
 //                   ${
 //                   activeTab === "product" ? "active-tab" : ""
 //                 }`
-              
+
 //               }
 //               onClick={() => navigate("/product")}
 //               >
@@ -667,13 +583,13 @@ export default Shopcontentproduct;
 //         </div>
 //       </div>
 //       <div className="container d-flex justify-content-center align-items-center mt-3">
-//       <div 
+//       <div
 //        className={`btn  rounded-5 leftarrw-rounded  ${!canGoPrev ? "disabled" : ""}`}
 //        onClick={() => canGoPrev && setCurrentPage((prev) => prev - 1)}
 //       >
 //         <FaCircleChevronLeft className="leftarrw-btn" />
 //       </div>
-      
+
 //       <div className="p-3 tshirtstyles row gap-3 gap-md-3 gap-lg-2">
 //           {visibleItems.map((item) => (
 //             <div key={item.id} className="tshirtstylebox col-12 col-md-12 col-lg-3">
@@ -689,7 +605,7 @@ export default Shopcontentproduct;
 //           ))}
 //         </div>
 
-//       <div 
+//       <div
 //         className={`btn rounded-5 rightarrw-rouded  ${!canGoNext ? "disabled" : ""}`}
 //         onClick={() => canGoNext && setCurrentPage((prev) => prev + 1)}
 //       >
@@ -755,7 +671,7 @@ export default Shopcontentproduct;
 //           </div>
 //         </div>
 //       </div>
-      
+
 //       <div
 //               className="container w-75 d-flex flex-column justify-content-center align-items-center  position-relative styling-box "
 //               style={{ minHeight: "150px", paddingTop: "80px" }}
@@ -778,34 +694,21 @@ export default Shopcontentproduct;
 //                   </div>
 //                 </div>
 //               </div>
-      
-      
-             
-        
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+
 //               {productRows.map((row, index) => (
 //         <div key={index} className="row w-100 mt-5 ">
-          
+
 //           {/* Colour Section */}
 //           <div className="col-lg-6 col-12 p-2 d-flex flex-column choose-colour-box justify-content-center align-items-center">
 //         {/* Label */}
 //         <label className="mb-2">Choose Colour:</label>
-      
+
 //         <div className="colour-choose-box d-flex align-items-center gap-2 position-relative">
 //           {/* Render selected color circles */}
 //           {row.colors.map((color, i) => (
 //   <div key={i} className="position-relative">
 //     {/* Color Circle Input */}
-//     <input 
+//     <input
 //       type="color"
 //       value={color}
 //       className="w-10 h-10 border-0 p-0 cursor-pointer circle-color-picker"
@@ -847,7 +750,7 @@ export default Shopcontentproduct;
 //     )}
 //   </div>
 // ))}
-      
+
 //           {/* Dropdown Toggle */}
 //           <div
 //             className="color-select-icon d-flex align-items-center"
@@ -863,7 +766,7 @@ export default Shopcontentproduct;
 //               }}
 //             />
 //           </div>
-      
+
 //           {/* Color Dropdown */}
 //           {row.showColorList && (
 //             <div
@@ -891,7 +794,7 @@ export default Shopcontentproduct;
 //               ))}
 //             </div>
 //           )}
-      
+
 //           {/* ➕ Add New Color */}
 //           <div
 //             style={{ cursor: "pointer" }}
@@ -907,7 +810,7 @@ export default Shopcontentproduct;
 //           </div>
 //         </div>
 //       </div>
-      
+
 //           {/* Quantity Section */}
 //           <div className="col-lg-6 col-12 p-2 d-flex flex-column choose-colour-box align-items-center">
 //         <label className="mb-4">T-shirt Quantity:</label>
@@ -925,7 +828,7 @@ export default Shopcontentproduct;
 //             <span>{row.selectedQuantity}</span>
 //             <IoIosArrowDown size={20} color="#555" />
 //           </div>
-      
+
 //           {row.showDropdown && (
 //             <div
 //               className="dropdown-list position-absolute mt-1"
@@ -962,7 +865,7 @@ export default Shopcontentproduct;
 //           )}
 //         </div>
 //       </div>
-      
+
 //           {/* Type Section */}
 //           <div className="col-lg-6 col-12 p-2 d-flex flex-column choose-colour-box justify-content-center ">
 //             <label className="mb-3">Logo Type:</label>
@@ -983,16 +886,14 @@ export default Shopcontentproduct;
 //             <div className="container w-100 d-flex flex-column justify-content-center align-items-center ">
 //               <p className="tshirtchangetext mb-5">Tshirt any change in add design</p>
 //               <textarea className="design-change-box"></textarea>
-              
+
 //             </div>
 //           </div>
-      
+
 //           {/* Size Section */}
 //           <div className="col-lg-6 col-12 d-flex flex-column align-items-center justify-content-center mb-md-2">
 //             <label className="mb-3">Size Chart:</label>
-      
-           
-      
+
 //             <table className="table table-bordered w-100 text-center">
 //           <thead>
 //             <tr>
@@ -1001,7 +902,7 @@ export default Shopcontentproduct;
 //             </tr>
 //           </thead>
 //           <tbody>
-          
+
 //             {sizes.slice(0, visibleSizeCount).map((size) =>(
 //               <tr key={size}>
 //                 <td>{size}</td>
@@ -1016,31 +917,29 @@ export default Shopcontentproduct;
 //                       : ""
 //                   }
 //                   onChange={(e) => handleChange(size, e.target.value)}
-                  
-                  
-                  
+
 //                   ></input>
 //                 </td>
 //               </tr>
-      
+
 //             ))}
-            
+
 //           </tbody>
-          
+
 //         </table>
 //         {visibleSizeCount < sizes.length &&(
 //           <button className="btn rounded-5 add-size-btn" onClick={handleAddSize}>
 //           Add Size
 //         </button>
 //         )}
-       
+
 //           </div>
-      
+
 //         </div>
 //       ))}
-              
+
 //             </div>
-      
+
 //       <div className="container w-50 d-flex flex-column justify-content-center align-items-center ">
 //         {/* <p className="tshirtchangetext">Tshirt any change in add design</p>
 //         <textarea className="design-change-box"></textarea> */}
@@ -1048,10 +947,6 @@ export default Shopcontentproduct;
 //       onClick={() => setClicked(!clicked)}>Send</div>
 //       </div>
 
-
-
-
-      
 //       <div className="container price-cal-box ">
 //         <div className="row price-calculate display-flex justify-content-center align-items-center ">
 //           <div className="d-flex flex-column col-lg-2 col-12 ">
@@ -1068,7 +963,7 @@ export default Shopcontentproduct;
 //           </div>
 //           <div className="d-flex flex-column col-lg-2 col-12 justify-content-center align-items-center">
 //             <label>Discount:<strong> 50%</strong></label>
-           
+
 //             <div className="discount-box mt-3">
 //              50%
 //             </div>
@@ -1077,12 +972,11 @@ export default Shopcontentproduct;
 //           <div className="d-flex flex-column col-lg-2 col-12 ">
 //             <label>Total-Amount:</label>
 //             <div className="total-amount-box mt-3">
-             
+
 //             </div>
 //           </div>
 
 //         </div>
-
 
 //       </div>
 //       <div className="social container-fluid  ">
@@ -1216,8 +1110,7 @@ export default Shopcontentproduct;
 //             <p style={{ color: "#8a8a8a", marginBottom: "0px" }}>
 //               Follow our newsletter to stay updated about us
 //             </p>
-            
-    
+
 //             <div className="email-input-container relative inline-block">
 //   <input
 //     type="email"
@@ -1228,7 +1121,7 @@ export default Shopcontentproduct;
 //     <FaArrowRight />
 //   </span>
 // </div>
-            
+
 //           </div>
 //         </div>
 //         <div className="footersocial row justify-content-between align-items-center  mt-5 px-4">

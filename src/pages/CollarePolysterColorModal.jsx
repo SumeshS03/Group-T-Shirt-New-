@@ -3,11 +3,11 @@ import './Ratemodal.css';
 
 const CollarePolysterColorModal = ({ show, formData, setFormData, handleClose }) => {
 
-     const handleColorSelect = (color, id) => {
+     const handleColorSelect = (collar, id) => {
     setFormData((prev) => ({
       ...prev,
-      color,
-      colorid: id,
+      collar,
+      collarid: id,
     }));
   };
 
@@ -35,8 +35,8 @@ const CollarePolysterColorModal = ({ show, formData, setFormData, handleClose })
                           className="colorbox"
                           style={{
                             backgroundColor: item.color,
-                            border: formData.color === item.color ? '3px solid #007bff' : '1px solid #ccc',
-                            boxShadow: formData.color === item.color
+                            border: formData.collar === item.color ? '3px solid #007bff' : '1px solid #ccc',
+                            boxShadow: formData.collar === item.color
                               ? `0 0 8px 3px ${item.color}AA`
                               : 'none',
                             transition: 'box-shadow 0.3s ease, border 0.3s ease',
@@ -56,7 +56,7 @@ const CollarePolysterColorModal = ({ show, formData, setFormData, handleClose })
                     <div
                       className="selectedcolorbox"
                       style={{
-                        backgroundColor: formData.color,
+                        backgroundColor: formData.collar,
                         width: '60px',
                         height: '30px',
                         border: '1px solid #ccc',

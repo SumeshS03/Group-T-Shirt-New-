@@ -70,9 +70,17 @@ const navigate = useNavigate();
 
   };
   const newcheck = () =>{
-    window.scrollTo(0,0);
-    navigate(`/newdesign`);
-  }
+    const token = localStorage.getItem('authToken');
+    window.scrollTo(0, 0);
+    if (token) {
+      // User is authenticated
+      navigate(`/newdesign`);
+    }
+    else{
+      Swal.fire("Please login to start shopping.");
+      navigate('/profile');
+    }
+  };
 
   return (
     
@@ -609,6 +617,7 @@ const navigate = useNavigate();
         </div>
       </div>
       <div className="bg-primary p-5">
+        <div className="container">
   <div className="row d-flex justify-content-center align-items-center">
     
     {/* Text Column */}
@@ -634,6 +643,7 @@ const navigate = useNavigate();
       </button>
     </div>
     
+  </div>
   </div>
 </div>
 

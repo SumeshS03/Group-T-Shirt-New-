@@ -36,7 +36,7 @@ const OrderCountdown = ({ createdAt, orderStatus, onExpire, orderId }) => {
 
   return (
     <span className="text-danger fs-6 px-2">
-      {orderStatus === "Pending" ? `Time Left: ${timeLeft}` : "Order Cancelled"}
+      {orderStatus === "Pending" ? `Order Cancelled in ${timeLeft} left` : "Order Cancelled"}
     </span>
   );
 };

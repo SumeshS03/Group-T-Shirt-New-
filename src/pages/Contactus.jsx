@@ -12,12 +12,22 @@ import { BsFillTelephoneFill } from "react-icons/bs";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Contactus = () => {
   const navigate = useNavigate();
-  const newcheck = () =>{
-    navigate(`/newdesign`);
-  }
+    const newcheck = () =>{
+      const token = localStorage.getItem('authToken');
+      window.scrollTo(0, 0);
+      if (token) {
+        // User is authenticated
+        navigate(`/newdesign`);
+      }
+      else{
+        Swal.fire("Please login to start shopping.");
+        navigate('/profile');
+      }
+    };
   return (
     <>
       <div>
@@ -257,6 +267,7 @@ const Contactus = () => {
         </div>
       </div>
                   <div className="bg-primary p-5">
+                    <div className="container">
   <div className="row d-flex justify-content-center align-items-center">
     
     {/* Text Column */}
@@ -282,6 +293,7 @@ const Contactus = () => {
       </button>
     </div>
     
+  </div>
   </div>
 </div>
 

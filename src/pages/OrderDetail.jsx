@@ -8,6 +8,7 @@ import { useLocation } from "react-router-dom";
 import CancelOrderModal from "./CancelOrderModel";
 import CountdownTimer from "./Countdown";
 import { cancelProduct } from "../ApiFunctions/CancelOrders";
+import { Select } from 'antd';
 
 const OrderDetail = () => {
   const [orders, setOrders] = useState([]);
@@ -17,6 +18,7 @@ const OrderDetail = () => {
   const location = useLocation();
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState(orders.designApprovalStatus || "pending");
 
 
   const deliveryTimeRanges = [
@@ -253,6 +255,71 @@ if (loading) return <p>Loading orders...</p>;
     <span className="text-dark">{order.deliveryDetails}</span>
   </div>
 </div>
+{(order.balancePayment === 0 || order.advancePaid > 0) && (
+  <div className="col-lg-12 mt-1 d-flex flex-column justify-content-center align-items-center">
+  <div className="h6 mb-2">Your Design</div>
+
+  <div
+  className="d-flex justify-content-center align-items-center rounded-3"
+  style={{
+    width: "100px",
+    height: "100px",
+    backgroundColor: "#f8f9fa",
+    border: "1px solid #ddd",
+  }}
+>
+  {order.productId?.images?.[0] ? (
+    <img
+      src={`${process.env.REACT_APP_IMAGE_URL}/${order.productId.images[0]}`}
+      alt={`product-${order.productId?._id}`}
+      className="img-fluid rounded-3"
+      style={{
+        width: "100px",
+        height: "100px",
+        objectFit: "contain",
+      }}
+      onError={(e) => {
+        e.target.style.display = "none";
+        e.target.parentNode.innerHTML =
+          '<span class="text-muted small fw-semibold">Upload Soon</span>';
+      }}
+    />
+  ) : (
+    <span className="text-muted small fw-semibold">Upload Soon</span>
+  )}
+</div>
+{/* {order.productId?.images?.length > 1 && ( */}
+  <div className="text-center w-100">
+      <label className="mt-2 fw-bold mb-2">Approval</label>
+      <div className="w-100 d-flex justify-content-center align-items-center">
+        <select
+          className="form-select w-25"
+          aria-label="Default select example"
+          value={selectedStatus}
+          onChange={(e) => setSelectedStatus(e.target.value)}
+        >
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="changes requested">Changes Requested</option>
+        </select>
+      </div>
+
+      <button
+        className="btn btn-primary mt-2"
+        disabled={selectedStatus === "pending"} // 👈 disabled until user selects other value
+        onClick={() => {
+          console.log("Status updated to:", selectedStatus);
+          // call API to update status here
+        }}
+      >
+        Status Update
+      </button>
+    </div>
+{/* )} */}
+</div>
+
+)}
+
 
 <div className="row mt-4 mb-4 d-flex justify-content-between">
   <div className="col-lg-4 text-lg-start text-start mb-lg-0 mb-2"><strong>Design Approval Status : {order.designApprovalStatus}</strong></div>

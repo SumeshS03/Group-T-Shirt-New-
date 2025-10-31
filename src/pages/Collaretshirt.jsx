@@ -200,6 +200,7 @@ const Collaretshirt = () => {
     logos: [],
     color: '',
     collarColor: 'true',
+    collar: '',
     hasCollarColor: true,
     logoFile: null,
     logoPosition: '',
@@ -649,6 +650,7 @@ const calculateTotalquantity = (totalQuantity) => {
   setFormData((prev) => ({
     ...prev,
     color: "", // reset color
+    collar:"", // reset collar color
   }));
 }, [formData.clothMaterial]);
 
@@ -1070,6 +1072,27 @@ const calculateTotalquantity = (totalQuantity) => {
       }}
     >
       {formData.color}
+    </div>
+  </div>
+)}
+                      </div>
+                      <div className="col-md-6 d-flex justify-content-start">
+                        {formData.collar && formData.collar.trim() !== "" && (
+  <div className="text-center d-flex flex-column justify-content-center align-items-center mb-4">
+    <label className="form-label fw-bold" style={{ color: '#0d6efd' }}>
+      Selected Color:
+    </label>
+    <div
+      className="form-control"
+      style={{
+        backgroundColor: formData.collar,
+        color: "#fff",
+        fontWeight: "bold",
+        textAlign: "center",
+        width: "150px",
+      }}
+    >
+      {formData.collar}
     </div>
   </div>
 )}

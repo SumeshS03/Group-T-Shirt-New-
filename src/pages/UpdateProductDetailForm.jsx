@@ -735,8 +735,8 @@ const UpdateProductDetailForm = () => {
 
   useEffect(() => {
     if (productdetail) {
-      setOriginalData(productdetail); // save original for comparison
-      // ... your existing setFormData code
+      setOriginalData(productdetail); 
+      
       const matchedItem = materialOptions[productdetail.clothMaterial]?.find(
         (item) => item.name === productdetail.cloth
       );
@@ -749,11 +749,10 @@ const UpdateProductDetailForm = () => {
         });
       }
 
-      // ✅ Map backend half/full sleeve sizes
+      
       const halfSleeveFromBackend = productdetail.quantitySizeWise?.half || {};
       const fullSleeveFromBackend = productdetail.quantitySizeWise?.full || {};
 
-      // ✅ Calculate totals
       const halftotal = Object.values(halfSleeveFromBackend).reduce(
         (acc, val) => acc + (parseInt(val) || 0),
         0
@@ -764,18 +763,18 @@ const UpdateProductDetailForm = () => {
       );
       const totalQuantity = halftotal + fulltotal;
 
-      // ✅ Prepare logos from backend
+  
       const backendLogos = (productdetail.logos || []).map((logo) => ({
         _id: logo._id,
-        file: null, // backend logos have only photo
+        file: null, 
         preview: logo.photo
           ? `${process.env.REACT_APP_IMAGE_URL}/${logo.photo}`
           : "",
         position: logo.position || "",
-        type: logo.logotype || "", // Printed / Embroidered
+        type: logo.logotype || "", 
       }));
 
-      // ✅ Save full logos in allLogos
+     
       setAllLogos(backendLogos);
 
       setFormData((prev) => {
@@ -783,15 +782,7 @@ const UpdateProductDetailForm = () => {
           ...prev,
           quantity: productdetail.quantityCount || "",
           logoCount: productdetail.logoCount || "0",
-          // logos: (productdetail.logos || []).map((logo) => ({
-          //   _id: logo._id,
-          //   file: null,
-          //   preview: logo.photo
-          //     ? `${process.env.REACT_APP_IMAGE_URL}/${logo.photo}`
-          //     : "",
-          //   position: logo.position || "",
-          //   type: logo.logotype || "",
-          // })),
+          
           logos: backendLogos,
           color: productdetail.color || "",
           collarColor: productdetail.collarColor ? "true" : "false",
@@ -817,13 +808,21 @@ const UpdateProductDetailForm = () => {
           totalQuantity,
         };
 
-        // ✅ Ensure recalculation with initial logo types
+       
         calculateAndSetTotal(updatedForm);
 
         return updatedForm;
       });
     }
   }, [productdetail, materialOptions]);
+
+
+
+
+
+
+
+
 
   //check the page reloade or navigate to other page
   useNavigationGuard(
@@ -1283,7 +1282,7 @@ const UpdateProductDetailForm = () => {
                               setIsDirty(true);
                               const count = parseInt(e.target.value) || 0;
 
-                              // ✅ Expand master list if needed
+                              
                               if (count > allLogos.length) {
                                 const newLogos = [...allLogos];
                                 for (let i = allLogos.length; i < count; i++) {
@@ -1297,13 +1296,15 @@ const UpdateProductDetailForm = () => {
                                 setAllLogos(newLogos);
                               }
 
-                              // ✅ Only slice visible logos, never delete from master
+                              
                               setFormData((prev) => ({
                                 ...prev,
                                 logoCount: count,
                                 logos: allLogos.slice(0, count),
                               }));
                             }}
+        
+
                             onWheel={(e) => e.currentTarget.blur()}
                             className="form-control w-75"
                           />

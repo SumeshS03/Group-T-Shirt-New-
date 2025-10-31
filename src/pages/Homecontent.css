@@ -951,7 +951,13 @@
 
 
 
-
+@media screen and (max-width: 1218px) {
+    .heading-text {
+   
+    font-size: 29px !important; 
+}
+    
+}
 
 
 

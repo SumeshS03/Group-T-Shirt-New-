@@ -206,6 +206,7 @@ const Jerseys = () => {
       fullSleeve: { ...emptySleeveState },
       halfSleeveNames: {},
       halfSleeveNumbers: {},
+      sleeveType: {},
       remark: '',
       cloth: '',
       clothMaterial: 'Collar',
@@ -838,124 +839,120 @@ for (let pair of payload.entries()) {
                 {/* Material Selection */}
                 <h5 className="mb-3 " style={{ color: '#0d6efd' }}>Select Material</h5>
                 <div className="row mb-4">
-                  
-                  
-                  <div className="col-lg-12">
-                    <div className="card">
-                      <div className="card-header bg-success text-white">
-                        <h6>Collar</h6>
-                      </div>
-                      <div className="card-body p-0">
-                        <table className="table table-bordered mb-0">
-                          <thead>
-                            <tr>
-                              <th>Select</th>
-                              <th>Name</th>
-                              <th>Price</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {materialOptions.Collar.map((item) => (
-                              <tr key={item._id} className={selectedGSM.id === item._id ? 'table-active' : ''}>
-                                <td>
-                                  <input
-                                    type="radio"
-                                    name="material"
-                                    checked={selectedGSM.id === item._id}
-                                    onChange={() => handleGSMClick("Collar", item)}
-                                  />
-                                </td>
-                                <td>{item.name}</td>
+    {/* Collar */}
+    <div className="col-12 col-lg-4 mb-3 mb-lg-0">
+      <div className="card">
+        <div className="card-header bg-success text-white">
+          <h6>Collar</h6>
+        </div>
+        <div className="card-body p-0">
+          <div className="table-responsive">
+            <table className="table table-bordered mb-0">
+              <thead>
+                <tr>
+                  <th>Select</th>
+                  <th>Name</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {materialOptions.Collar.map((item) => (
+                  <tr key={item._id} className={selectedGSM.id === item._id ? 'table-active' : ''}>
+                    <td>
+                      <input
+                        type="radio"
+                        name="material"
+                        checked={selectedGSM.id === item._id}
+                        onChange={() => handleGSMClick("Collar", item)}
+                      />
+                    </td>
+                    <td>{item.name}</td>
+                    <td>₹{item.price - (formData.discountPerPiece || 0)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
 
-                                <td>
-                                      {/* {formData.discountPerPiece ? (
-                                        <>
-                                          <del className="text-muted me-2">₹{item.price}</del>
-                                          ₹{item.price - formData.discountPerPiece}
-                                        </>
-                                      ) : (
-                                        <>₹{item.price}</>
-                                      )} */}
-                                      ₹{item.price - (formData.discountPerPiece || 0)}
-                                    </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
+    {/* Round Neck */}
+    <div className="col-12 col-lg-4 mb-3 mb-lg-0">
+      <div className="card">
+        <div className="card-header bg-info text-white">
+          <h6>Round Neck</h6>
+        </div>
+        <div className="card-body p-0">
+          <div className="table-responsive">
+            <table className="table table-bordered mb-0">
+              <thead>
+                <tr>
+                  <th>Select</th>
+                  <th>Name</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {materialOptions.RoundNeck.map((item) => (
+                  <tr key={item._id} className={selectedGSM.id === item._id ? 'table-active' : ''}>
+                    <td>
+                      <input
+                        type="radio"
+                        name="material"
+                        checked={selectedGSM.id === item._id}
+                        onChange={() => handleGSMClick("Round Neck", item)}
+                      />
+                    </td>
+                    <td>{item.name}</td>
+                    <td>₹{item.price - (formData.discountPerPiece || 0)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
 
-                  <div className="col-lg-12 mt-lg-3 mt-3">
-                    <div className="card">
-                      <div className="card-header bg-info text-white">
-                        <h6>Round Neck</h6>
-                      </div>
-                      <div className="card-body p-0">
-                        <table className="table table-bordered mb-0">
-                          <thead>
-                            <tr>
-                              <th>Select</th>
-                              <th>Name</th>
-                              <th>Price</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {materialOptions.RoundNeck.map((item) => (
-                              <tr key={item._id} className={selectedGSM.id === item._id ? 'table-active' : ''}>
-                                <td>
-                                  <input
-                                    type="radio"
-                                    name="material"
-                                    checked={selectedGSM.id === item._id}
-                                    onChange={() => handleGSMClick("Round Neck", item)}
-                                  />
-                                </td>
-                                <td>{item.name}</td>
-                                <td>₹{item.price - (formData.discountPerPiece || 0)}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="col-lg-12 mt-lg-3 mt-3">
-                    <div className="card">
-                      <div className="card-header bg-warning text-dark">
-                        <h6>V neck</h6>
-                      </div>
-                      <div className="card-body p-0">
-                        <table className="table table-bordered mb-0">
-                          <thead>
-                            <tr>
-                              <th>Select</th>
-                              <th>Name</th>
-                              <th>Price</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {materialOptions.VNeck.map((item) => (
-                              <tr key={item._id} className={selectedGSM.id === item._id ? 'table-active' : ''}>
-                                <td>
-                                  <input
-                                    type="radio"
-                                    name="material"
-                                    checked={selectedGSM.id === item._id}
-                                    onChange={() => handleGSMClick("V Neck", item)}
-                                  />
-                                </td>
-                                <td>{item.name}</td>
-                                <td>₹{item.price - (formData.discountPerPiece || 0)}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+    {/* V Neck */}
+    <div className="col-12 col-lg-4 mb-3 mb-lg-0">
+      <div className="card">
+        <div className="card-header bg-warning text-dark">
+          <h6>V Neck</h6>
+        </div>
+        <div className="card-body p-0">
+          <div className="table-responsive">
+            <table className="table table-bordered mb-0">
+              <thead>
+                <tr>
+                  <th>Select</th>
+                  <th>Name</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {materialOptions.VNeck.map((item) => (
+                  <tr key={item._id} className={selectedGSM.id === item._id ? 'table-active' : ''}>
+                    <td>
+                      <input
+                        type="radio"
+                        name="material"
+                        checked={selectedGSM.id === item._id}
+                        onChange={() => handleGSMClick("V Neck", item)}
+                      />
+                    </td>
+                    <td>{item.name}</td>
+                    <td>₹{item.price - (formData.discountPerPiece || 0)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
                 {/* free logo */}
                     <div>
@@ -1305,6 +1302,37 @@ for (let pair of payload.entries()) {
                         </div>
                       </div>
                     )}
+{/* new design Upload */}
+<div className="mb-4 p-3 border rouded bg-light">
+  <div className="text-center">
+    <label className="form-label fw-bold" style={{ color: '#0d6efd' }}>Have Your Own Design?</label>
+    <input
+      type="file"
+      className="form-control mt-2"
+      name="designFile"
+      accept="image/*"
+      onChange={(e) => {
+        setIsDirty(true); 
+        setFormData((prev) => ({ ...prev, designFile: e.target.files[0] }))
+      }}
+    />
+    {formData.designFile && (
+      <div className="text-center mt-3">
+        <span className="badge bg-success mb-2">
+          Selected: {formData.designFile.name}
+        </span>
+        <div>
+          <img
+            src={URL.createObjectURL(formData.designFile)}
+            alt="Design Preview"
+            className="img-thumbnail mt-2"
+            style={{ width: "120px", height: "auto", objectFit: "contain" }}
+          />
+        </div>
+      </div>
+    )}
+  </div>
+</div>
 
               {/* need name and number */}
                     <div className="mb-4 p-3 border rounded bg-light">
@@ -1437,7 +1465,7 @@ for (let pair of payload.entries()) {
               }}
             />
           </div>
-          <div className="col-md-6">
+          <div className="col-md-3">
             <input
               type="text"
               className="form-control form-control-sm"
@@ -1458,6 +1486,31 @@ for (let pair of payload.entries()) {
               }}
             />
           </div>
+          <div className="col-md-3">
+  <label className="form-check-label d-flex align-items-center gap-2" style={{ cursor: "pointer" }}>
+    <input 
+    type="checkbox"
+    className="form-check-input"
+    checked={formData.sleeveType?.[size.label]?.[index] === "True"}
+    onChange={(e) => {
+      setIsDirty(true);
+      // Copy existing array (or create empty one if none)
+      const updated = [...(formData.sleeveType?.[size.label] || [])];
+      // Update the value at this index
+      updated[index] = e.target.checked ? "True" : "False";
+       // Save back to formData
+    setFormData((prev) => ({
+      ...prev,
+      sleeveType: {
+        ...prev.sleeveType,
+        [size.label]: updated,
+      },
+    }));
+  }}
+    ></input>
+    <span>Full Sleeve</span>
+  </label>
+</div>
         </div>
       ))}
     </div>

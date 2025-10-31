@@ -64,6 +64,34 @@ const Homecontent = () => {
   };
 
 
+  const readycheck = () =>{
+    const token = localStorage.getItem('authToken');
+    window.scrollTo(0, 0);
+    if (token) {
+      // User is authenticated
+      navigate(`/stock`);
+    }
+    else{
+      Swal.fire("Please login to start shopping.");
+      navigate('/profile');
+    }
+  };
+
+
+  const newcheck = () =>{
+    const token = localStorage.getItem('authToken');
+    window.scrollTo(0, 0);
+    if (token) {
+      // User is authenticated
+      navigate(`/newdesign`);
+    }
+    else{
+      Swal.fire("Please login to start shopping.");
+      navigate('/profile');
+    }
+  };
+
+
 const sliderSettingsicons = {
     dots: false,
     infinite: true,
@@ -130,47 +158,47 @@ const sliderSettingsicons = {
 
       <div className="home-feed">
         <div className="createstyleflex">
-          <div className="get-started">
-            <h1 className="unique-style">
-              <span
-                className="heading-text"
-                
-              >
-                Easy To Order{" "}
-              </span>
-              <ReactTyped
-                className="heading-text"
-                strings={["Door Step Delivery"]}
-                style={{
-                  color: "#007fff",
-                }}
-                typeSpeed={100} // Speed of typing
-                backSpeed={50} // Speed of deleting
-                loop
-              />
-            </h1>
+           <div className="row align-items-center text-center text-md-start mt-lg-0 mt-md-5 mt-sm-3 mb-5">
+  {/* Left side - text */}
+  <div className="col-12 col-md-8 d-flex flex-column align-items-center align-items-md-start">
+    <h1 className="unique-style fs-3 fs-md-1 text-center text-md-start">
+  <span className="heading-text">
+    Easy To Order{" "}
+    <span className="text-primary" style={{ color: "#007fff" }}>
+      Door Step Delivery
+    </span>
+  </span>
+</h1>
 
-            <p className="print-shirt">
-              For all your Bulk Customized T-Shirt Requirments 
-            </p>
-            
-  <button className="start-btd fs-5" onClick={buycheck}>Order Now</button>
-  
-            
+
+
+    <p className="print-shirt fs-6 fs-md-5">
+      For all your Bulk Customized T-Shirt Requirements
+    </p>
+
+    <button className="start-btd fs-6 fs-md-5 mt-2" onClick={buycheck}>
+      Order Now
+    </button>
+  </div>
+
+  {/* Right side - How to Order button */}
+  <div className="col-12 col-md-4 d-flex justify-content-center justify-content-md-end mt-3 mt-md-0">
+    <button
+      className="btn btn-primary px-4 py-2 fs-6 fs-md-5 rounded-pill shadow-sm fw-semibold hover-scale"
+      onClick={() => setShowHowToOrder(true)}
+    >
+      <i className="bi bi-info-circle me-2"></i> How to Order
+    </button>
+  </div>
+</div>
+
+
+
+
+
+
           </div>
           
-  
-        </div>
-
-        <div className="d-flex gap-3 mt-1 mb-5 button-flex">
-          <button
-  className="btn btn-primary px-4 py-2 fs-5 rounded-pill shadow-sm fw-semibold hover-scale"
-  onClick={() => setShowHowToOrder(true)}
->
-  <i className="bi bi-info-circle me-2"></i> How to Order
-</button>
-
-        </div>
 
       <Slider   {...settingsone}>
   <div>
@@ -279,10 +307,7 @@ const sliderSettingsicons = {
                 <p className="text-white m-0 shopnowparatext fw-bold">Ready Stock</p>
                 <button
                   className="start-btd-1 mt-lg-4 mt-1 mb-4"
-                  onClick={() => {
-                    window.scrollTo(0, 0);
-                    navigate('/stock');
-                  }}
+                  onClick={readycheck}
                 >
                   SHOP NOW
                 </button>
@@ -308,10 +333,7 @@ const sliderSettingsicons = {
                 <p className="text-white m-0 shopnowparatext">your choice</p>
                 <button
                   className="start-btd-1 mt-lg-4 mt-1 mb-4"
-                  onClick={() => {
-                    window.scrollTo(0, 0);
-                    navigate('/newdesign');
-                  }}
+                  onClick={newcheck}
                 >
                   EXPLORE
                 </button>
