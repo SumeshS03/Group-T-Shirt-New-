@@ -13,7 +13,7 @@ const loadRazorpay = (src) => {
   });
 };
 
-export const handlePayment = async (id) => {
+export const handlePayment = async (id, amount) => {
   const res = await loadRazorpay(
     "https://checkout.razorpay.com/v1/checkout.js"
   );
@@ -28,7 +28,10 @@ export const handlePayment = async (id) => {
     console.log("Creating Razorpay order...");
     const { data: orderData } = await axios.post(
       `${BASE_URL}/payment/razorpay/order`,
-      { orderId: id }, // Your app's order ID
+      {
+        orderId: id,
+        advanceAmount: amount,
+      },
       {
         headers: {
           "Content-Type": "application/json",

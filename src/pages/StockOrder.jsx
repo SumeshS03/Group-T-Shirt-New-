@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import CancelStockModel from "./CancelStockModel";
 import { handlePayment } from "../ApiFunctions/PaymentGateway";
 import OrderCountdown from "./OrderCountdown";
+import AdvancePayModal from "./AdvancePayModal";
 
 const StockOrder = () => {
   const [orderDetail, setOrderDetail] = useState([]);
@@ -11,6 +12,7 @@ const StockOrder = () => {
   const navigate = useNavigate();
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [ShowAdvancePayModal, setShowAdvancePayModal] = useState(false);
 
     useEffect(() => {
     const fetchStockOrders = async () => {
@@ -193,14 +195,18 @@ postalCode}`}</span>
                 <strong>Order Id:</strong> {order.orderId}
               </p>
               <div className="d-flex flex-lg-row flex-column justify-content-between">
-                <button
+                {/* <button
                   className="btn btn-primary rounded-5 px-4 py-2 mb-lg-0 mb-3"
                   disabled={order.balancePayment === 0 || order.orderStatus === "Cancelled" }
+                  onClick={() => {
+    setSelectedOrderId(order._id);  
+    setShowAdvancePayModal(true);
+  }}
                 >
                   {order.balancePayment === 0
                     ? "Payment Done"
                     : "Pay Advance"}
-                </button>
+                </button> */}
                 <button
                   className="btn btn-primary rounded-5 px-4 py-2"
                   onClick={() => handlePayment(order.orderId)}
@@ -271,6 +277,13 @@ postalCode}`}</span>
     );
   }}
     ></CancelStockModel>
+    <AdvancePayModal
+      show={ShowAdvancePayModal}
+      handleClose={() => setShowAdvancePayModal(false)}
+      orderDetail={orderDetail}
+      orderId={selectedOrderId}
+      setOrderDetail={setOrderDetail}
+    ></AdvancePayModal>
     
     </>
   )

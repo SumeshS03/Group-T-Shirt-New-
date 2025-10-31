@@ -9,6 +9,7 @@ import CancelOrderModal from "./CancelOrderModel";
 import CountdownTimer from "./Countdown";
 import { cancelProduct } from "../ApiFunctions/CancelOrders";
 import { Select } from 'antd';
+import AdvancePaymentBulkModal from "./AdvancePaymentBulkModal";
 
 const OrderDetail = () => {
   const [orders, setOrders] = useState([]);
@@ -19,7 +20,7 @@ const OrderDetail = () => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(orders.designApprovalStatus || "pending");
-
+  const [ShowAdvancePayModal, setShowAdvancePayModal] = useState(false);
 
   const deliveryTimeRanges = [
     { min: 1, max: 10, days: 10 },
@@ -365,9 +366,14 @@ if (loading) return <p>Loading orders...</p>;
                 <strong>Order Id:</strong> {order.orderId}
               </p>
               <div className="d-flex flex-lg-row flex-column justify-content-between">
+             
                 <button
                   className="btn btn-primary rounded-5 px-4 py-2 mb-lg-0 mb-3"
-                  disabled={order.balancePayment === 0 || order.cancelStatus === "cancelled" }
+                  disabled={order.balancePayment === 0 || order.cancelStatus === "cancelled" || order.advancePaid > 0}
+                  onClick={() => {
+                    setSelectedOrderId(order._id);
+                    setShowAdvancePayModal(true);
+                  }}
                 >
                   {order.balancePayment === 0
                     ? "Payment Done"
@@ -388,13 +394,18 @@ if (loading) return <p>Loading orders...</p>;
             </div>
           </div>
           <div className="row">
+            <div className="col-lg-12 text-end">
+  {(order.amountPaid > 0 || order.advancePaid > 0) && (
+    <span className="text-success fw-bold">Payment Completed</span>
+  )}
+</div>
   <div className="col-lg-12 text-end">
-    {order.amountPaid === 0 && (
-  <CountdownTimer 
-  createdAt={order.createdAt} 
-  orderId={order.orderId} 
-  advancePaid={order.advancePaid} 
-  onExpire={async (expiredOrderId) => {
+    {order.amountPaid === 0 && order.advancePaid === 0 && (
+      <CountdownTimer
+        createdAt={order.createdAt}
+        orderId={order.orderId}
+        advancePaid={order.advancePaid}
+        onExpire={async (expiredOrderId) => {
     try {
       await cancelProduct(expiredOrderId); // ✅ Call API directly
       setOrders((prevOrders) =>
@@ -454,6 +465,15 @@ if (loading) return <p>Loading orders...</p>;
     );
   }}
 />
+
+<AdvancePaymentBulkModal
+  show={ShowAdvancePayModal}
+  handleClose={() => setShowAdvancePayModal(false)}
+  orderDetail={orders}
+  orderId={selectedOrderId}
+  setOrderDetail={setOrders}
+
+></AdvancePaymentBulkModal>
 
       </div>
       
